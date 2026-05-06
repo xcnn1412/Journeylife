@@ -53,14 +53,14 @@ export const I18N = {
       },
     },
     services: {
-      eyebrow: "What we do",
-      title: "Four ways we move people.",
-      lede: "From a 600-pax convention in Hokkaido to a 12-person founders' retreat in Maldives — we right-size every operation.",
+      eyebrow: "Thailand Incentive · 4 routes",
+      title: "Four ways to design a Thailand trip.",
+      lede: "From the northern hills to the southern islands — every route fully customisable for headcount, theme, and budget.",
       items: [
-        { tag: "Flagship", title: "Corporate incentive", body: "100–1,000 pax outbound trips with full event production: gala dinners, awards nights, branded ground transport, on-trip film crew." },
-        { tag: "Premium", title: "Executive retreats", body: "Small-group strategic offsites for boards and leadership teams. Discreet venues, working sessions, private flights when needed." },
-        { tag: "MICE", title: "Conferences & roadshows", body: "Multi-city dealer conferences, product launches, sales kickoffs. AV, staging, registration, and full vendor management." },
-        { tag: "Inbound", title: "Inbound Thailand", body: "Welcome itineraries for international corporates visiting Thailand — from Bangkok to the islands, with concierge-level local logistics." },
+        { tag: "Coastal", title: "Coastal Incentive", body: "Phuket · Krabi · Samui · Hua Hin — beachside gala dinners, private-island BBQs, and 5-star resorts ready for 100–800 pax MICE programmes." },
+        { tag: "Highland", title: "Northern Highland", body: "Chiang Mai · Pai · Nan · Khao Yai — cool weather year-round, wellness retreats, forest and mountain adventure for teams that want to slow down." },
+        { tag: "Heritage", title: "Heritage Incentive", body: "Sukhothai · Ayutthaya · Chiang Rai — story-led journeys through historic sites, private temple dinners, and craft workshops with local masters." },
+        { tag: "Capital", title: "Capital MICE", body: "Bangkok · Pattaya — rooftop galas, riverside dinners, and 5-star MICE venues sized for kick-offs, awards nights, and 100–1,000 pax conferences." },
       ],
     },
     destinations: {
@@ -168,14 +168,14 @@ export const I18N = {
       },
     },
     services: {
-      eyebrow: "บริการของเรา",
-      title: "4 รูปแบบที่เราให้บริการ",
-      lede: "ตั้งแต่ Convention 600 คนที่ฮอกไกโด ถึงทริป Founders' retreat 12 คนที่มัลดีฟส์ — เราจัดได้ทุกขนาด",
+      eyebrow: "Incentive ในประเทศไทย · 4 รูปแบบ",
+      title: "4 รูปแบบ Incentive ที่เราจัดในไทย",
+      lede: "ตั้งแต่ภูเขาภาคเหนือถึงเกาะภาคใต้ — ปรับได้ทุกเส้นทาง ตามจำนวนคน ธีม และงบประมาณ",
       items: [
-        { tag: "Flagship", title: "Corporate Incentive", body: "ทริป Outbound 100–1,000 pax พร้อม Event Production เต็มรูปแบบ: Gala Dinner, Awards Night, รถ Brand, ทีมถ่ายทำระหว่างทริป" },
-        { tag: "Premium", title: "Executive Retreats", body: "Strategic offsite ขนาดเล็กสำหรับบอร์ดและทีมผู้บริหาร · สถานที่เป็นความลับ · Working session · เจ็ตส่วนตัวเมื่อจำเป็น" },
-        { tag: "MICE", title: "Conference & Roadshow", body: "Dealer conference หลายเมือง · Product launch · Sales kickoff · AV, staging, registration, vendor management ครบวงจร" },
-        { tag: "Inbound", title: "Inbound ในประเทศไทย", body: "ต้อนรับองค์กรต่างชาติที่เดินทางเข้าไทย — กรุงเทพถึงเกาะใต้ พร้อมลอจิสติกส์ระดับ Concierge" },
+        { tag: "Coastal", title: "ทริปชายทะเล", body: "ภูเก็ต · กระบี่ · สมุย · หัวหิน — Gala Dinner ริมทะเล Private Island BBQ และโรงแรม 5 ดาวที่รองรับ MICE 100–800 pax ได้จริง" },
+        { tag: "Highland", title: "ทริปภาคเหนือ-เขา", body: "เชียงใหม่ · ปาย · น่าน · เขาใหญ่ — อากาศเย็นทั้งปี Wellness Retreat กิจกรรม Adventure ในป่าและภูเขาสำหรับทีมที่อยากชะลอจังหวะ" },
+        { tag: "Heritage", title: "ทริปวัฒนธรรม-มรดก", body: "สุโขทัย · อยุธยา · เชียงราย — Story-led journey ในโบราณสถาน ดินเนอร์ในวัดที่ปิดเฉพาะกรุ๊ป และ workshop กับช่างฝีมือท้องถิ่น" },
+        { tag: "Capital", title: "ทริปกรุงเทพ-MICE", body: "กรุงเทพ · พัทยา — Rooftop Gala · Riverside Dinner · ห้อง MICE ระดับ 5 ดาว สำหรับ Kick-off, Awards Night และ Conference 100–1,000 pax" },
       ],
     },
     destinations: {

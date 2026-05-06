@@ -3,81 +3,113 @@ import type { ReactNode } from "react";
 import { useSite } from "@/lib/site-context";
 import { Container } from "./_layout";
 
-const MOCK_LOGOS: { name: string; mark: ReactNode }[] = [
+/* Mock brand-style logos — placeholder marks for layout/positioning.
+   Each lockup uses currentColor so cell hover state can recolor uniformly. */
+const MOCK_LOGOS: { name: string; logo: ReactNode }[] = [
   {
+    // 1 · Stacked chevron mark + bold wordmark
     name: "NORTHWIND",
-    mark: (
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-        <path d="M3 16 L11 4 L19 16" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M7 16 L11 10 L15 16" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
+    logo: (
+      <div className="flex flex-col items-center gap-3.5">
+        <svg width="42" height="34" viewBox="0 0 42 34" fill="none">
+          <path d="M3 30 L21 4 L39 30" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M11 30 L21 16 L31 30" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        <span className="text-[12px] tracking-[0.32em] font-bold">NORTHWIND</span>
+      </div>
     ),
   },
   {
+    // 2 · Circular "A" monogram (heritage feel)
     name: "ARIA·CO",
-    mark: (
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-        <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="1.6"/>
-        <circle cx="11" cy="11" r="2.2" fill="currentColor"/>
-      </svg>
+    logo: (
+      <div className="flex flex-col items-center gap-3.5">
+        <div className="relative w-14 h-14 flex items-center justify-center">
+          <svg width="56" height="56" viewBox="0 0 56 56" fill="none" className="absolute inset-0">
+            <circle cx="28" cy="28" r="26" stroke="currentColor" strokeWidth="1.6"/>
+          </svg>
+          <span className="text-[24px] font-serif italic font-semibold leading-none">A</span>
+        </div>
+        <span className="text-[10px] tracking-[0.42em] font-medium">ARIA · CO</span>
+      </div>
     ),
   },
   {
+    // 3 · Inline peak + serif wordmark
     name: "ZENITH",
-    mark: (
-      <svg width="24" height="22" viewBox="0 0 24 22" fill="none">
-        <path d="M2 18 L12 4 L22 18 Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round"/>
-        <path d="M8 18 L12 12 L16 18" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
-      </svg>
+    logo: (
+      <div className="flex items-center gap-3">
+        <svg width="26" height="22" viewBox="0 0 26 22" fill="none">
+          <path d="M2 20 L13 2 L24 20 Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/>
+        </svg>
+        <span className="text-[18px] font-serif tracking-[0.04em]">Zenith</span>
+      </div>
     ),
   },
   {
+    // 4 · Diamond above thin wordmark
     name: "PRISMA",
-    mark: (
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-        <path d="M11 2 L20 11 L11 20 L2 11 Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round"/>
-        <path d="M2 11 L20 11" stroke="currentColor" strokeWidth="1.2"/>
-      </svg>
+    logo: (
+      <div className="flex flex-col items-center gap-3">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+          <path d="M17 2 L32 17 L17 32 L2 17 Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+          <path d="M2 17 L32 17" stroke="currentColor" strokeWidth="1"/>
+        </svg>
+        <span className="text-[11px] tracking-[0.5em] font-light">PRISMA</span>
+      </div>
     ),
   },
   {
+    // 5 · Italic wordmark with constellation dots
     name: "ORION",
-    mark: (
-      <svg width="24" height="22" viewBox="0 0 24 22" fill="none">
-        <path d="M3 17 C 3 9, 9 3, 17 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
-        <circle cx="3" cy="17" r="1.6" fill="currentColor"/>
-        <circle cx="17" cy="3" r="1.6" fill="currentColor"/>
-        <circle cx="11" cy="9" r="1.4" fill="currentColor"/>
-      </svg>
+    logo: (
+      <div className="flex items-center gap-2.5">
+        <span className="text-[24px] font-serif italic">Orion</span>
+        <span className="flex flex-col gap-1">
+          <span className="block w-1 h-1 rounded-full bg-current" />
+          <span className="block w-1.5 h-1.5 rounded-full bg-current" />
+          <span className="block w-1 h-1 rounded-full bg-current" />
+        </span>
+      </div>
     ),
   },
   {
+    // 6 · Linked nodes above tech-style caps
     name: "NEXUS·LAB",
-    mark: (
-      <svg width="26" height="22" viewBox="0 0 26 22" fill="none">
-        <circle cx="5" cy="11" r="2.2" fill="currentColor"/>
-        <circle cx="13" cy="5" r="2.2" fill="currentColor"/>
-        <circle cx="13" cy="17" r="2.2" fill="currentColor"/>
-        <circle cx="21" cy="11" r="2.2" fill="currentColor"/>
-        <path d="M7 10 L11 6 M15 6 L19 10 M15 16 L19 12 M7 12 L11 16" stroke="currentColor" strokeWidth="1.2"/>
-      </svg>
+    logo: (
+      <div className="flex flex-col items-center gap-3.5">
+        <svg width="48" height="22" viewBox="0 0 48 22" fill="none">
+          <circle cx="6" cy="11" r="3" fill="currentColor"/>
+          <circle cx="24" cy="11" r="3" fill="currentColor"/>
+          <circle cx="42" cy="11" r="3" fill="currentColor"/>
+          <path d="M9 11 L21 11 M27 11 L39 11" stroke="currentColor" strokeWidth="1.5"/>
+        </svg>
+        <span className="text-[10px] tracking-[0.42em] font-semibold">NEXUS · LAB</span>
+      </div>
     ),
   },
   {
+    // 7 · Big serif K monogram (single mark)
     name: "KANTANA",
-    mark: (
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-        <rect x="3" y="3" width="16" height="16" stroke="currentColor" strokeWidth="1.6"/>
-        <path d="M3 11 L19 11 M11 3 L11 19" stroke="currentColor" strokeWidth="1.2"/>
-      </svg>
+    logo: (
+      <div className="flex flex-col items-center gap-2.5">
+        <span className="text-[52px] font-serif font-bold leading-none tracking-[-0.04em]">K</span>
+        <span className="block w-8 h-px bg-current" />
+        <span className="text-[9px] tracking-[0.5em] font-medium">KANTANA</span>
+      </div>
     ),
   },
   {
+    // 8 · Condensed bold wordmark with small marker
     name: "STELLAR·GRP",
-    mark: (
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-        <path d="M11 2 L13.4 8.6 L20 9.2 L15 13.6 L16.6 20 L11 16.4 L5.4 20 L7 13.6 L2 9.2 L8.6 8.6 Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
-      </svg>
+    logo: (
+      <div className="flex flex-col items-center gap-2">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M7 1 L8.5 5.4 L13 5.6 L9.4 8.4 L10.5 13 L7 10.4 L3.5 13 L4.6 8.4 L1 5.6 L5.5 5.4 Z" fill="currentColor"/>
+        </svg>
+        <span className="text-[16px] font-bold tracking-[0.08em] uppercase italic">Stellar</span>
+        <span className="text-[9px] tracking-[0.45em] font-medium">GROUP</span>
+      </div>
     ),
   },
 ];
@@ -85,34 +117,43 @@ const MOCK_LOGOS: { name: string; mark: ReactNode }[] = [
 export function SocialProof() {
   const { t } = useSite();
   return (
-    <section className="bg-brand-paper border-b border-brand-line">
-      <Container className="py-14 md:py-20">
-        <div className="reveal grid lg:grid-cols-[1fr_1.6fr] gap-8 lg:gap-16 items-end mb-10 md:mb-14">
-          <div>
-            <span className="eyebrow">{t.socialProof.eyebrow}</span>
-            <h2 className="h-display mt-5 text-[28px] md:text-[36px] leading-[1.15] text-brand-ink max-w-[26ch]">
-              {t.socialProof.title}
-            </h2>
-          </div>
-          <p className="text-[11px] md:text-[12px] tracking-wide-cap uppercase text-brand-mute leading-[1.85] font-light max-w-[52ch] lg:justify-self-end lg:text-right">
-            {t.socialProof.note}
-          </p>
-        </div>
+    <section className="bg-brand-paper border-y border-brand-line relative overflow-hidden">
+      {/* Subtle red signature accent — top-right */}
+      <div aria-hidden className="absolute top-0 right-0 w-1 h-24 bg-linear-to-b from-brand-red to-transparent" />
 
-        {/* Logo grid — grayscale at rest, color on hover */}
-        <div className="reveal grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-px bg-brand-line border border-brand-line">
-          {MOCK_LOGOS.map((l, i) => (
+      {/* Header (constrained width) */}
+      <Container className="pt-16 md:pt-24 relative">
+        <div className="reveal">
+          <span className="eyebrow">{t.socialProof.eyebrow}</span>
+          <h2 className="h-display mt-5 text-[36px] md:text-[52px] leading-[1.05] text-brand-ink whitespace-nowrap">
+            <span>our </span>
+            <span className="h-italic text-brand-blue">{t.socialProof.title.replace(/^our\s+/i, "")}</span>
+          </h2>
+          <span className="block w-12 h-px bg-brand-red mt-6" />
+        </div>
+      </Container>
+
+      {/* Logo marquee — full-bleed, single row, infinite scroll · pauses on hover */}
+      <div className="reveal relative overflow-hidden mt-12 md:mt-16 pb-16 md:pb-24 group">
+        {/* Edge fade overlays — dissolve logos at section edges */}
+        <div aria-hidden className="absolute inset-y-0 left-0 w-24 md:w-40 bg-linear-to-r from-brand-paper to-transparent z-10 pointer-events-none" />
+        <div aria-hidden className="absolute inset-y-0 right-0 w-24 md:w-40 bg-linear-to-l from-brand-paper to-transparent z-10 pointer-events-none" />
+
+        <div
+          className="flex items-center gap-14 md:gap-24 w-max group-hover:[animation-play-state:paused]"
+          style={{ animation: "scroll-x 45s linear infinite" }}
+        >
+          {[...MOCK_LOGOS, ...MOCK_LOGOS].map((l, i) => (
             <div
               key={i}
-              className="bg-white flex flex-col items-center justify-center gap-2.5 py-7 md:py-9 px-3 text-brand-mute opacity-70 hover:opacity-100 hover:text-brand-ink hover:bg-brand-paper transition-all duration-500 cursor-default group"
               aria-label={l.name}
+              className="shrink-0 w-[170px] md:w-[210px] h-[110px] md:h-[130px] flex items-center justify-center text-brand-ink/55 hover:text-brand-blue transition-colors duration-500 cursor-default"
             >
-              <span className="block transition-transform duration-500 group-hover:-translate-y-0.5">{l.mark}</span>
-              <span className="text-[10px] md:text-[11px] tracking-[0.2em] font-semibold uppercase whitespace-nowrap">{l.name}</span>
+              {l.logo}
             </div>
           ))}
         </div>
-      </Container>
+      </div>
     </section>
   );
 }

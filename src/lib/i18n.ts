@@ -20,7 +20,6 @@ export const I18N = {
     socialProof: {
       eyebrow: "Trusted by",
       title: "our client",
-      note: "Logos shown are placeholder marks · client roster on request",
     },
     relief: {
       eyebrow: "HR pain points · we handle it",
@@ -136,7 +135,6 @@ export const I18N = {
     socialProof: {
       eyebrow: "องค์กรที่ไว้วางใจ",
       title: "our client",
-      note: "โลโก้ที่แสดงเป็นเพียง placeholder · รายชื่อลูกค้าจริงแจ้งให้ทราบเมื่อร้องขอ",
     },
     relief: {
       eyebrow: "ปัญหาที่ HR เจอ · เราแก้ให้",
@@ -196,7 +194,7 @@ export const I18N = {
     },
     process: {
       eyebrow: "วิธีการทำงาน",
-      title: "จากบรีฟ ถึงตั๋วเครื่องบิน",
+      title: "จากบรีฟ ถึงการเดินทาง",
       steps: [
         { n: "I.", title: "บรีฟ", body: "พบ HR · Marketing · Events lead ของคุณ · จำนวนคน วันที่ งบ แบรนด์ ความตั้งใจ" },
         { n: "II.", title: "นำเสนอ", body: "ภายใน 5 วันทำการ · 2-3 คอนเซปต์เส้นทาง พร้อม P&L, Theming, แผนลอจิสติกส์" },

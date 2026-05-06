@@ -1,6 +1,6 @@
 "use client";
 import { Nav, Hero } from "@/components/Nav";
-import { Marquee, Why, Services, Destinations, Process, Clients, Contact, Footer } from "@/components/Sections";
+import { SocialProof, Relief, Stats, Why, Services, Destinations, Process, Clients, Contact, Footer } from "@/components/Sections";
 import { useReveal } from "@/lib/site-context";
 
 export function Page() {
@@ -9,7 +9,9 @@ export function Page() {
     <>
       <Nav />
       <Hero />
-      <Marquee />
+      <SocialProof />
+      <Relief />
+      <Stats />
       <Why />
       <Services />
       <Destinations />

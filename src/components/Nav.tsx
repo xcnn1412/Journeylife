@@ -1,8 +1,8 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useSite } from "@/lib/site-context";
-import { Sakura } from "./Sakura";
 
 export function Logo({ size = 36, dark = false }: { size?: number; dark?: boolean }) {
   return (
@@ -13,13 +13,13 @@ export function Logo({ size = 36, dark = false }: { size?: number; dark?: boolea
       </svg>
       <div className="leading-none">
         <div className={`wordmark text-[18px] ${dark ? "text-white" : "text-brand-ink"}`}>JOURNEY<span className="text-brand-red">LIFE</span></div>
-        <div className={`text-[9px] tracking-wide-cap mt-1.5 font-medium uppercase ${dark ? "text-white/50" : "text-brand-mute"}`}>Inspire your trip · est. 2014</div>
+        <div className={`text-[9px] tracking-wide-cap mt-1.5 font-medium uppercase ${dark ? "text-white/60" : "text-brand-mute"}`}>Inspire your trip · est. 2014</div>
       </div>
     </div>
   );
 }
 
-function AnimNum({ value }: { value: string }) {
+export function AnimNum({ value }: { value: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const [shown, setShown] = useState(value);
   useEffect(() => {
@@ -54,6 +54,8 @@ export function Nav() {
     return () => window.removeEventListener("scroll", s);
   }, []);
 
+  const onDark = !scrolled;
+
   const links = [
     { k: "incentive" as const, href: "#why" },
     { k: "services" as const, href: "#services" },
@@ -64,24 +66,50 @@ export function Nav() {
 
   return (
     <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? "bg-white/95 backdrop-blur-xl border-b border-brand-line shadow-[0_1px_0_rgba(10,16,36,.04)]" : "bg-transparent"}`}>
+      {/* Dark scrim — anchors nav text on dark hero so it doesn't sink into the bg */}
+      {onDark && (
+        <div aria-hidden className="absolute inset-x-0 top-0 h-28 bg-linear-to-b from-black/55 via-black/25 to-transparent pointer-events-none -z-10" />
+      )}
       <div className={`max-w-[1400px] mx-auto px-6 md:px-10 flex items-center justify-between transition-all duration-500 ${scrolled ? "py-3.5" : "py-6"}`}>
-        <Link href="#top" className="no-underline"><Logo size={32}/></Link>
+        <Link href="#top" className={`no-underline ${onDark ? "[filter:drop-shadow(0_2px_6px_rgba(0,0,0,.45))]" : ""}`}><Logo size={32} dark={onDark}/></Link>
         <div className="hidden lg:flex items-center gap-10">
           {links.map(l => (
-            <a key={l.k} href={l.href} className="nav-link text-[11px] tracking-wide-cap uppercase font-semibold text-brand-ink">{t.nav[l.k]}</a>
+            <a
+              key={l.k}
+              href={l.href}
+              className={`nav-link text-[11px] tracking-wide-cap uppercase font-semibold transition-colors ${onDark ? "text-white hover:text-brand-red [text-shadow:0_1px_4px_rgba(0,0,0,.5)]" : "text-brand-ink"}`}
+            >
+              {t.nav[l.k]}
+            </a>
           ))}
         </div>
         <div className="flex items-center gap-4">
-          <div className="flex border border-brand-line">
+          <div className={`flex border transition-colors ${onDark ? "border-white/60 [box-shadow:0_2px_8px_rgba(0,0,0,.25)]" : "border-brand-line"}`}>
             {(["th", "en"] as const).map(L => (
-              <button key={L} onClick={() => setLang(L)}
-                className={`px-3 py-1.5 text-[10px] font-semibold tracking-[0.2em] transition-all ${lang === L ? "bg-brand-ink text-white" : "bg-transparent text-brand-mute hover:text-brand-ink"}`}>
+              <button
+                key={L}
+                onClick={() => setLang(L)}
+                className={`px-3 py-1.5 text-[10px] font-semibold tracking-[0.2em] transition-all ${
+                  lang === L
+                    ? onDark ? "bg-white text-brand-ink" : "bg-brand-ink text-white"
+                    : onDark ? "bg-black/25 text-white hover:bg-black/40" : "bg-transparent text-brand-mute hover:text-brand-ink"
+                }`}
+              >
                 {L.toUpperCase()}
               </button>
             ))}
           </div>
-          <a href="#contact" className="btn btn-red hidden md:inline-flex !px-5 !py-3 !text-[11px]">{t.cta.quote}<span className="arrow">→</span></a>
-          <button className="lg:hidden border border-brand-line p-2.5 hover:bg-brand-ink hover:text-white transition-colors" aria-label="menu" onClick={() => setOpen(!open)}>
+          <a
+            href="#contact"
+            className={`btn btn-red hidden md:inline-flex !px-5 !py-3 !text-[11px] ${onDark ? "[box-shadow:0_8px_24px_-8px_rgba(200,16,46,.55)]" : ""}`}
+          >
+            {t.cta.quote}<span className="arrow">→</span>
+          </a>
+          <button
+            className={`lg:hidden border p-2.5 transition-colors ${onDark ? "border-white/60 text-white bg-black/25 hover:bg-white hover:text-brand-ink" : "border-brand-line text-brand-ink hover:bg-brand-ink hover:text-white"}`}
+            aria-label="menu"
+            onClick={() => setOpen(!open)}
+          >
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d={open ? "M3 3 L15 15 M15 3 L3 15" : "M2 5 H16 M2 13 H16"} stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
           </button>
         </div>
@@ -98,74 +126,105 @@ export function Nav() {
   );
 }
 
+/* ──────────────────────────────────────────────────────────
+   HERO — full-bleed cinematic landing
+   ────────────────────────────────────────────────────────── */
 export function Hero() {
-  const { t, lang } = useSite();
+  const { t } = useSite();
   return (
-    <section id="top" className="relative bg-white text-brand-ink overflow-hidden pt-28 md:pt-36 pb-16 md:pb-24 min-h-[100vh] flex flex-col">
-      {/* Ambient glow accents */}
-      <div aria-hidden className="absolute inset-0 hero-glow-tr"/>
-      <div aria-hidden className="absolute inset-0 hero-glow-bl"/>
-      {/* Diagonal navy tint top-right */}
-      <div aria-hidden className="absolute top-0 right-0 w-[42%] h-[58%] bg-brand-blue/[.025]" style={{ clipPath: "polygon(20% 0, 100% 0, 100% 100%)" }}/>
-      {/* Vertical red accent line */}
-      <div aria-hidden className="absolute bottom-0 left-0 w-0.5 h-[40%] bg-linear-to-t from-brand-red to-transparent"/>
+    <section
+      id="top"
+      className="relative min-h-screen w-full overflow-hidden text-white flex flex-col"
+    >
+      {/* Background image — full bleed */}
+      <Image
+        src="/herosection/herobackground.jpg"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover object-center -z-10"
+      />
 
-      <Sakura count={22}/>
+      {/* Atmospheric overlays — top fade, bottom fade, vignette, brand-tint */}
+      <div aria-hidden className="absolute inset-0 z-0 bg-linear-to-b from-brand-ink/55 via-brand-ink/15 to-brand-ink/85" />
+      <div aria-hidden className="absolute inset-0 z-0 bg-linear-to-t from-black/60 via-transparent to-black/25" />
+      <div
+        aria-hidden
+        className="absolute inset-0 z-0 pointer-events-none"
+        style={{ background: "radial-gradient(ellipse at center, transparent 28%, rgba(6,10,30,.6) 100%)" }}
+      />
+      {/* Subtle red signature accent — bottom-left vertical */}
+      <div aria-hidden className="absolute bottom-0 left-0 w-0.5 h-[44%] bg-linear-to-t from-brand-red to-transparent z-[1]" />
 
-      <div className="max-w-[1400px] mx-auto px-6 md:px-10 relative z-[2] flex-1 flex items-center w-full">
-        <div className="grid lg:grid-cols-[1.1fr_1fr] gap-14 lg:gap-20 items-center w-full">
-          <div>
-            <div className="reveal eyebrow">{t.hero.eyebrow}</div>
-            <h1 className="reveal h-display mt-8" style={{ fontSize: "clamp(48px, 7.4vw, 112px)", transitionDelay: "80ms" }}>
-              <span className="block">{t.hero.title1}</span>
-              <span className="block h-italic text-brand-red mt-1">{t.hero.title2}</span>
+      {/* Content frame */}
+      <div className="relative z-[2] flex-1 flex flex-col max-w-[1500px] mx-auto w-full px-6 md:px-12 pt-28 md:pt-32 pb-10 md:pb-14">
+        {/* Top eyebrow */}
+        <div className="reveal flex items-center gap-3 text-[10px] md:text-[11px] tracking-wide-cap uppercase font-medium text-white/80 [text-shadow:0_1px_4px_rgba(0,0,0,.5)]">
+          <span className="w-1.5 h-1.5 rounded-full bg-brand-red animate-pulse" />
+          {t.hero.eyebrow}
+        </div>
+
+        {/* Headline — anchored in upper area so it doesn't overlap the figure in the bg */}
+        <div className="reveal mt-6 md:mt-8">
+          <div className="relative text-center">
+            {/* Soft dark halo behind text — keeps headline from sinking into the busy bg */}
+            <div
+              aria-hidden
+              className="absolute inset-x-[-8%] top-[-12%] bottom-[-18%] pointer-events-none -z-[1]"
+              style={{ background: "radial-gradient(ellipse at center, rgba(6,10,30,.55) 0%, rgba(6,10,30,.22) 45%, transparent 75%)" }}
+            />
+            <h1
+              className="relative h-display drop-shadow-[0_8px_40px_rgba(0,0,0,.65)]"
+              style={{ fontSize: "clamp(48px, 9.4vw, 156px)", lineHeight: 0.94, letterSpacing: "-0.04em" }}
+            >
+              <span className="block text-white">{t.hero.title1}</span>
+              <span className="block h-italic text-brand-cream mt-1 drop-shadow-[0_6px_24px_rgba(230,201,138,.4)]">
+                {t.hero.title2}
+              </span>
             </h1>
-            <p className="reveal mt-8 text-[17px] md:text-[19px] text-brand-mute max-w-[54ch] leading-[1.65] font-light" style={{ transitionDelay: "160ms", textWrap: "pretty" }}>{t.hero.lede}</p>
 
-            <div className="reveal flex flex-wrap gap-3 mt-10" style={{ transitionDelay: "240ms" }}>
-              <a href="#contact" className="btn btn-red">{t.hero.cta1}<span className="arrow">→</span></a>
-              <a href="#destinations" className="btn btn-ghost-dark">{t.hero.cta2}</a>
-            </div>
-
-            <div className="reveal mt-12 pt-7 border-t border-brand-line flex items-center gap-3 text-[11px] text-brand-mute tracking-wide-cap uppercase font-medium" style={{ transitionDelay: "320ms" }}>
-              <span className="w-1.5 h-1.5 rounded-full bg-brand-red animate-pulse"/>
-              {t.hero.badge}
-            </div>
-          </div>
-
-          <div className="reveal relative" style={{ transitionDelay: "200ms" }}>
-            <div className="relative group">
-              <div className="ph-img card-lift" style={{ aspectRatio: "4 / 5" }}>
-                <span>Hokkaido · Incentive 2026</span>
-              </div>
-              {/* File label — top-left */}
-              <div className="absolute -top-5 -left-5 bg-brand-red text-white px-5 py-3 text-[10px] tracking-wide-cap font-medium uppercase shadow-lift">
-                <div>File Nº 2026 / 04</div>
-                <div className="opacity-80 mt-0.5">Confidential · Corporate Incentive</div>
-              </div>
-              {/* Stat plate — bottom-right, gently floating */}
-              <div className="absolute -bottom-8 -right-4 md:-right-8 bg-brand-blue text-white p-6 md:p-7 max-w-[260px] shadow-lux float-soft">
-                <div className="text-[10px] tracking-wide-cap text-white/60 uppercase font-medium">{lang === "th" ? "ทริปล่าสุด" : "Latest delivered"}</div>
-                <div className="h-display text-[34px] md:text-[42px] mt-1.5">Hokkaido</div>
-                <div className="text-[11px] mt-1 text-white/70 tracking-wide-cap uppercase font-medium">412 pax · 6 days · jan 2026</div>
-                <div className="mt-4 pt-4 border-t border-white/15 flex items-baseline justify-between">
-                  <span className="text-[10px] tracking-wide-cap text-white/60 uppercase font-medium">Rating</span>
-                  <span className="h-display text-2xl">4.97<span className="text-base text-white/50">/5</span></span>
-                </div>
-              </div>
+            {/* English subheader — small caps, line-flanked, sits right below the headline */}
+            <div className="relative mt-6 md:mt-8 flex items-center justify-center gap-5 md:gap-6 text-[15px] md:text-[18px] tracking-[0.36em] uppercase font-medium text-white/85 [text-shadow:0_1px_4px_rgba(0,0,0,.6)]">
+              <span className="block w-10 md:w-16 h-px bg-white/45" />
+              <span>{t.hero.sub}</span>
+              <span className="block w-10 md:w-16 h-px bg-white/45" />
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="max-w-[1400px] mx-auto px-6 md:px-10 relative z-[2] w-full mt-14 md:mt-20">
-        <div className="reveal grid grid-cols-2 md:grid-cols-4 border-t border-brand-line pt-10">
-          {t.hero.stats.map((s, i) => (
-            <div key={i} className={`px-4 ${i > 0 ? "md:border-l border-brand-line" : ""} ${i === 1 || i === 3 ? "border-l border-brand-line md:border-l" : ""}`}>
-              <div className="h-display text-[44px] md:text-[60px] text-brand-ink leading-none"><AnimNum value={s.num}/></div>
-              <div className="text-[10px] text-brand-mute mt-4 tracking-wide-cap uppercase font-medium">{s.label}</div>
-            </div>
-          ))}
+        {/* Spacer — keeps middle of hero clear so the figure breathes */}
+        <div className="flex-1" />
+
+        {/* Bottom row — CTA pill (left) + tagline (right) */}
+        <div className="reveal grid md:grid-cols-[auto_1fr] items-end gap-8 md:gap-12">
+          {/* Pill CTA — mirrors reference */}
+          <a
+            href="#destinations"
+            className="group flex items-center gap-2 bg-white/95 hover:bg-white text-brand-ink rounded-full p-1.5 pl-6 md:pl-8 self-start w-fit shadow-[0_10px_40px_-12px_rgba(0,0,0,.6)] backdrop-blur-md transition-all duration-300 hover:shadow-[0_18px_50px_-14px_rgba(0,0,0,.7)] hover:-translate-y-0.5"
+          >
+            <span className="text-[11px] md:text-[12px] tracking-wide-cap uppercase font-semibold py-2 whitespace-nowrap">
+              {t.hero.cta2}
+            </span>
+            <span className="grid place-items-center w-11 h-11 md:w-12 md:h-12 rounded-full bg-brand-ink text-white transition-all duration-500 group-hover:bg-brand-red group-hover:rotate-[-5deg]">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M2 8 H13 M9 4 L13 8 L9 12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </span>
+          </a>
+
+          {/* Bottom-right tagline */}
+          <p className="text-[11px] md:text-[12px] tracking-wide-cap uppercase text-white/75 leading-[1.85] max-w-[52ch] md:justify-self-end md:text-right font-light">
+            {t.hero.lede}
+          </p>
+        </div>
+
+        {/* Scroll cue */}
+        <div className="reveal mt-10 md:mt-12 pt-6 border-t border-white/15 flex justify-end text-[10px] md:text-[11px] tracking-wide-cap uppercase font-medium text-white/65">
+          <span className="inline-flex items-center gap-3">
+            <span className="w-6 h-px bg-white/40" />
+            <span>scroll</span>
+          </span>
         </div>
       </div>
     </section>

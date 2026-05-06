@@ -6,6 +6,7 @@ export const I18N = {
       eyebrow: "Incentive travel · since 2014 · TAT 11/11057",
       title1: "Reward the team.",
       title2: "Remember the trip.",
+      sub: "new journey experience",
       lede: "Bespoke incentive journeys for Thailand's most demanding companies. We design every kilometre, every meal, every photograph. Hand-crafted in Bangkok, delivered worldwide.",
       stats: [
         { num: "120+", label: "Corporate trips delivered" },
@@ -15,7 +16,25 @@ export const I18N = {
       ],
       cta1: "Request proposal",
       cta2: "View incentive packages",
-      badge: "Trusted partner of Singha · Boon Rawd",
+    },
+    socialProof: {
+      eyebrow: "Trusted by",
+      title: "our client",
+      note: "Logos shown are placeholder marks · client roster on request",
+    },
+    relief: {
+      eyebrow: "HR pain points · we handle it",
+      title: "End the HR nightmare.",
+      sub: "Let JOURNEYLIFE take care of everything you shouldn't have to do yourself when you book a trip with us.",
+      divider: "We handle it",
+      items: [
+        { pain: "Tracking 100+ visa applications", solution: "We file and follow up — every passport, every embassy" },
+        { pain: "Allergy & diet intake in 3 languages", solution: "One unified form — sent to every kitchen, plated correctly" },
+        { pain: "Last-minute manifest churn", solution: "Live 24/7 updates throughout the trip — you stay informed, not buried" },
+        { pain: "Rooming, busing, and seat assignments", solution: "We assign by seniority and team — upgrades handled silently" },
+        { pain: "3 a.m. emergency calls in foreign airports", solution: "Senior producer on-trip + Bangkok ops desk awake when you sleep" },
+        { pain: "Chasing post-trip photo & video deliverables", solution: "Our in-house crew shoots — final files delivered within 7 days" },
+      ],
     },
     why: {
       eyebrow: "Why JOURNEYLIFE",
@@ -95,8 +114,9 @@ export const I18N = {
     cta: { quote: "ขอใบเสนอราคา", explore: "ดูแพ็กเกจ Incentive", call: "คุยกับผู้เชี่ยวชาญ" },
     hero: {
       eyebrow: "ทัวร์ Incentive · ตั้งแต่ปี 2014 · ใบอนุญาต TAT 11/11057",
-      title1: "ตอบแทนทีมงาน",
-      title2: "ด้วยทริปที่จดจำ",
+      title1: "Reward ทีมเก่ง",
+      title2: "ด้วยทริปที่เขาจะเล่าต่อ",
+      sub: "new journey experience",
       lede: "บริษัทจัดทัวร์ Incentive ระดับองค์กร ออกแบบทุกระยะทาง ทุกมื้ออาหาร ทุกภาพถ่าย ด้วยมือ จากกรุงเทพ ส่งทั่วโลก",
       stats: [
         { num: "120+", label: "ทริปองค์กรที่ส่งมอบแล้ว" },
@@ -106,7 +126,25 @@ export const I18N = {
       ],
       cta1: "ขอใบเสนอราคา",
       cta2: "ดูแพ็กเกจ Incentive",
-      badge: "ผู้ให้บริการทัวร์อย่างเป็นทางการของ สิงห์ · บุญรอด",
+    },
+    socialProof: {
+      eyebrow: "องค์กรที่ไว้วางใจ",
+      title: "our client",
+      note: "โลโก้ที่แสดงเป็นเพียง placeholder · รายชื่อลูกค้าจริงแจ้งให้ทราบเมื่อร้องขอ",
+    },
+    relief: {
+      eyebrow: "ปัญหาที่ HR เจอ · เราแก้ให้",
+      title: "หยุดฝันร้าย HR",
+      sub: "ให้ JOURNEYLIFE ช่วยดูแล เรื่องที่คุณไม่ต้องทำเอง เมื่อจัดทริปกับเรา",
+      divider: "JOURNEYLIFE จัดการให้",
+      items: [
+        { pain: "ตามวีซ่า 100+ พาสปอร์ต", solution: "ทีมเรายื่นและติดตามผลให้ครบ ทุกพาสปอร์ต ทุกสถานทูต" },
+        { pain: "เก็บข้อมูลอาหาร · ภูมิแพ้ 3 ภาษา", solution: "ฟอร์มกลางหนึ่งเดียว ส่งครัวทุกที่ จัดเสิร์ฟถูกคน" },
+        { pain: "Manifest เปลี่ยนนาทีสุดท้าย", solution: "Live update 24/7 ตลอดทริป คุณรู้ทันสถานการณ์ ไม่ต้องนั่งสรุปเอง" },
+        { pain: "จัดห้องพัก · รถบัส · ที่นั่งบนเครื่อง", solution: "เราจัดให้ตามตำแหน่งและทีม upgrade เงียบๆ ไม่มีดราม่า" },
+        { pain: "รับสายฉุกเฉินตอนตี 3 จากสนามบินต่างประเทศ", solution: "Producer อาวุโสติดทริป + Ops Bangkok ตื่นตอนคุณหลับ" },
+        { pain: "ตามภาพถ่าย · วีดีโอหลังทริป", solution: "ทีมถ่ายของเราเอง ส่งไฟล์สมบูรณ์ภายใน 7 วัน" },
+      ],
     },
     why: {
       eyebrow: "ทำไมต้อง JOURNEYLIFE",

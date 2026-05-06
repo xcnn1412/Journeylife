@@ -14,7 +14,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL("https://journeylife.co.th"),
   title: "JOURNEYLIFE · Bespoke Corporate Incentive Travel · ทัวร์ Incentive ระดับองค์กร",
-  description: "JOURNEYLIFE — บริษัทรับจัดทัวร์ Incentive ระดับองค์กร · Outbound · Inbound · MICE · ใบอนุญาต TAT 11/11057 · ตั้งแต่ปี 2014 · ผู้ให้บริการของ Singha · BRT",
+  description: "JOURNEYLIFE — บริษัทรับจัดทัวร์ Incentive ระดับองค์กร · Outbound · Inbound · MICE · ใบอนุญาต TAT 11/11057 · ตั้งแต่ปี 2014",
   keywords: ["ทัวร์ incentive", "company trip", "บริษัททัวร์", "MICE Thailand", "ทัวร์องค์กร", "ทัวร์ฮอกไกโด incentive", "DMC Thailand", "JOURNEYLIFE", "TAT 11/11057"],
   alternates: { canonical: "/", languages: { "th-TH": "/", "en-US": "/?lang=en" } },
   openGraph: {

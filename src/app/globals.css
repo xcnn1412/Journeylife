@@ -17,6 +17,7 @@
   --color-brand-ink:        #0a1024;     /* text / dark surface */
   --color-brand-mute:       #5b6072;     /* secondary text */
   --color-brand-gold:       #b8924a;     /* subtle accent (rare use) */
+  --color-brand-cream:      #e6c98a;     /* luminous warm accent — for headlines on dark bg */
 
   /* Typography tokens — exposed as Tailwind utilities (tracking-luxe / tracking-wide-cap) */
   --tracking-luxe:          0.18em;

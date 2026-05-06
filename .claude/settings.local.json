@@ -2,7 +2,20 @@
   "permissions": {
     "allow": [
       "Bash(npm --version)",
-      "Bash(npx --yes create-next-app@latest . --typescript --tailwind --app --eslint --src-dir --import-alias \"@/*\" --use-npm --no-turbopack --yes)"
+      "Bash(npx --yes create-next-app@latest . --typescript --tailwind --app --eslint --src-dir --import-alias \"@/*\" --use-npm --no-turbopack --yes)",
+      "Bash(npm install *)",
+      "Bash(npx prisma *)",
+      "Bash(curl -s \"http://localhost:3000/_next/static/chunks/%5Broot-of-the-server%5D__1042mbm._.css\" -o /tmp/page.css)",
+      "Read(//tmp/**)",
+      "Bash(curl -s http://localhost:3000/)",
+      "PowerShell($conns = Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue; if \\($conns\\) { $conns | Select-Object -Unique OwningProcess | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue; \"killed PID $\\($_.OwningProcess\\)\" } } else { \"nothing on :3000\" })",
+      "Bash(npm run *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/)",
+      "Bash(ls -la /c/Users/image/AppData/Local/Temp/claude/d--imageautomat-software-journeylife-website/a60b2a7a-d181-4fe3-8b9c-a3bbf4648727/tasks/ | grep bn2o)",
+      "Read(//c/Users/image/AppData/Local/Temp/claude/d--imageautomat-software-journeylife-website/a60b2a7a-d181-4fe3-8b9c-a3bbf4648727/tasks//**)",
+      "Bash(git check-ignore *)",
+      "Bash(git remote *)",
+      "Bash(git add *)"
     ]
   }
 }

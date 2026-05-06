@@ -18,9 +18,13 @@
   --color-brand-mute:       #5b6072;     /* secondary text */
   --color-brand-gold:       #b8924a;     /* subtle accent (rare use) */
 
-  /* Spacing / typography tokens */
+  /* Typography tokens — exposed as Tailwind utilities (tracking-luxe / tracking-wide-cap) */
   --tracking-luxe:          0.18em;
   --tracking-wide-cap:      0.28em;
+
+  /* Thai-first font stack — LINE Seed Sans Thai loaded via CDN
+     (sustains rendering before self-hosted /public/fonts/ are added) */
+  --font-thai: "LINE Seed Sans Thai", "LINE Seed Sans TH", "Noto Sans Thai", system-ui, sans-serif;
 
   /* Shadows */
   --shadow-lux:     0 30px 80px -20px rgba(13, 43, 94, .35),
@@ -31,12 +35,42 @@
                     0 24px 60px -22px rgba(13, 43, 94, .35);
 }
 
-/* Inline-mode @theme: utilities reference next/font CSS vars directly. */
+/* Inline-mode @theme: utilities reference next/font CSS vars + the Thai stack above. */
 @theme inline {
-  --font-sans: var(--font-sans);
-  --font-thai: var(--font-thai);
+  --font-sans: var(--font-thai), var(--font-sans);
   --font-display: var(--font-sans);
   --font-mono: var(--font-sans);
+}
+
+/* Self-hosted LINE Seed Sans Thai — drop WOFF2 files into /public/fonts/line-seed-sans-thai/
+   to enable. Files are loaded if present; otherwise the CDN link in <head> serves the font. */
+@font-face {
+  font-family: "LINE Seed Sans Thai";
+  font-style: normal;
+  font-weight: 200;
+  font-display: swap;
+  src: url("/fonts/line-seed-sans-thai/LINESeedSansTH_W_Th.woff2") format("woff2");
+}
+@font-face {
+  font-family: "LINE Seed Sans Thai";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/line-seed-sans-thai/LINESeedSansTH_W_Rg.woff2") format("woff2");
+}
+@font-face {
+  font-family: "LINE Seed Sans Thai";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/line-seed-sans-thai/LINESeedSansTH_W_Bd.woff2") format("woff2");
+}
+@font-face {
+  font-family: "LINE Seed Sans Thai";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("/fonts/line-seed-sans-thai/LINESeedSansTH_W_He.woff2") format("woff2");
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -64,7 +98,8 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--fg);
-  font-family: var(--font-sans, system-ui), var(--font-thai, "Noto Sans Thai Looped"), system-ui, sans-serif;
+  /* Thai-first stack: เพราะเว็บเป็นภาษาไทยเป็นหลัก */
+  font-family: var(--font-thai), var(--font-sans), system-ui, sans-serif;
   font-feature-settings: "ss01", "cv11";
   font-weight: 400;
   letter-spacing: 0.005em;
@@ -73,26 +108,25 @@ body {
 ::selection { background: rgba(200, 16, 46, .15); color: #0a1024; }
 
 /* ─────────────────────────────────────────────────────────
-   Typography helpers
+   Typography utilities (Tailwind v4 @utility)
+   ใช้เป็น class ปกติ: <h1 class="h-display">, <span class="eyebrow">
    ───────────────────────────────────────────────────────── */
-
-/* Editorial display (Inter Light) — modern minimal luxury */
-.h-display {
-  font-family: var(--font-sans), var(--font-thai), system-ui, sans-serif;
+@utility h-display {
+  font-family: var(--font-thai), var(--font-sans), system-ui, sans-serif;
   font-weight: 200;
   letter-spacing: -0.025em;
   line-height: 1.04;
   text-wrap: balance;
 }
-.h-italic {
+
+@utility h-italic {
   font-style: italic;
   font-weight: 300;
   letter-spacing: -0.02em;
 }
 
-/* Eyebrow — small caps wide-tracked label */
-.eyebrow {
-  font-family: var(--font-sans), system-ui, sans-serif;
+@utility eyebrow {
+  font-family: var(--font-thai), var(--font-sans), system-ui, sans-serif;
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.28em;
@@ -102,6 +136,13 @@ body {
   align-items: center;
   gap: 14px;
 }
+
+@utility wordmark {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+}
+
 .eyebrow::before {
   content: "";
   width: 28px;
@@ -111,18 +152,13 @@ body {
 }
 .reveal.is-visible .eyebrow::before { width: 56px; }
 
-/* Wordmark utility — wide-tracked Inter for the JOURNEYLIFE logotype */
-.wordmark {
-  font-family: var(--font-sans), system-ui, sans-serif;
-  font-weight: 600;
-  letter-spacing: 0.22em;
-}
-
 /* ─────────────────────────────────────────────────────────
-   Buttons — minimal luxury with arrow micro-animation
+   Button system (Tailwind v4 @utility)
    ───────────────────────────────────────────────────────── */
-.btn {
-  display: inline-flex; align-items: center; gap: 12px;
+@utility btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
   padding: 16px 28px;
   border-radius: 0;
   font-family: var(--font-sans), system-ui, sans-serif;
@@ -147,15 +183,31 @@ body {
 .btn:hover::before { transform: translateX(0); }
 .btn > * { position: relative; z-index: 1; }
 
-.btn-red       { background: var(--red);  color: #fff; }
-.btn-red:hover { background: #9b0a23;     box-shadow: var(--shadow-lift); transform: translateY(-1px); }
-.btn-blue      { background: var(--blue); color: #fff; }
-.btn-blue:hover{ background: #061a3d;     box-shadow: var(--shadow-lift); transform: translateY(-1px); }
+@utility btn-red {
+  background: var(--red);
+  color: #fff;
+}
+.btn-red:hover { background: #9b0a23; box-shadow: var(--shadow-lift); transform: translateY(-1px); }
 
-.btn-ghost-light { background: transparent; color: #fff; border-color: rgba(255,255,255,.45); }
+@utility btn-blue {
+  background: var(--blue);
+  color: #fff;
+}
+.btn-blue:hover { background: #061a3d; box-shadow: var(--shadow-lift); transform: translateY(-1px); }
+
+@utility btn-ghost-light {
+  background: transparent;
+  color: #fff;
+  border-color: rgba(255,255,255,.45);
+}
 .btn-ghost-light:hover { background: #fff; color: var(--blue); }
-.btn-ghost-dark  { background: transparent; color: #0a1024; border-color: rgba(10,16,36,.2); }
-.btn-ghost-dark:hover  { background: #0a1024; color: #fff; border-color: #0a1024; transform: translateY(-1px); }
+
+@utility btn-ghost-dark {
+  background: transparent;
+  color: #0a1024;
+  border-color: rgba(10,16,36,.2);
+}
+.btn-ghost-dark:hover { background: #0a1024; color: #fff; border-color: #0a1024; transform: translateY(-1px); }
 
 .btn .arrow { transition: transform .35s cubic-bezier(.2,.8,.2,1); display: inline-block; }
 .btn:hover .arrow { transform: translateX(6px); }
@@ -163,7 +215,7 @@ body {
 /* ─────────────────────────────────────────────────────────
    Reveal-on-scroll
    ───────────────────────────────────────────────────────── */
-.reveal {
+@utility reveal {
   opacity: 0;
   transform: translateY(28px);
   transition: opacity 1s cubic-bezier(.2,.8,.2,1), transform 1s cubic-bezier(.2,.8,.2,1);
@@ -173,7 +225,7 @@ body {
 /* ─────────────────────────────────────────────────────────
    Nav link — animated underline
    ───────────────────────────────────────────────────────── */
-.nav-link {
+@utility nav-link {
   position: relative;
   padding-bottom: 4px;
   transition: color .3s ease;
@@ -193,7 +245,7 @@ body {
 /* ─────────────────────────────────────────────────────────
    Card — lift + hairline highlight on hover
    ───────────────────────────────────────────────────────── */
-.card-lift {
+@utility card-lift {
   transition: transform .55s cubic-bezier(.2,.8,.2,1),
               box-shadow .55s cubic-bezier(.2,.8,.2,1),
               background-color .35s ease,
@@ -208,7 +260,7 @@ body {
 /* ─────────────────────────────────────────────────────────
    Image-frame placeholder + zoom on hover
    ───────────────────────────────────────────────────────── */
-.ph-img {
+@utility ph-img {
   position: relative;
   background:
     linear-gradient(135deg, rgba(13,43,94,.06) 0%, rgba(200,16,46,.04) 100%),
@@ -216,7 +268,9 @@ body {
     #f1f4fa;
   border: 1px solid var(--line);
   overflow: hidden;
-  display: flex; align-items: flex-end; padding: 18px;
+  display: flex;
+  align-items: flex-end;
+  padding: 18px;
   color: rgba(91,96,114,.75);
   font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 10px;

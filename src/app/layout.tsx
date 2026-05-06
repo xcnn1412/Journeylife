@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Noto_Sans_Thai_Looped } from "next/font/google";
+import { Inter } from "next/font/google";
 import { SiteProvider } from "@/lib/site-context";
 import "./globals.css";
 
@@ -8,13 +8,6 @@ const inter = Inter({
   weight: ["200", "300", "400", "500", "600", "700"],
   style: ["normal", "italic"],
   variable: "--font-sans",
-  display: "swap",
-});
-
-const notoThai = Noto_Sans_Thai_Looped({
-  subsets: ["thai"],
-  weight: ["200", "300", "400", "500", "600", "700"],
-  variable: "--font-thai",
   display: "swap",
 });
 
@@ -40,8 +33,10 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="th" className={`${inter.variable} ${notoThai.variable}`}>
+    <html lang="th" className={inter.variable}>
       <head>
+        <link rel="preconnect" href="https://fonts.cdnfonts.com" crossOrigin="anonymous" />
+        <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/line-seed-sans-thai" />
         <script type="application/ld+json" dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org", "@type": "TravelAgency",

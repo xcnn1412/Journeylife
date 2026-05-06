@@ -15,7 +15,9 @@
       "Read(//c/Users/image/AppData/Local/Temp/claude/d--imageautomat-software-journeylife-website/a60b2a7a-d181-4fe3-8b9c-a3bbf4648727/tasks//**)",
       "Bash(git check-ignore *)",
       "Bash(git remote *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)"
     ]
   }
 }

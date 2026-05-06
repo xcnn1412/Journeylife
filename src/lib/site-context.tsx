@@ -36,3 +36,10 @@ export function useReveal() {
     return () => io.disconnect();
   }, []);
 }
+
+/* Drop-in client component that activates the .reveal-on-scroll observer.
+   Lets the parent page stay a Server Component. */
+export function RevealObserver() {
+  useReveal();
+  return null;
+}

@@ -1,0 +1,10 @@
+export { Clients } from "./clients";
+export { Contact } from "./contact";
+export { Destinations } from "./destinations";
+export { Footer } from "./footer";
+export { Marquee } from "./marquee";
+export { Process } from "./process";
+export { Relief } from "./relief";
+export { Services } from "./services";
+export { SocialProof } from "./social-proof";
+export { Why } from "./why";

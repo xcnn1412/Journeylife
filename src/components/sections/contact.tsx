@@ -3,9 +3,19 @@ import { useEffect, useState } from "react";
 import { useSite } from "@/lib/site-context";
 import { Container, SectionHeading } from "./_layout";
 
+interface FormState {
+  company: string;
+  name: string;
+  email: string;
+  phone: string;
+  pax: string;
+  type: string;
+  msg: string;
+}
+
 export function Contact() {
   const { t } = useSite();
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<FormState>({
     company: "",
     name: "",
     email: "",

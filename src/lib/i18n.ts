@@ -232,4 +232,17 @@ export const I18N = {
 } as const;
 
 export type Lang = keyof typeof I18N;
-export type Dict = typeof I18N["en"];
+
+/* Widen `as const` literal types back to their primitive bases (string, number, …)
+   so the EN and TH branches both satisfy `Dict` despite holding different literals. */
+type Widen<T> = T extends string
+  ? string
+  : T extends number
+  ? number
+  : T extends boolean
+  ? boolean
+  : T extends readonly (infer U)[]
+  ? readonly Widen<U>[]
+  : { readonly [K in keyof T]: Widen<T[K]> };
+
+export type Dict = Widen<(typeof I18N)["en"]>;

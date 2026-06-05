@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useSite } from "@/lib/site-context";
 
@@ -56,12 +55,13 @@ export function Nav() {
 
   const onDark = !scrolled;
 
+  // Absolute hrefs so the nav works from sub-pages (/services/*) too.
   const links = [
-    { k: "incentive" as const, href: "#why" },
-    { k: "services" as const, href: "#services" },
-    { k: "destinations" as const, href: "#destinations" },
-    { k: "clients" as const, href: "#clients" },
-    { k: "contact" as const, href: "#contact" },
+    { k: "incentive" as const, href: "/#why" },
+    { k: "services" as const, href: "/services" },
+    { k: "destinations" as const, href: "/#destinations" },
+    { k: "clients" as const, href: "/#clients" },
+    { k: "contact" as const, href: "/#contact" },
   ];
 
   return (
@@ -71,16 +71,16 @@ export function Nav() {
         <div aria-hidden className="absolute inset-x-0 top-0 h-28 bg-linear-to-b from-black/55 via-black/25 to-transparent pointer-events-none -z-10" />
       )}
       <div className={`max-w-[1400px] mx-auto px-6 md:px-10 flex items-center justify-between transition-all duration-500 ${scrolled ? "py-3.5" : "py-6"}`}>
-        <Link href="#top" className={`no-underline ${onDark ? "[filter:drop-shadow(0_2px_6px_rgba(0,0,0,.45))]" : ""}`}><Logo size={32} dark={onDark}/></Link>
+        <Link href="/" className={`no-underline ${onDark ? "[filter:drop-shadow(0_2px_6px_rgba(0,0,0,.45))]" : ""}`}><Logo size={32} dark={onDark}/></Link>
         <div className="hidden lg:flex items-center gap-10">
           {links.map(l => (
-            <a
+            <Link
               key={l.k}
               href={l.href}
               className={`nav-link text-[11px] tracking-wide-cap uppercase font-semibold transition-colors ${onDark ? "text-white hover:text-brand-red [text-shadow:0_1px_4px_rgba(0,0,0,.5)]" : "text-brand-ink"}`}
             >
               {t.nav[l.k]}
-            </a>
+            </Link>
           ))}
         </div>
         <div className="flex items-center gap-4">
@@ -99,12 +99,12 @@ export function Nav() {
               </button>
             ))}
           </div>
-          <a
-            href="#contact"
+          <Link
+            href="/#contact"
             className={`btn btn-red hidden md:inline-flex !px-5 !py-3 !text-[11px] ${onDark ? "[box-shadow:0_8px_24px_-8px_rgba(200,16,46,.55)]" : ""}`}
           >
             {t.cta.quote}<span className="arrow">→</span>
-          </a>
+          </Link>
           <button
             className={`lg:hidden border p-2.5 transition-colors ${onDark ? "border-white/60 text-white bg-black/25 hover:bg-white hover:text-brand-ink" : "border-brand-line text-brand-ink hover:bg-brand-ink hover:text-white"}`}
             aria-label="menu"
@@ -117,9 +117,9 @@ export function Nav() {
       {open && (
         <div className="lg:hidden bg-white border-t border-brand-line px-6 pb-6">
           {links.map(l => (
-            <a key={l.k} href={l.href} onClick={() => setOpen(false)} className="block py-3.5 text-[13px] font-semibold tracking-[0.22em] uppercase border-b border-brand-line no-underline text-brand-ink">{t.nav[l.k]}</a>
+            <Link key={l.k} href={l.href} onClick={() => setOpen(false)} className="block py-3.5 text-[13px] font-semibold tracking-[0.22em] uppercase border-b border-brand-line no-underline text-brand-ink">{t.nav[l.k]}</Link>
           ))}
-          <a href="#contact" onClick={() => setOpen(false)} className="btn btn-red mt-5 w-full justify-center">{t.cta.quote}</a>
+          <Link href="/#contact" onClick={() => setOpen(false)} className="btn btn-red mt-5 w-full justify-center">{t.cta.quote}</Link>
         </div>
       )}
     </nav>
@@ -136,94 +136,120 @@ export function Hero() {
       id="top"
       className="relative min-h-screen w-full overflow-hidden text-white flex flex-col"
     >
-      {/* Background image — full bleed */}
-      <Image
-        src="/herosection/herobackground.jpg"
-        alt=""
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover object-center -z-10"
-      />
+      {/* Background video — full bleed, muted autoplay loop (poster = jpg for instant LCP) */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        poster="/herosection/herobackground.jpg"
+        className="absolute inset-0 w-full h-full object-cover object-center -z-10"
+      >
+        <source src="/herosection/herosection.mp4" type="video/mp4" />
+      </video>
 
-      {/* Atmospheric overlays — top fade, bottom fade, vignette, brand-tint */}
-      <div aria-hidden className="absolute inset-0 z-0 bg-linear-to-b from-brand-ink/55 via-brand-ink/15 to-brand-ink/85" />
-      <div aria-hidden className="absolute inset-0 z-0 bg-linear-to-t from-black/60 via-transparent to-black/25" />
+      {/* Atmospheric overlays — navy-dominant, luxury grade (60% of the palette) */}
+      {/* 1 · deep navy gradient wash */}
+      <div aria-hidden className="absolute inset-0 z-0 bg-linear-to-b from-brand-blue-deep/85 via-brand-ink/40 to-brand-ink/92" />
+      {/* 2 · navy multiply tint — unifies the whole photo toward the brand navy */}
+      <div aria-hidden className="absolute inset-0 z-0 mix-blend-multiply bg-brand-blue/35" />
+      {/* 3 · cinematic vignette */}
       <div
         aria-hidden
         className="absolute inset-0 z-0 pointer-events-none"
-        style={{ background: "radial-gradient(ellipse at center, transparent 28%, rgba(6,10,30,.6) 100%)" }}
+        style={{ background: "radial-gradient(ellipse 78% 66% at 50% 42%, transparent 33%, rgba(6,10,30,.8) 100%)" }}
       />
-      {/* Subtle red signature accent — bottom-left vertical */}
-      <div aria-hidden className="absolute bottom-0 left-0 w-0.5 h-[44%] bg-linear-to-t from-brand-red to-transparent z-[1]" />
+      {/* 4 · top scrim — anchors the nav on the photo */}
+      <div aria-hidden className="absolute inset-x-0 top-0 h-44 z-0 bg-linear-to-b from-brand-ink/75 to-transparent" />
+
+      {/* Thin framed-photograph border — editorial luxury detail */}
+      <div aria-hidden className="absolute inset-3 md:inset-5 z-[1] border border-white/12 pointer-events-none" />
 
       {/* Content frame */}
-      <div className="relative z-[2] flex-1 flex flex-col max-w-[1500px] mx-auto w-full px-6 md:px-12 pt-28 md:pt-32 pb-10 md:pb-14">
-        {/* Top eyebrow */}
-        <div className="reveal flex items-center gap-3 text-[10px] md:text-[11px] tracking-wide-cap uppercase font-medium text-white/80 [text-shadow:0_1px_4px_rgba(0,0,0,.5)]">
-          <span className="w-1.5 h-1.5 rounded-full bg-brand-red animate-pulse" />
-          {t.hero.eyebrow}
+      <div className="relative z-[2] flex-1 flex flex-col max-w-[1480px] mx-auto w-full px-8 md:px-16 pt-28 md:pt-32 pb-7 md:pb-9">
+        {/* Top meta row — eyebrow (left) · reach (right) */}
+        <div className="reveal flex items-center justify-between gap-4">
+          <span className="flex items-center gap-3.5 text-[10px] md:text-[11px] tracking-[0.32em] uppercase font-medium text-white/85 [text-shadow:0_1px_5px_rgba(0,0,0,.55)]">
+            <span className="w-8 h-px bg-brand-red" />
+            {t.hero.eyebrow}
+          </span>
+          <span className="hidden md:inline-block text-[10px] tracking-[0.34em] uppercase font-medium text-white/50">
+            Bangkok · Worldwide
+          </span>
         </div>
 
-        {/* Headline — anchored in upper area so it doesn't overlap the figure in the bg */}
-        <div className="reveal mt-6 md:mt-8">
+        {/* Headline group — anchored high so it never overlaps the figure */}
+        <div className="reveal mt-12 md:mt-16">
           <div className="relative text-center">
-            {/* Soft dark halo behind text — keeps headline from sinking into the busy bg */}
+            {/* Soft navy halo — lifts the headline off the busy photo */}
             <div
               aria-hidden
-              className="absolute inset-x-[-8%] top-[-12%] bottom-[-18%] pointer-events-none -z-[1]"
-              style={{ background: "radial-gradient(ellipse at center, rgba(6,10,30,.55) 0%, rgba(6,10,30,.22) 45%, transparent 75%)" }}
+              className="absolute inset-x-[-10%] top-[-16%] bottom-[-24%] pointer-events-none -z-[1]"
+              style={{ background: "radial-gradient(ellipse at center, rgba(6,10,30,.5) 0%, rgba(6,10,30,.18) 48%, transparent 76%)" }}
             />
             <h1
-              className="relative h-display drop-shadow-[0_8px_40px_rgba(0,0,0,.65)]"
-              style={{ fontSize: "clamp(48px, 9.4vw, 156px)", lineHeight: 0.94, letterSpacing: "-0.04em" }}
+              className="relative h-display drop-shadow-[0_10px_44px_rgba(0,0,0,.6)]"
+              style={{ fontSize: "clamp(42px, 8.4vw, 128px)", lineHeight: 1.0, letterSpacing: "-0.035em" }}
             >
-              <span className="block text-white">{t.hero.title1}</span>
-              <span className="block h-italic text-brand-cream mt-1 drop-shadow-[0_6px_24px_rgba(230,201,138,.4)]">
-                {t.hero.title2}
-              </span>
+              <span className="block text-white font-extralight">{t.hero.title1}</span>
+              <span className="block text-white font-light mt-1.5">{t.hero.title2}</span>
             </h1>
 
-            {/* English subheader — small caps, line-flanked, sits right below the headline */}
-            <div className="relative mt-6 md:mt-8 flex items-center justify-center gap-5 md:gap-6 text-[15px] md:text-[18px] tracking-[0.36em] uppercase font-medium text-white/85 [text-shadow:0_1px_4px_rgba(0,0,0,.6)]">
-              <span className="block w-10 md:w-16 h-px bg-white/45" />
-              <span>{t.hero.sub}</span>
-              <span className="block w-10 md:w-16 h-px bg-white/45" />
+            {/* Red hairline — the 10% accent */}
+            <span aria-hidden className="block w-12 h-px bg-brand-red mx-auto mt-7 md:mt-9" />
+
+            {/* Subheader */}
+            <p className="mt-6 md:mt-7 text-[12px] md:text-[15px] tracking-[0.13em] font-light text-white/80 [text-shadow:0_1px_4px_rgba(0,0,0,.55)] max-w-[58ch] mx-auto text-balance">
+              {t.hero.sub}
+            </p>
+
+            {/* CTAs — centered, right under the text */}
+            <div className="mt-9 md:mt-11 flex flex-wrap items-center justify-center gap-3 md:gap-3.5">
+              {/* LINE OA — primary contact */}
+              <a
+                href={`https://line.me/R/ti/p/${t.contact.direct.line}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center gap-3 bg-white text-brand-ink rounded-full py-2 pl-5 pr-2 w-fit shadow-[0_12px_44px_-14px_rgba(0,0,0,.7)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_55px_-16px_rgba(0,0,0,.8)]"
+              >
+                <span className="text-[11px] md:text-[12px] tracking-[0.08em] font-semibold whitespace-nowrap">LINE {t.contact.direct.line}</span>
+                <span className="grid place-items-center w-9 h-9 md:w-10 md:h-10 rounded-full bg-[#06C755] text-white transition-transform duration-500 group-hover:rotate-[-6deg]">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path d="M12 3C6.48 3 2 6.62 2 11.07c0 3.99 3.55 7.33 8.35 7.96.33.07.77.22.88.5.1.26.07.66.03.92l-.14.85c-.04.26-.2 1.02.9.56 1.1-.46 5.92-3.49 8.08-5.97 1.49-1.64 2.2-3.3 2.2-4.99C22 6.62 17.52 3 12 3Z"/></svg>
+                </span>
+              </a>
+
+              {/* Phone */}
+              <a
+                href={`tel:${t.contact.direct.phone.replace(/[^\d+]/g, "")}`}
+                className="group inline-flex items-center gap-2.5 w-fit rounded-full border border-white/30 hover:border-white/80 bg-white/5 hover:bg-white/15 backdrop-blur-md text-white text-[11px] md:text-[12px] tracking-[0.08em] font-medium py-2.5 px-5 transition-all duration-300 [text-shadow:0_1px_4px_rgba(0,0,0,.5)]"
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-80 transition-opacity group-hover:opacity-100" aria-hidden><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
+                {t.contact.direct.phone}
+              </a>
+
+              {/* Email */}
+              <a
+                href={`mailto:${t.contact.direct.email}`}
+                className="group inline-flex items-center gap-2.5 w-fit rounded-full border border-white/30 hover:border-white/80 bg-white/5 hover:bg-white/15 backdrop-blur-md text-white text-[11px] md:text-[12px] tracking-[0.06em] font-medium py-2.5 px-5 transition-all duration-300 [text-shadow:0_1px_4px_rgba(0,0,0,.5)]"
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-80 transition-opacity group-hover:opacity-100" aria-hidden><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
+                {t.contact.direct.email}
+              </a>
             </div>
           </div>
         </div>
 
-        {/* Spacer — keeps middle of hero clear so the figure breathes */}
-        <div className="flex-1" />
+        {/* Spacer — keeps the middle clear so the figure breathes */}
+        <div className="flex-1 min-h-[6vh]" />
 
-        {/* Bottom row — CTA pill (left) + tagline (right) */}
-        <div className="reveal grid md:grid-cols-[auto_1fr] items-end gap-8 md:gap-12">
-          {/* Pill CTA — mirrors reference */}
-          <a
-            href="#destinations"
-            className="group flex items-center gap-2 bg-white/95 hover:bg-white text-brand-ink rounded-full p-1.5 pl-6 md:pl-8 self-start w-fit shadow-[0_10px_40px_-12px_rgba(0,0,0,.6)] backdrop-blur-md transition-all duration-300 hover:shadow-[0_18px_50px_-14px_rgba(0,0,0,.7)] hover:-translate-y-0.5"
-          >
-            <span className="text-[11px] md:text-[12px] tracking-wide-cap uppercase font-semibold py-2 whitespace-nowrap">
-              {t.hero.cta2}
-            </span>
-            <span className="grid place-items-center w-11 h-11 md:w-12 md:h-12 rounded-full bg-brand-ink text-white transition-all duration-500 group-hover:bg-brand-red group-hover:rotate-[-5deg]">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M2 8 H13 M9 4 L13 8 L9 12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </span>
-          </a>
-
-          {/* Bottom-right tagline */}
-          <p className="text-[11px] md:text-[12px] tracking-wide-cap uppercase text-white/75 leading-[1.85] max-w-[52ch] md:justify-self-end md:text-right font-light">
+        {/* Bottom bar — tagline (left) + scroll cue (right) */}
+        <div className="reveal pt-6 md:pt-7 border-t border-white/12 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5">
+          <p className="text-[12px] md:text-[13px] tracking-[0.03em] text-white/65 leading-[1.85] max-w-[46ch] font-light">
             {t.hero.lede}
           </p>
-        </div>
-
-        {/* Scroll cue */}
-        <div className="reveal mt-10 md:mt-12 pt-6 border-t border-white/15 flex justify-end text-[10px] md:text-[11px] tracking-wide-cap uppercase font-medium text-white/65">
-          <span className="inline-flex items-center gap-3">
-            <span className="w-6 h-px bg-white/40" />
+          <span className="inline-flex items-center gap-3 text-[10px] md:text-[11px] tracking-[0.3em] uppercase font-medium text-white/55 shrink-0">
             <span>scroll</span>
+            <span className="w-7 h-px bg-brand-red/70" />
           </span>
         </div>
       </div>

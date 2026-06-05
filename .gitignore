@@ -40,4 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-/src/generated/prisma
+# payload (local sqlite + local media uploads)
+/payload-dev.db
+/payload-dev.db-*
+/media

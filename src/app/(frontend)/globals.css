@@ -437,6 +437,19 @@ body {
   .reel-spin { animation: none; }
 }
 
+/* Hero scroll cue — red dot travelling down a hairline track */
+@keyframes scroll-dot {
+  0%   { transform: translateY(-100%); opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { transform: translateY(400%); opacity: 0; }
+}
+.scroll-dot { animation: scroll-dot 2.4s cubic-bezier(.4,0,.2,1) infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-dot { animation: none; }
+}
+
 /* ─────────────────────────────────────────────────────────
    Focus
    ───────────────────────────────────────────────────────── */

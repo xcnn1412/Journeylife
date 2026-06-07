@@ -20,12 +20,12 @@ export function LuckyDraw() {
       <div aria-hidden className="absolute top-0 left-0 w-24 h-px bg-brand-red" />
       <div aria-hidden className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 60% 70% at 20% 10%, rgba(255,255,255,.07), transparent 60%)" }} />
 
-      <Container className="relative py-20 md:py-28">
+      <Container className="relative py-14 sm:py-20 md:py-28">
         <div className="grid lg:grid-cols-[1fr_400px] items-center gap-12 lg:gap-20">
           {/* Copy */}
           <div className="reveal order-2 lg:order-1 text-center lg:text-left">
             <span className="eyebrow" style={{ color: "rgba(255,255,255,.6)" }}>{l.eyebrow}</span>
-            <h2 className="h-display mt-6 text-white" style={{ fontSize: "clamp(34px, 4.6vw, 60px)" }}>
+            <h2 className="h-display mt-6 text-white" style={{ fontSize: "clamp(28px, 4.6vw, 60px)" }}>
               {l.title}
             </h2>
             <span aria-hidden className="block w-12 h-px bg-brand-red mt-6 mx-auto lg:mx-0" />

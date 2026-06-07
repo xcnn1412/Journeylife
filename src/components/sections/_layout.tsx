@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 
-const HEADING_STYLE: CSSProperties = { fontSize: "clamp(38px, 5.2vw, 72px)" };
+const HEADING_STYLE: CSSProperties = { fontSize: "clamp(30px, 5.2vw, 72px)" };
 
 export function Container({
   className = "",

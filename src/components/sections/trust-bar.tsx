@@ -25,7 +25,7 @@ export function TrustBar() {
       {/* Red signature hairline — top center */}
       <div aria-hidden className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-px bg-brand-red" />
 
-      <Container className="relative py-16 md:py-24">
+      <Container className="relative py-12 sm:py-16 md:py-24">
         {/* Header */}
         <div className="reveal text-center max-w-[60ch] mx-auto">
           <span className="eyebrow" style={{ color: "rgba(255,255,255,.55)" }}>

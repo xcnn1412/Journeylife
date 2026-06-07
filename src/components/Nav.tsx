@@ -71,7 +71,7 @@ export function Nav() {
       {onDark && (
         <div aria-hidden className="absolute inset-x-0 top-0 h-28 bg-linear-to-b from-black/55 via-black/25 to-transparent pointer-events-none -z-10" />
       )}
-      <div className={`max-w-[1400px] mx-auto px-6 md:px-10 flex items-center justify-between transition-all duration-500 ${scrolled ? "py-3.5" : "py-6"}`}>
+      <div className={`max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10 flex items-center justify-between transition-all duration-500 ${scrolled ? "py-3.5" : "py-5 md:py-6"}`}>
         <Link href="/" className={`no-underline ${onDark ? "[filter:drop-shadow(0_2px_6px_rgba(0,0,0,.45))]" : ""}`}><Logo size={32} dark={onDark}/></Link>
         <div className="hidden lg:flex items-center gap-10">
           {links.map(l => (
@@ -84,13 +84,13 @@ export function Nav() {
             </Link>
           ))}
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2.5 sm:gap-4">
           <div className={`flex border transition-colors ${onDark ? "border-white/60 [box-shadow:0_2px_8px_rgba(0,0,0,.25)]" : "border-brand-line"}`}>
             {(["th", "en"] as const).map(L => (
               <button
                 key={L}
                 onClick={() => setLang(L)}
-                className={`px-3 py-1.5 text-[10px] font-semibold tracking-[0.2em] transition-all ${
+                className={`px-3 py-2 md:py-1.5 text-[10px] font-semibold tracking-[0.2em] transition-all ${
                   lang === L
                     ? onDark ? "bg-white text-brand-ink" : "bg-brand-ink text-white"
                     : onDark ? "bg-black/25 text-white hover:bg-black/40" : "bg-transparent text-brand-mute hover:text-brand-ink"
@@ -135,7 +135,7 @@ export function Hero() {
   return (
     <section
       id="top"
-      className="relative min-h-screen w-full overflow-hidden text-white flex flex-col"
+      className="relative min-h-svh w-full overflow-hidden text-white flex flex-col"
     >
       {/* Background video — full bleed, muted autoplay loop (poster = jpg for instant LCP) */}
       <video
@@ -167,11 +167,11 @@ export function Hero() {
       <div aria-hidden className="absolute inset-3 md:inset-5 z-[1] border border-white/12 pointer-events-none" />
 
       {/* Content frame */}
-      <div className="relative z-[2] flex-1 flex flex-col max-w-[1480px] mx-auto w-full px-8 md:px-16 pt-28 md:pt-32 pb-7 md:pb-9">
+      <div className="relative z-[2] flex-1 flex flex-col max-w-[1480px] mx-auto w-full px-5 sm:px-8 md:px-16 pt-24 sm:pt-28 md:pt-32 pb-6 md:pb-9">
         {/* Top meta row — eyebrow (left) · reach (right) */}
         <div className="reveal flex items-center justify-between gap-4">
-          <span className="flex items-center gap-3.5 text-[10px] md:text-[11px] tracking-[0.32em] uppercase font-medium text-white/85 [text-shadow:0_1px_5px_rgba(0,0,0,.55)]">
-            <span className="w-8 h-px bg-brand-red" />
+          <span className="flex items-center gap-2 sm:gap-3.5 text-[9px] sm:text-[10px] md:text-[11px] tracking-[0.05em] sm:tracking-[0.28em] md:tracking-[0.32em] uppercase font-medium text-white/85 [text-shadow:0_1px_5px_rgba(0,0,0,.55)]">
+            <span className="w-5 sm:w-8 h-px bg-brand-red shrink-0" />
             {t.hero.eyebrow}
           </span>
           <span className="hidden md:inline-block text-[10px] tracking-[0.34em] uppercase font-medium text-white/50">
@@ -179,8 +179,8 @@ export function Hero() {
           </span>
         </div>
 
-        {/* Headline group — anchored high so it never overlaps the figure */}
-        <div className="reveal mt-12 md:mt-16">
+        {/* Headline group — vertically centered between the top meta row and the bottom bar */}
+        <div className="reveal flex-1 flex flex-col justify-center py-8 sm:py-6">
           <div className="relative text-center">
             {/* Soft navy halo — lifts the headline off the busy photo */}
             <div
@@ -190,7 +190,7 @@ export function Hero() {
             />
             <h1
               className="relative h-display drop-shadow-[0_10px_44px_rgba(0,0,0,.6)]"
-              style={{ fontSize: "clamp(42px, 8.4vw, 128px)", lineHeight: 1.0, letterSpacing: "-0.035em" }}
+              style={{ fontSize: "clamp(32px, 7.6vw, 112px)", lineHeight: 1.08, letterSpacing: "-0.03em" }}
             >
               <span className="block text-white font-extralight">{t.hero.title1}</span>
               <span className="block text-white font-light mt-1.5">{t.hero.title2}</span>
@@ -205,13 +205,13 @@ export function Hero() {
             </p>
 
             {/* CTAs — centered, right under the text */}
-            <div className="mt-9 md:mt-11 flex flex-wrap items-center justify-center gap-3 md:gap-3.5">
+            <div className="mt-7 sm:mt-9 md:mt-11 mx-auto max-w-[340px] sm:max-w-none flex flex-col items-stretch gap-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:gap-3 md:gap-3.5">
               {/* LINE OA — primary contact */}
               <a
                 href={`https://line.me/R/ti/p/${t.contact.direct.line}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center gap-3 bg-white text-brand-ink rounded-full py-2 pl-5 pr-2 w-fit shadow-[0_12px_44px_-14px_rgba(0,0,0,.7)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_55px_-16px_rgba(0,0,0,.8)]"
+                className="group flex items-center justify-between sm:justify-start gap-3 bg-white text-brand-ink rounded-full py-2 pl-5 pr-2 w-full sm:w-fit shadow-[0_12px_44px_-14px_rgba(0,0,0,.7)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_55px_-16px_rgba(0,0,0,.8)]"
               >
                 <span className="text-[11px] md:text-[12px] tracking-[0.08em] font-semibold whitespace-nowrap">LINE {t.contact.direct.line}</span>
                 <span className="grid place-items-center w-9 h-9 md:w-10 md:h-10 rounded-full bg-[#06C755] text-white transition-transform duration-500 group-hover:rotate-[-6deg]">
@@ -222,7 +222,7 @@ export function Hero() {
               {/* Phone */}
               <a
                 href={`tel:${t.contact.direct.phone.replace(/[^\d+]/g, "")}`}
-                className="group inline-flex items-center gap-2.5 w-fit rounded-full border border-white/30 hover:border-white/80 bg-white/5 hover:bg-white/15 backdrop-blur-md text-white text-[11px] md:text-[12px] tracking-[0.08em] font-medium py-2.5 px-5 transition-all duration-300 [text-shadow:0_1px_4px_rgba(0,0,0,.5)]"
+                className="group inline-flex items-center justify-center sm:justify-start gap-2.5 w-full sm:w-fit rounded-full border border-white/30 hover:border-white/80 bg-white/5 hover:bg-white/15 backdrop-blur-md text-white text-[11px] md:text-[12px] tracking-[0.08em] font-medium py-3 sm:py-2.5 px-5 transition-all duration-300 [text-shadow:0_1px_4px_rgba(0,0,0,.5)]"
               >
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-80 transition-opacity group-hover:opacity-100" aria-hidden><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
                 {t.contact.direct.phone}
@@ -231,7 +231,7 @@ export function Hero() {
               {/* Email */}
               <a
                 href={`mailto:${t.contact.direct.email}`}
-                className="group inline-flex items-center gap-2.5 w-fit rounded-full border border-white/30 hover:border-white/80 bg-white/5 hover:bg-white/15 backdrop-blur-md text-white text-[11px] md:text-[12px] tracking-[0.06em] font-medium py-2.5 px-5 transition-all duration-300 [text-shadow:0_1px_4px_rgba(0,0,0,.5)]"
+                className="group inline-flex items-center justify-center sm:justify-start gap-2.5 w-full sm:w-fit rounded-full border border-white/30 hover:border-white/80 bg-white/5 hover:bg-white/15 backdrop-blur-md text-white text-[11px] md:text-[12px] tracking-[0.06em] font-medium py-3 sm:py-2.5 px-5 transition-all duration-300 [text-shadow:0_1px_4px_rgba(0,0,0,.5)]"
               >
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-80 transition-opacity group-hover:opacity-100" aria-hidden><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
                 {t.contact.direct.email}
@@ -240,17 +240,16 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Spacer — keeps the middle clear so the figure breathes */}
-        <div className="flex-1 min-h-[6vh]" />
-
         {/* Bottom bar — tagline (left) + scroll cue (right) */}
-        <div className="reveal pt-6 md:pt-7 border-t border-white/12 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5">
-          <p className="text-[12px] md:text-[13px] tracking-[0.03em] text-white/65 leading-[1.85] max-w-[46ch] font-light">
+        <div className="reveal pt-6 md:pt-7 border-t border-white/12 flex flex-col items-center sm:flex-row sm:items-end sm:justify-between gap-5">
+          <p className="hidden sm:block text-[12px] md:text-[13px] tracking-[0.03em] text-white/65 leading-[1.85] max-w-[46ch] font-light">
             {t.hero.lede}
           </p>
           <span className="inline-flex items-center gap-3 text-[10px] md:text-[11px] tracking-[0.3em] uppercase font-medium text-white/55 shrink-0">
             <span>scroll</span>
-            <span className="w-7 h-px bg-brand-red/70" />
+            <span aria-hidden className="relative h-8 w-px overflow-hidden bg-white/20">
+              <span className="scroll-dot absolute inset-x-0 top-0 h-2 bg-brand-red" />
+            </span>
           </span>
         </div>
       </div>

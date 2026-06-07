@@ -6,7 +6,7 @@ import { Container } from "./_layout";
 export function Footer() {
   const { t } = useSite();
   return (
-    <footer className="bg-brand-ink text-white pt-20 pb-8 relative overflow-hidden">
+    <footer className="bg-brand-ink text-white pt-16 sm:pt-20 pb-8 relative overflow-hidden">
       {/* Hairline brand-red glow at top */}
       <div aria-hidden className="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-brand-red to-transparent" />
 
@@ -31,7 +31,7 @@ export function Footer() {
             </div>
           ))}
         </div>
-        <div className="mt-20 pt-7 border-t border-white/10 flex justify-between flex-wrap gap-4 text-[10px] tracking-wide-cap uppercase text-white/40 font-medium">
+        <div className="mt-14 md:mt-20 pt-7 border-t border-white/10 flex justify-between flex-wrap gap-4 text-[10px] tracking-wide-cap uppercase text-white/40 font-medium">
           <span>{t.footer.legal}</span>
           <span>BANGKOK · TOKYO · ZURICH</span>
         </div>

@@ -16,7 +16,7 @@ export function Registration() {
       <div aria-hidden className="absolute top-0 left-0 w-24 h-px bg-brand-red" />
       <div aria-hidden className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 60% 70% at 80% 10%, rgba(255,255,255,.07), transparent 60%)" }} />
 
-      <Container className="relative py-20 md:py-28">
+      <Container className="relative py-14 sm:py-20 md:py-28">
         <div className="grid lg:grid-cols-[360px_1fr] items-center gap-12 lg:gap-20">
           {/* Demo video — vertical 9:16 */}
           <div className="reveal mx-auto w-full max-w-[300px] md:max-w-[320px] float-soft">
@@ -36,7 +36,7 @@ export function Registration() {
           {/* Copy */}
           <div className="reveal text-center lg:text-left">
             <span className="eyebrow" style={{ color: "rgba(255,255,255,.6)" }}>{r.eyebrow}</span>
-            <h2 className="h-display mt-6 text-white" style={{ fontSize: "clamp(34px, 4.6vw, 60px)" }}>
+            <h2 className="h-display mt-6 text-white" style={{ fontSize: "clamp(28px, 4.6vw, 60px)" }}>
               {r.title}
             </h2>
             <span aria-hidden className="block w-12 h-px bg-brand-red mt-6 mx-auto lg:mx-0" />

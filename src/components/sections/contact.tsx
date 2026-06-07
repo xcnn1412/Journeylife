@@ -38,7 +38,7 @@ export function Contact() {
   };
 
   return (
-    <section id="contact" className="py-24 md:py-36 bg-brand-blue-soft relative">
+    <section id="contact" className="py-16 sm:py-24 md:py-36 bg-brand-blue-soft relative">
       <div aria-hidden className="absolute inset-0 hero-glow-tr opacity-50" />
 
       <Container className="relative">
@@ -65,7 +65,7 @@ export function Contact() {
           </div>
 
           {/* Right — form */}
-          <form className="reveal grid gap-5 bg-brand-paper p-8 md:p-10 border border-brand-line" onSubmit={submit}>
+          <form className="reveal grid gap-5 bg-brand-paper p-6 sm:p-8 md:p-10 border border-brand-line" onSubmit={submit}>
             <div className="grid md:grid-cols-2 gap-5">
               <Field label={t.contact.form.company} value={form.company} onChange={v => setForm({ ...form, company: v })} />
               <Field label={t.contact.form.name} value={form.name} onChange={v => setForm({ ...form, name: v })} />

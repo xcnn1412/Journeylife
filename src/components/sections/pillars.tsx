@@ -19,7 +19,7 @@ export function Pillars() {
       {/* Red signature accent — top-left */}
       <div aria-hidden className="absolute top-0 left-0 w-1 h-24 bg-linear-to-b from-brand-red to-transparent" />
 
-      <Container className="py-20 md:py-28 relative">
+      <Container className="py-14 sm:py-20 md:py-28 relative">
         {/* Header — น้องเจอร์นี่ (heart) + intro */}
         <div className="reveal grid md:grid-cols-[auto_1fr] items-center gap-10 md:gap-16 mb-14 md:mb-20">
           {/* Mascot */}
@@ -43,7 +43,7 @@ export function Pillars() {
           {/* Intro text */}
           <div className="text-center md:text-left">
             <span className="eyebrow">{p.eyebrow}</span>
-            <h2 className="h-display mt-6 text-brand-ink" style={{ fontSize: "clamp(36px, 5vw, 68px)" }}>
+            <h2 className="h-display mt-6 text-brand-ink" style={{ fontSize: "clamp(30px, 5vw, 68px)" }}>
               {p.title}
             </h2>
             <span aria-hidden className="block w-12 h-px bg-brand-red mt-6 mx-auto md:mx-0" />

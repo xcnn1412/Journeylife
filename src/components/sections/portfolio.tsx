@@ -16,11 +16,11 @@ export function Portfolio({ posts = [] }: { posts?: PortfolioCard[] }) {
 
   return (
     <section id="portfolio" className="bg-brand-blue-soft relative overflow-hidden">
-      <Container className="py-20 md:py-28">
+      <Container className="py-14 sm:py-20 md:py-28">
         {/* Header */}
         <div className="reveal text-center max-w-[64ch] mx-auto mb-12 md:mb-16">
           <span className="eyebrow">{p.eyebrow}</span>
-          <h2 className="h-display mt-6 text-brand-ink" style={{ fontSize: "clamp(38px, 5.2vw, 72px)" }}>
+          <h2 className="h-display mt-6 text-brand-ink" style={{ fontSize: "clamp(30px, 5.2vw, 72px)" }}>
             {p.title}
           </h2>
           <span aria-hidden className="block w-12 h-px bg-brand-red mx-auto mt-6" />

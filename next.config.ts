@@ -1,7 +1,14 @@
+import path from "path";
+import { fileURLToPath } from "url";
 import type { NextConfig } from "next";
 import { withPayload } from "@payloadcms/next/withPayload";
 
+const dirname = path.dirname(fileURLToPath(import.meta.url));
+
 const nextConfig: NextConfig = {
+  // Pin the workspace root to THIS project (a stray ~/package-lock.json otherwise
+  // makes Turbopack pick the home dir as root).
+  turbopack: { root: dirname },
   reactCompiler: true,
   images: {
     remotePatterns: [

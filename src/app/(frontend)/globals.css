@@ -462,17 +462,20 @@ input:focus, select:focus, textarea:focus {
    ───────────────────────────────────────────────────────── */
 .rich { color: var(--mute); font-weight: 300; line-height: 1.8; font-size: 16px; }
 .rich > * + * { margin-top: 1.1em; }
-.rich h2 { font-weight: 600; font-size: clamp(24px, 3vw, 34px); line-height: 1.2; color: var(--fg); margin-top: 1.8em; letter-spacing: -0.01em; }
-.rich h3 { font-weight: 600; font-size: clamp(19px, 2.4vw, 24px); line-height: 1.25; color: var(--fg); margin-top: 1.5em; }
-.rich h4 { font-weight: 600; font-size: 18px; color: var(--fg); margin-top: 1.3em; }
-.rich p { color: var(--mute); }
-.rich a { color: var(--blue); text-decoration: underline; text-underline-offset: 3px; }
-.rich a:hover { color: var(--red); }
-.rich ul, .rich ol { padding-left: 1.4em; color: var(--mute); }
-.rich ul { list-style: disc; }
-.rich ol { list-style: decimal; }
-.rich li + li { margin-top: 0.4em; }
-.rich blockquote { border-left: 3px solid var(--red); padding-left: 1.2em; color: var(--fg); font-style: italic; }
-.rich img { width: 100%; height: auto; border-radius: 12px; margin: 1.4em 0; }
-.rich strong { font-weight: 600; color: var(--fg); }
-.rich hr { border: none; border-top: 1px solid var(--line); margin: 2em 0; }
+/* Element defaults use :where() (0 specificity) so the blog-widget blocks —
+   which carry their own utility classes — override them cleanly. Class-less
+   prose still renders exactly as before. */
+:where(.rich) h2 { font-weight: 600; font-size: clamp(24px, 3vw, 34px); line-height: 1.2; color: var(--fg); margin-top: 1.8em; letter-spacing: -0.01em; }
+:where(.rich) h3 { font-weight: 600; font-size: clamp(19px, 2.4vw, 24px); line-height: 1.25; color: var(--fg); margin-top: 1.5em; }
+:where(.rich) h4 { font-weight: 600; font-size: 18px; color: var(--fg); margin-top: 1.3em; }
+:where(.rich) p { color: var(--mute); }
+:where(.rich) a { color: var(--blue); text-decoration: underline; text-underline-offset: 3px; }
+:where(.rich) a:hover { color: var(--red); }
+:where(.rich) ul, :where(.rich) ol { padding-left: 1.4em; color: var(--mute); }
+:where(.rich) ul { list-style: disc; }
+:where(.rich) ol { list-style: decimal; }
+:where(.rich) li + li { margin-top: 0.4em; }
+:where(.rich) blockquote { border-left: 3px solid var(--red); padding-left: 1.2em; color: var(--fg); font-style: italic; }
+:where(.rich) img { width: 100%; height: auto; border-radius: 12px; margin: 1.4em 0; }
+:where(.rich) strong { font-weight: 600; color: var(--fg); }
+:where(.rich) hr { border: none; border-top: 1px solid var(--line); margin: 2em 0; }

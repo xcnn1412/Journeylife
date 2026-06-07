@@ -8,7 +8,10 @@ import { Container } from "@/components/sections/_layout";
 import { RevealObserver } from "@/lib/site-context";
 import { getPayloadClient, mediaImage } from "@/lib/payload";
 
-export const dynamic = "force-dynamic";
+// Statically cached + ISR (was force-dynamic = a DB query on every request).
+// Content edits revalidate instantly via revalidatePath() in the Posts hooks;
+// this 10-min window is just a safety-net fallback.
+export const revalidate = 600;
 
 export const metadata: Metadata = {
   title: "ผลงานของเรา · JOURNEYLIFE",
@@ -24,6 +27,9 @@ export default async function PortfolioPage() {
     sort: "-publishedAt",
     depth: 1,
     limit: 60,
+    // Only the fields the cards render — skips fetching the heavy rich-text
+    // `content` JSON for every post (big payload + DB savings).
+    select: { title: true, slug: true, excerpt: true, cover: true },
   });
 
   return (

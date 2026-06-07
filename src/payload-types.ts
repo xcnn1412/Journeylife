@@ -122,21 +122,28 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * Case studies / past trips shown on the public /portfolio page. Use “Save draft” to keep it hidden, “Publish” to make it live.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts".
  */
 export interface Post {
   id: number;
+  /**
+   * The project / trip name shown as the headline.
+   */
   title: string;
   /**
-   * เว้นว่างเพื่อสร้างจากชื่อให้อัตโนมัติ
-   */
-  slug: string;
-  /**
-   * ข้อความสั้นบนการ์ด
+   * 1–2 sentences shown on the card and used for Google / link previews (max 200 chars).
    */
   excerpt?: string | null;
+  /**
+   * Main image for the card, hero & social share. Landscape (16:9) works best.
+   */
   cover?: (number | null) | Media;
+  /**
+   * The full story — use the toolbar to add headings, lists, links & images.
+   */
   content?: {
     root: {
       type: string;
@@ -152,14 +159,21 @@ export interface Post {
     };
     [k: string]: unknown;
   } | null;
-  gallery?:
-    | {
-        image?: (number | null) | Media;
-        id?: string | null;
-      }[]
-    | null;
+  /**
+   * Leave blank to auto-generate from the title.
+   */
+  slug: string;
+  /**
+   * Group this post under a category.
+   */
   category?: (number | null) | Category;
+  /**
+   * Optional — the organization this trip was for.
+   */
   client?: string | null;
+  /**
+   * Used to order posts (newest first). Today is filled in automatically.
+   */
   publishedAt?: string | null;
   meta?: {
     title?: string | null;
@@ -174,11 +188,16 @@ export interface Post {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Upload images & videos here. Every image is automatically resized and compressed — just drag & drop, no need to shrink files yourself.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
   id: number;
+  /**
+   * Briefly describe what's in the image — helps accessibility & Google.
+   */
   alt?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -219,23 +238,39 @@ export interface Media {
   };
 }
 /**
+ * Tags used to group portfolio posts (e.g. Seminar, Team Building, Overseas).
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "categories".
  */
 export interface Category {
   id: number;
+  /**
+   * e.g. Seminar, Team Building
+   */
   name: string;
+  /**
+   * Leave blank to auto-generate from the name.
+   */
   slug: string;
   updatedAt: string;
   createdAt: string;
 }
 /**
+ * People who can sign in to manage the website.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
   id: number;
+  /**
+   * Display name shown in the admin.
+   */
   name?: string | null;
+  /**
+   * Admin = full access · Editor = manage content.
+   */
   role: 'admin' | 'editor';
   updatedAt: string;
   createdAt: string;
@@ -344,16 +379,10 @@ export interface PayloadMigration {
  */
 export interface PostsSelect<T extends boolean = true> {
   title?: T;
-  slug?: T;
   excerpt?: T;
   cover?: T;
   content?: T;
-  gallery?:
-    | T
-    | {
-        image?: T;
-        id?: T;
-      };
+  slug?: T;
   category?: T;
   client?: T;
   publishedAt?: T;
@@ -503,6 +532,130 @@ export interface CollectionsWidget {
     [k: string]: unknown;
   };
   width: 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CalloutBlock".
+ */
+export interface CalloutBlock {
+  style?: ('info' | 'tip' | 'highlight' | 'warning') | null;
+  title?: string | null;
+  body: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'callout';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "QuoteBlock".
+ */
+export interface QuoteBlock {
+  quote: string;
+  author?: string | null;
+  role?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'quote';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ReviewsBlock".
+ */
+export interface ReviewsBlock {
+  /**
+   * e.g. What our clients say
+   */
+  heading?: string | null;
+  items?:
+    | {
+        name: string;
+        rating?: ('5' | '4' | '3' | '2' | '1') | null;
+        /**
+         * e.g. Jul 2025
+         */
+        date?: string | null;
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'reviews';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StatsBlock".
+ */
+export interface StatsBlock {
+  /**
+   * Add 2–4 stats for the best layout.
+   */
+  items?:
+    | {
+        /**
+         * e.g. 120+
+         */
+        value: string;
+        /**
+         * e.g. Trips delivered
+         */
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'stats';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GalleryBlock".
+ */
+export interface GalleryBlock {
+  /**
+   * How the images are arranged on the page.
+   */
+  layout?: ('grid2' | 'grid3' | 'masonry' | 'carousel') | null;
+  images?:
+    | {
+        image: number | Media;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'gallery';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VideoBlock".
+ */
+export interface VideoBlock {
+  /**
+   * Paste the full video URL.
+   */
+  url: string;
+  caption?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'video';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CtaBlock".
+ */
+export interface CtaBlock {
+  heading: string;
+  description?: string | null;
+  buttonLabel: string;
+  /**
+   * URL, #contact, tel:0..., or a LINE link.
+   */
+  buttonHref: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'cta';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

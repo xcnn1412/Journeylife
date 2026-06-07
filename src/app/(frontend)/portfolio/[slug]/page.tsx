@@ -1,27 +1,53 @@
+import { cache } from "react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
-import { RichText } from "@payloadcms/richtext-lexical/react";
 import { Nav } from "@/components/Nav";
 import { StickyCTA } from "@/components/StickyCTA";
+import { LivePreviewListener } from "@/components/LivePreviewListener";
+import { PostBody } from "@/components/richtext";
 import { Contact, Footer } from "@/components/sections";
 import { Container } from "@/components/sections/_layout";
 import { RevealObserver } from "@/lib/site-context";
 import { getPayloadClient, mediaImage } from "@/lib/payload";
 
-export const dynamic = "force-dynamic";
+// Statically cached + ISR. The public page is prerendered (draft mode reads as
+// false during prerender); preview requests carry the __prerender_bypass cookie
+// (set by /next/preview) and render dynamically with draft data.
+export const revalidate = 600;
 
-async function getPost(slug: string) {
+// Prerender published posts at build time; new slugs render on-demand then cache.
+export async function generateStaticParams() {
+  try {
+    const payload = await getPayloadClient();
+    const { docs } = await payload.find({
+      collection: "posts",
+      where: { _status: { equals: "published" } },
+      select: { slug: true },
+      depth: 0,
+      limit: 1000,
+    });
+    return docs.map((d) => ({ slug: String(d.slug) })).filter((p) => p.slug);
+  } catch {
+    return []; // DB unreachable at build → fall back to fully on-demand ISR
+  }
+}
+
+// cache() dedupes the query shared by generateMetadata + the page in one request.
+const getPost = cache(async (slug: string, draft = false) => {
   const payload = await getPayloadClient();
   const { docs } = await payload.find({
     collection: "posts",
-    where: { slug: { equals: slug }, _status: { equals: "published" } },
+    // In draft (preview) mode show any status; otherwise published only.
+    where: draft ? { slug: { equals: slug } } : { slug: { equals: slug }, _status: { equals: "published" } },
+    draft,
     depth: 2,
     limit: 1,
   });
   return docs[0] ?? null;
-}
+});
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -38,16 +64,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = await getPost(slug);
+  const { isEnabled: isDraft } = await draftMode();
+  const post = await getPost(slug, isDraft);
   if (!post) notFound();
 
   const cover = mediaImage(post.cover, "og");
-  const gallery = (post.gallery ?? [])
-    .map((g) => mediaImage(g.image, "card"))
-    .filter((x): x is { src: string; alt: string } => Boolean(x));
 
   return (
     <>
+      {isDraft && <LivePreviewListener />}
       <RevealObserver />
       <Nav />
       <StickyCTA />
@@ -73,17 +98,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         {/* Body */}
         <section className="bg-white py-16 md:py-24">
           <Container className="max-w-[820px]">
-            {post.content && <RichText data={post.content} className="rich" />}
-
-            {gallery.length > 0 && (
-              <div className="mt-12 grid grid-cols-2 gap-4 md:gap-5">
-                {gallery.map((g, i) => (
-                  <div key={i} className="relative aspect-[4/3] overflow-hidden rounded-xl bg-brand-ink">
-                    <Image src={g.src} alt={g.alt} fill sizes="(max-width: 768px) 50vw, 410px" className="object-cover" />
-                  </div>
-                ))}
-              </div>
-            )}
+            {post.content && <PostBody content={post.content} className="rich" />}
 
             <div className="mt-14 pt-8 border-t border-brand-line flex justify-center">
               <Link href="/portfolio" className="btn btn-ghost-dark">

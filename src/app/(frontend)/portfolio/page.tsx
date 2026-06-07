@@ -19,18 +19,29 @@ export const metadata: Metadata = {
   alternates: { canonical: "/portfolio" },
 };
 
+// Resilient at build time: if Payload can't init (e.g. PAYLOAD_SECRET / DB not
+// available during the deploy build), prerender empty instead of crashing the build.
+// ISR then fills real data once the runtime env is present.
+async function getPublishedPosts() {
+  try {
+    const payload = await getPayloadClient();
+    const { docs } = await payload.find({
+      collection: "posts",
+      where: { _status: { equals: "published" } },
+      sort: "-publishedAt",
+      depth: 1,
+      limit: 60,
+      // Only the fields the cards render — skips the heavy rich-text `content` JSON.
+      select: { title: true, slug: true, excerpt: true, cover: true },
+    });
+    return docs;
+  } catch {
+    return [];
+  }
+}
+
 export default async function PortfolioPage() {
-  const payload = await getPayloadClient();
-  const { docs } = await payload.find({
-    collection: "posts",
-    where: { _status: { equals: "published" } },
-    sort: "-publishedAt",
-    depth: 1,
-    limit: 60,
-    // Only the fields the cards render — skips fetching the heavy rich-text
-    // `content` JSON for every post (big payload + DB savings).
-    select: { title: true, slug: true, excerpt: true, cover: true },
-  });
+  const docs = await getPublishedPosts();
 
   return (
     <>

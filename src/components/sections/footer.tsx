@@ -22,7 +22,7 @@ export function Footer() {
               <ul className="list-none p-0 m-0 grid gap-3">
                 {col.links.map((l, j) => (
                   <li key={j}>
-                    <a href="#" className="text-[13px] no-underline text-white/80 hover:text-brand-red transition-colors duration-300 font-light">
+                    <a href="#" className="text-[13px] no-underline text-white/80 hover:text-white transition-colors duration-300 font-light">
                       {l}
                     </a>
                   </li>

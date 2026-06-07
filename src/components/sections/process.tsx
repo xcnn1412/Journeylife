@@ -6,8 +6,10 @@ export function Process() {
   const { t } = useSite();
   return (
     <section className="py-24 md:py-36 bg-brand-blue text-white relative overflow-hidden">
-      {/* Red signature bar + soft top-right glow */}
-      <div aria-hidden className="absolute top-0 left-0 w-1 h-full bg-brand-red" />
+      {/* Navy depth gradient — edges resolve to brand-blue-deep so the page seams blend */}
+      <div aria-hidden className="absolute inset-0 bg-linear-to-b from-brand-blue-deep via-brand-blue to-brand-blue-deep" />
+      {/* Red signature bar (fades out — kept minimal) + soft top-right glow */}
+      <div aria-hidden className="absolute top-0 left-0 w-1 h-full bg-linear-to-b from-brand-red/70 via-brand-red/15 to-transparent" />
       <div aria-hidden className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,.08),transparent_55%)] pointer-events-none" />
 
       <Container className="relative">

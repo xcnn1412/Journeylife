@@ -20,9 +20,11 @@ export function Logo({ size = 36, dark = false }: { size?: number; dark?: boolea
 
 export function AnimNum({ value }: { value: string }) {
   const ref = useRef<HTMLSpanElement>(null);
+  const isNumeric = /^\d/.test(value);
   const [shown, setShown] = useState(value);
   useEffect(() => {
-    if (!/^\d/.test(value)) { setShown(value); return; }
+    // Non-numeric values render `value` directly (below) — no state sync needed.
+    if (!isNumeric) return;
     const num = parseInt(value.replace(/[^\d]/g, ""), 10);
     const suffix = value.replace(/^\d+/, "");
     const node = ref.current; if (!node) return;
@@ -39,8 +41,8 @@ export function AnimNum({ value }: { value: string }) {
       }
     }, { threshold: 0.4 });
     io.observe(node); return () => io.disconnect();
-  }, [value]);
-  return <span ref={ref}>{shown}</span>;
+  }, [value, isNumeric]);
+  return <span ref={ref}>{isNumeric ? shown : value}</span>;
 }
 
 export function Nav() {
@@ -57,9 +59,8 @@ export function Nav() {
 
   // Absolute hrefs so the nav works from sub-pages (/services/*) too.
   const links = [
-    { k: "incentive" as const, href: "/#why" },
+    { k: "incentive" as const, href: "/#our-services" },
     { k: "services" as const, href: "/services" },
-    { k: "destinations" as const, href: "/#destinations" },
     { k: "clients" as const, href: "/#clients" },
     { k: "contact" as const, href: "/#contact" },
   ];
@@ -77,7 +78,7 @@ export function Nav() {
             <Link
               key={l.k}
               href={l.href}
-              className={`nav-link text-[11px] tracking-wide-cap uppercase font-semibold transition-colors ${onDark ? "text-white hover:text-brand-red [text-shadow:0_1px_4px_rgba(0,0,0,.5)]" : "text-brand-ink"}`}
+              className={`nav-link text-[11px] tracking-wide-cap uppercase font-semibold transition-colors ${onDark ? "text-white hover:text-white [text-shadow:0_1px_4px_rgba(0,0,0,.5)]" : "text-brand-ink"}`}
             >
               {t.nav[l.k]}
             </Link>
@@ -101,7 +102,7 @@ export function Nav() {
           </div>
           <Link
             href="/#contact"
-            className={`btn btn-red hidden md:inline-flex !px-5 !py-3 !text-[11px] ${onDark ? "[box-shadow:0_8px_24px_-8px_rgba(200,16,46,.55)]" : ""}`}
+            className={`btn hidden md:inline-flex !px-5 !py-3 !text-[11px] ${onDark ? "bg-white text-brand-blue hover:-translate-y-px [box-shadow:0_10px_30px_-10px_rgba(0,0,0,.5)]" : "btn-blue"}`}
           >
             {t.cta.quote}<span className="arrow">→</span>
           </Link>
@@ -119,7 +120,7 @@ export function Nav() {
           {links.map(l => (
             <Link key={l.k} href={l.href} onClick={() => setOpen(false)} className="block py-3.5 text-[13px] font-semibold tracking-[0.22em] uppercase border-b border-brand-line no-underline text-brand-ink">{t.nav[l.k]}</Link>
           ))}
-          <Link href="/#contact" onClick={() => setOpen(false)} className="btn btn-red mt-5 w-full justify-center">{t.cta.quote}</Link>
+          <Link href="/#contact" onClick={() => setOpen(false)} className="btn btn-blue mt-5 w-full justify-center">{t.cta.quote}</Link>
         </div>
       )}
     </nav>

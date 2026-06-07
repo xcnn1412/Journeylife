@@ -6,6 +6,7 @@ import { isAdmin, isStaff } from "./access";
 async function revalidate(slug?: string) {
   try {
     const { revalidatePath } = await import("next/cache");
+    revalidatePath("/"); // homepage "ผลงานของเรา" preview cards
     revalidatePath("/portfolio");
     if (slug) revalidatePath(`/portfolio/${slug}`);
   } catch {
@@ -29,17 +30,14 @@ export const Posts: CollectionConfig = {
     },
     listSearchableFields: ["title", "excerpt", "client"],
     pagination: { defaultLimit: 20, limits: [10, 20, 50, 100] },
-    // "Preview" button — opens the live (draft) page in a new tab.
+    // "Preview" button — opens the live (draft) page in a NEW TAB.
+    // NOTE: the split-view `livePreview` was intentionally removed. Its iframe
+    // re-serialises the whole form on every change to post to the preview window —
+    // and because our RSC frontend updates via save-based RefreshRouteOnSave (it
+    // ignores that real-time push anyway), the split-view was pure overhead that
+    // collided with the Lexical block's deferred media commit, freezing the editor
+    // when picking gallery images. The new-tab Preview button has no such issue.
     preview: (doc) => previewPath(doc),
-    // Live Preview — split-view: edit on the left, live website on the right.
-    livePreview: {
-      url: ({ data }) => previewPath(data),
-      breakpoints: [
-        { name: "mobile", label: "มือถือ (Mobile)", width: 390, height: 844 },
-        { name: "tablet", label: "แท็บเล็ต (Tablet)", width: 768, height: 1024 },
-        { name: "desktop", label: "เดสก์ท็อป (Desktop)", width: 1440, height: 900 },
-      ],
-    },
   },
   access: {
     // Public sees only published; logged-in staff see everything.

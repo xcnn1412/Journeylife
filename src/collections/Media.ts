@@ -33,7 +33,8 @@ export const Media: CollectionConfig = {
     formatOptions: { format: "webp", options: { quality: 82 } },
     // Variants. NOTE: size names (thumbnail/card/og) are read by the website — do not rename.
     imageSizes: [
-      { name: "thumbnail", width: 480, formatOptions: { format: "webp", options: { quality: 78 } } },
+      // Square (1:1) crop — used for the homepage "ผลงานของเรา" post cards + admin thumbs.
+      { name: "thumbnail", width: 480, height: 480, position: "centre", formatOptions: { format: "webp", options: { quality: 78 } } },
       { name: "card", width: 1024, formatOptions: { format: "webp", options: { quality: 80 } } },
       // Social/OG image stays JPEG for maximum compatibility (LINE, Facebook, X).
       {

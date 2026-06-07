@@ -15,7 +15,7 @@ export function Pillars() {
   const p = t.pillars;
 
   return (
-    <section id="our-services" className="bg-brand-paper border-y border-brand-line relative overflow-hidden">
+    <section id="our-services" className="bg-brand-blue-soft relative overflow-hidden">
       {/* Red signature accent — top-left */}
       <div aria-hidden className="absolute top-0 left-0 w-1 h-24 bg-linear-to-b from-brand-red to-transparent" />
 
@@ -74,8 +74,8 @@ export function Pillars() {
                 />
                 {/* Soft navy lift at the base of the photo */}
                 <div aria-hidden className="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-t from-brand-ink/35 to-transparent" />
-                {/* Red accent — slides across the seam on hover */}
-                <div aria-hidden className="absolute bottom-0 left-0 h-1 w-0 bg-brand-red transition-[width] duration-500 group-hover:w-full" />
+                {/* Navy accent — slides across the seam on hover */}
+                <div aria-hidden className="absolute bottom-0 left-0 h-1 w-0 bg-brand-blue transition-[width] duration-500 group-hover:w-full" />
               </div>
 
               {/* Caption */}
@@ -86,7 +86,7 @@ export function Pillars() {
                 <p className="mt-2.5 text-[12.5px] md:text-[13px] text-brand-mute font-light leading-[1.6] line-clamp-2 flex-1">
                   {it.body}
                 </p>
-                <span className="mt-4 inline-flex items-center gap-1.5 text-[10px] tracking-wide-cap uppercase font-semibold text-brand-blue transition-colors group-hover:text-brand-red">
+                <span className="mt-4 inline-flex items-center gap-1.5 text-[10px] tracking-wide-cap uppercase font-semibold text-brand-blue transition-colors group-hover:text-brand-blue-deep">
                   {p.cta}
                   <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
                 </span>

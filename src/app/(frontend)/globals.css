@@ -74,7 +74,7 @@ body {
   letter-spacing: 0.005em;
 }
 
-::selection { background: rgba(200, 16, 46, .15); color: #0a1024; }
+::selection { background: rgba(13, 43, 94, .15); color: #0a1024; }
 
 /* ─────────────────────────────────────────────────────────
    Typography utilities (Tailwind v4 @utility)
@@ -205,11 +205,12 @@ body {
   left: 0; bottom: 0;
   width: 0;
   height: 1px;
-  background: var(--red);
+  /* underline inherits the link's colour → navy on light, white on dark hero */
+  background: currentColor;
   transition: width .45s cubic-bezier(.2,.8,.2,1);
 }
 .nav-link:hover::after { width: 100%; }
-.nav-link:hover { color: var(--red); }
+.nav-link:hover { color: var(--blue); }
 
 /* ─────────────────────────────────────────────────────────
    Card — lift + hairline highlight on hover
@@ -440,7 +441,7 @@ body {
    Focus
    ───────────────────────────────────────────────────────── */
 :focus-visible {
-  outline: 2px solid var(--red);
+  outline: 2px solid var(--blue);
   outline-offset: 3px;
 }
 
@@ -453,7 +454,7 @@ input, select, textarea {
 }
 input:focus, select:focus, textarea:focus {
   outline: none;
-  border-color: var(--red);
+  border-color: var(--blue);
   background-color: #fff;
 }
 
@@ -470,7 +471,7 @@ input:focus, select:focus, textarea:focus {
 :where(.rich) h4 { font-weight: 600; font-size: 18px; color: var(--fg); margin-top: 1.3em; }
 :where(.rich) p { color: var(--mute); }
 :where(.rich) a { color: var(--blue); text-decoration: underline; text-underline-offset: 3px; }
-:where(.rich) a:hover { color: var(--red); }
+:where(.rich) a:hover { color: var(--blue-deep, #061a3d); }
 :where(.rich) ul, :where(.rich) ol { padding-left: 1.4em; color: var(--mute); }
 :where(.rich) ul { list-style: disc; }
 :where(.rich) ol { list-style: decimal; }

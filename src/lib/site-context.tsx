@@ -1,20 +1,34 @@
 "use client";
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useSyncExternalStore, ReactNode } from "react";
 import { I18N, type Lang, type Dict } from "./i18n";
 
 interface Ctx { lang: Lang; setLang: (l: Lang) => void; t: Dict; }
 const SiteCtx = createContext<Ctx | null>(null);
 
+const LANG_KEY = "jl-lang";
+const subscribeLang = (cb: () => void) => {
+  window.addEventListener("storage", cb);          // other tabs
+  window.addEventListener("jl-lang-change", cb);   // this tab
+  return () => {
+    window.removeEventListener("storage", cb);
+    window.removeEventListener("jl-lang-change", cb);
+  };
+};
+const readLang = (): Lang => (localStorage.getItem(LANG_KEY) === "en" ? "en" : "th");
+const serverLang = (): Lang => "th";
+
 export function SiteProvider({ children }: { children: ReactNode }) {
-  const [lang, setLang] = useState<Lang>("th");
+  // SSR-safe localStorage read without a setState-in-effect: server + first
+  // hydration render use "th", then the client snapshot resolves the stored lang.
+  const lang = useSyncExternalStore(subscribeLang, readLang, serverLang);
+
+  const setLang = useCallback((l: Lang) => {
+    localStorage.setItem(LANG_KEY, l);
+    window.dispatchEvent(new Event("jl-lang-change")); // re-read in this tab
+  }, []);
 
   useEffect(() => {
-    const sl = (localStorage.getItem("jl-lang") as Lang | null);
-    if (sl) setLang(sl);
-  }, []);
-  useEffect(() => {
     document.documentElement.setAttribute("lang", lang);
-    localStorage.setItem("jl-lang", lang);
   }, [lang]);
 
   return <SiteCtx.Provider value={{ lang, setLang, t: I18N[lang] }}>{children}</SiteCtx.Provider>;

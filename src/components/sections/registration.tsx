@@ -12,7 +12,7 @@ export function Registration() {
 
   return (
     <section id="registration" className="relative overflow-hidden bg-brand-blue text-white">
-      <div aria-hidden className="absolute inset-0 bg-linear-to-br from-brand-blue-deep via-brand-blue to-brand-blue-deep" />
+      <div aria-hidden className="absolute inset-0 bg-linear-to-b from-brand-blue-deep via-brand-blue to-brand-blue-deep" />
       <div aria-hidden className="absolute top-0 left-0 w-24 h-px bg-brand-red" />
       <div aria-hidden className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 60% 70% at 80% 10%, rgba(255,255,255,.07), transparent 60%)" }} />
 

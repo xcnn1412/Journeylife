@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSite } from "@/lib/site-context";
 import { Container, SectionHeading } from "./_layout";
 
@@ -26,9 +26,10 @@ export function Contact() {
   });
   const [sent, setSent] = useState(false);
 
-  useEffect(() => {
-    setForm(f => ({ ...f, type: t.contact.form.types[0] }));
-  }, [t.contact.form.types]);
+  // Derived (no effect): on a language switch the option labels change, so resolve
+  // the current selection to a valid option instead of syncing state in an effect.
+  const typeOptions = t.contact.form.types;
+  const selectedType = typeOptions.includes(form.type) ? form.type : typeOptions[0];
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,7 +38,7 @@ export function Contact() {
   };
 
   return (
-    <section id="contact" className="py-24 md:py-36 bg-white relative">
+    <section id="contact" className="py-24 md:py-36 bg-brand-blue-soft relative">
       <div aria-hidden className="absolute inset-0 hero-glow-tr opacity-50" />
 
       <Container className="relative">
@@ -78,11 +79,11 @@ export function Contact() {
               <div className="flex flex-col gap-2">
                 <label className="text-[10px] tracking-wide-cap uppercase font-semibold text-brand-mute">{t.contact.form.type}</label>
                 <select
-                  value={form.type}
+                  value={selectedType}
                   onChange={e => setForm({ ...form, type: e.target.value })}
-                  className="bg-white border border-brand-line p-4 text-[14px] focus:outline-none focus:border-brand-red transition-colors"
+                  className="bg-white border border-brand-line p-4 text-[14px] focus:outline-none focus:border-brand-blue transition-colors"
                 >
-                  {t.contact.form.types.map(ty => <option key={ty}>{ty}</option>)}
+                  {typeOptions.map(ty => <option key={ty}>{ty}</option>)}
                 </select>
               </div>
             </div>
@@ -92,10 +93,10 @@ export function Contact() {
                 rows={5}
                 value={form.msg}
                 onChange={e => setForm({ ...form, msg: e.target.value })}
-                className="bg-white border border-brand-line p-4 text-[14px] resize-y focus:outline-none focus:border-brand-red transition-colors"
+                className="bg-white border border-brand-line p-4 text-[14px] resize-y focus:outline-none focus:border-brand-blue transition-colors"
               />
             </div>
-            <button type="submit" className="btn btn-red mt-2 w-fit" disabled={sent}>
+            <button type="submit" className="btn btn-blue mt-2 w-fit" disabled={sent}>
               {sent ? "✓ " + t.contact.form.submit : t.contact.form.submit}
               <span className="arrow">→</span>
             </button>
@@ -124,7 +125,7 @@ function Field({
         type={type}
         value={value}
         onChange={e => onChange(e.target.value)}
-        className="bg-white border border-brand-line p-4 text-[14px] focus:outline-none focus:border-brand-red transition-colors"
+        className="bg-white border border-brand-line p-4 text-[14px] focus:outline-none focus:border-brand-blue transition-colors"
       />
     </div>
   );

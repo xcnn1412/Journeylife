@@ -4,15 +4,18 @@ import Link from "next/link";
 import { useSite } from "@/lib/site-context";
 import { Container } from "./_layout";
 
+export type PortfolioCard = { slug: string; title: string; src: string; alt: string };
+
 /* ──────────────────────────────────────────────────────────
-   PORTFOLIO — real work gallery ("ผลงานของเรา").
+   PORTFOLIO — latest real work pulled from Payload ("ผลงานของเรา").
+   Covers are shown 1:1; each card links to /portfolio/{slug}.
    ────────────────────────────────────────────────────────── */
-export function Portfolio() {
+export function Portfolio({ posts = [] }: { posts?: PortfolioCard[] }) {
   const { t } = useSite();
   const p = t.portfolio;
 
   return (
-    <section id="portfolio" className="bg-white relative overflow-hidden">
+    <section id="portfolio" className="bg-brand-blue-soft relative overflow-hidden">
       <Container className="py-20 md:py-28">
         {/* Header */}
         <div className="reveal text-center max-w-[64ch] mx-auto mb-12 md:mb-16">
@@ -25,22 +28,31 @@ export function Portfolio() {
           <p className="mt-3 text-[14px] md:text-[15px] font-light leading-[1.7] text-brand-mute">{p.desc}</p>
         </div>
 
-        {/* Gallery */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-5">
-          {p.images.map((im, i) => (
-            <div
-              key={i}
-              className="reveal card-lift group relative overflow-hidden rounded-xl aspect-[4/3] bg-brand-ink"
-              style={{ transitionDelay: `${i * 60}ms` }}
-            >
-              <Image src={im.src} alt={im.alt} fill sizes="(max-width: 768px) 50vw, 33vw" className="object-cover transition-transform duration-[900ms] ease-out group-hover:scale-105" />
-              <div aria-hidden className="absolute inset-0 bg-linear-to-t from-brand-ink/75 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-              <span className="absolute left-4 bottom-3 text-[12px] tracking-[0.04em] font-medium text-white opacity-0 translate-y-1 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
-                {im.alt}
-              </span>
-            </div>
-          ))}
-        </div>
+        {/* Gallery — latest portfolio posts, 1:1 cards */}
+        {posts.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-5">
+            {posts.map((post, i) => (
+              <Link
+                key={post.slug}
+                href={`/portfolio/${post.slug}`}
+                className="reveal card-lift group relative block overflow-hidden rounded-xl aspect-square bg-brand-ink"
+                style={{ transitionDelay: `${i * 60}ms` }}
+              >
+                <Image
+                  src={post.src}
+                  alt={post.alt}
+                  fill
+                  sizes="(max-width: 768px) 50vw, 33vw"
+                  className="object-cover transition-transform duration-[900ms] ease-out group-hover:scale-105"
+                />
+                <div aria-hidden className="absolute inset-0 bg-linear-to-t from-brand-ink/85 via-brand-ink/15 to-transparent" />
+                <span className="absolute left-4 right-4 bottom-4 text-[13px] md:text-[14px] font-medium leading-snug text-white line-clamp-2">
+                  {post.title}
+                </span>
+              </Link>
+            ))}
+          </div>
+        )}
 
         {/* CTA */}
         <div className="reveal mt-12 md:mt-16 flex justify-center">

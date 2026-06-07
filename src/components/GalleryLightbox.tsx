@@ -16,9 +16,13 @@ export type GalleryPic = {
   caption: string | null;
 };
 
-/** A grid tile that opens the lightbox on click. `my-0` cancels the `.rich img`
- *  vertical margin (which otherwise offsets the fill image and reveals the dark
- *  container edge at the top). */
+/** A grid tile that opens the lightbox on click.
+ *  `style={{ margin: 0 }}` (inline) cancels the `.rich img { margin }` rule — that
+ *  rule is UNLAYERED in globals.css, so a Tailwind utility (layered) can't beat it
+ *  regardless of specificity; only an inline style (or !important) wins. Without
+ *  this the fill image is pushed down and the dark container edge shows at the top. */
+const noMargin = { margin: 0 } as const;
+
 function Tile({ pic, sizes, onOpen }: { pic: GalleryPic; sizes: string; onOpen: () => void }) {
   return (
     <button
@@ -32,7 +36,8 @@ function Tile({ pic, sizes, onOpen }: { pic: GalleryPic; sizes: string; onOpen: 
         alt={pic.caption || pic.alt}
         fill
         sizes={sizes}
-        className="my-0 object-cover transition-transform duration-500 group-hover:scale-105"
+        style={noMargin}
+        className="object-cover transition-transform duration-500 group-hover:scale-105"
       />
     </button>
   );
@@ -94,7 +99,8 @@ export function GalleryLightbox({ layout, images }: { layout: string; images: Ga
                 width={g.width}
                 height={g.height}
                 sizes="(max-width: 768px) 50vw, 33vw"
-                className="my-0 h-auto w-full rounded-xl bg-brand-ink"
+                style={noMargin}
+                className="h-auto w-full rounded-xl bg-brand-ink"
               />
             </button>
             {g.caption && <figcaption className="mt-1.5 text-[12px] text-brand-mute">{g.caption}</figcaption>}
@@ -157,7 +163,8 @@ export function GalleryLightbox({ layout, images }: { layout: string; images: Ga
               width={current.width}
               height={current.height}
               sizes="92vw"
-              className="my-0 h-auto max-h-[86vh] w-auto max-w-[92vw] rounded-lg object-contain"
+              style={noMargin}
+              className="h-auto max-h-[86vh] w-auto max-w-[92vw] rounded-lg object-contain"
             />
             {current.caption && (
               <figcaption className="mt-3 text-center text-[13px] text-white/80">{current.caption}</figcaption>

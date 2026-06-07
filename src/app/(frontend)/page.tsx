@@ -2,22 +2,48 @@ import { Hero, Nav } from "@/components/Nav";
 import {
   Clients,
   Contact,
-  Destinations,
   Footer,
   LuckyDraw,
-  Marquee,
   Pillars,
   Portfolio,
   Process,
   Registration,
-  Services,
   TrustBar,
-  Why,
 } from "@/components/sections";
+import type { PortfolioCard } from "@/components/sections/portfolio";
 import { StickyCTA } from "@/components/StickyCTA";
 import { RevealObserver } from "@/lib/site-context";
+import { getPayloadClient, mediaImage } from "@/lib/payload";
 
-export default function Home() {
+// Statically cached + ISR; the Posts hooks revalidate "/" on publish/edit.
+export const revalidate = 600;
+
+/** Latest published portfolio posts, shown as 1:1 cards in the "ผลงานของเรา" section. */
+async function getPortfolioCards(): Promise<PortfolioCard[]> {
+  try {
+    const payload = await getPayloadClient();
+    const { docs } = await payload.find({
+      collection: "posts",
+      where: { _status: { equals: "published" } },
+      sort: "-publishedAt",
+      depth: 1,
+      limit: 6,
+      select: { title: true, slug: true, cover: true },
+    });
+    return docs
+      .map((d) => {
+        const img = mediaImage(d.cover, "thumbnail"); // 1:1 cover
+        return img ? { slug: String(d.slug), title: d.title, src: img.src, alt: img.alt || d.title } : null;
+      })
+      .filter((c): c is PortfolioCard => c !== null);
+  } catch {
+    return []; // DB unreachable → section just shows its heading + CTA
+  }
+}
+
+export default async function Home() {
+  const portfolioCards = await getPortfolioCards();
+
   return (
     <>
       <RevealObserver />
@@ -31,21 +57,19 @@ export default function Home() {
         {/* Trust — credentials band */}
         <TrustBar />
 
-        {/* Offer — what we do, proof of work, geographic reach */}
+        {/* Offer — what we do */}
         <Pillars />
-        <Portfolio />
         <Registration />
         <LuckyDraw />
-        <Marquee />
 
-        {/* Offer detail — formats, routes, destinations, process */}
-        <Why />
-        <Services />
-        <Destinations />
+        {/* Proof of work + who trusts us */}
+        <Portfolio posts={portfolioCards} />
+        <Clients />
+
+        {/* How we work */}
         <Process />
 
-        {/* Conversion — testimonials + brief form */}
-        <Clients />
+        {/* Conversion — brief form */}
         <Contact />
       </main>
 

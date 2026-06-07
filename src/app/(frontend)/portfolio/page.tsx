@@ -48,7 +48,7 @@ export default async function PortfolioPage() {
             <h1 className="h-display mt-6 text-white" style={{ fontSize: "clamp(40px, 6vw, 84px)" }}>ผลงานของเรา</h1>
             <span aria-hidden className="block w-12 h-px bg-brand-red mx-auto mt-6" />
             <p className="mt-6 max-w-[56ch] mx-auto text-[16px] md:text-[18px] font-light leading-[1.7] text-white/70">
-              ทริปจริง องค์กรจริง ความประทับใจจริง — ผลงานที่เราภูมิใจ
+              New Journey Experience - เปิดประสบการณ์เดินทางครั้งใหม่ที่แตกต่าง
             </p>
           </Container>
         </section>

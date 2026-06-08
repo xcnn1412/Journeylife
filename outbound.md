@@ -58,12 +58,14 @@ Base URL: `https://tour.journeylife.co.th`
 | `tourid` | รหัสทัวร์ | `025-B07437` | ค้นตรงรหัส |
 | `cstartdate` | วันเริ่มเดินทาง | `01-10-2569` | **รูปแบบ `DD-MM-BBBB`** (พ.ศ. = ค.ศ.+543) |
 | `cenddate` | วันสิ้นสุด | `06-10-2569` | เหมือนกัน |
-| `sort` | การเรียง | `new` / `asc` / `desc` | เราตั้ง default `new` |
+| `sort` | การเรียง | `new` / `asc` / `desc` | `asc`=ราคาน้อย→มาก · `desc`=มาก→น้อย (เรียง**ทั้ง dataset** ฝั่ง tour site) · default `new` · หน้าผลค้นมี dropdown เปลี่ยนค่านี้แล้ว refetch |
+| `page` | หน้าผลลัพธ์ (12/หน้า) | `1`, `2`, … `20` | 1-based · หน้าเกินสุด → 0 การ์ด · เราดึงหลายหน้าแล้วรวม (ดู 4.1) |
 
 **กฎสำคัญของผลลัพธ์ (สังเกตจากการทดสอบจริง):**
 - ค้นหาว่าง / `sort=new` อย่างเดียว → คืน **12 โปรแกรมล่าสุด** (ไม่ใช่ 0)
 - `keyword` ที่ตรง → กรองตามประเทศ; ที่ **ไม่ match อะไรเลย → คืน 0**
-- ผลลัพธ์ **1 หน้า = 12 การ์ด** (`tour-card`) — ถ้าต้องการมากกว่านี้ลิงก์ไปดูบนเว็บ tour
+- ผลลัพธ์ **1 หน้า = 12 การ์ด** (`tour-card`); pagination ใช้ `&page=N` (1-based) — pagination block โชว์เลขหน้าสุดท้าย (เช่น ญี่ปุ่น = `page=20`)
+- เรา**ดึงหลายหน้าแล้วรวม + dedupe ฝั่ง server** (default 6 หน้า ≈ 72 รายการ) เพื่อโชว์ในเว็บเราเอง — **ไม่ redirect ไป tour site**; ลิงก์ "ดูบนเว็บต้นทาง" โผล่เฉพาะตอนยังมีหน้าเหลือ (`totalPages > pagesFetched`)
 
 ### 3.1 การแปลงวันที่ (Buddhist year)
 input `<input type="date">` ให้ค่า `yyyy-mm-dd` ต้องแปลงเป็น `DD-MM-BBBB`:
@@ -98,18 +100,22 @@ if (/%[0-9A-Fa-f]{2}/.test(v)) v = decodeURIComponent(v);  // เก็บกว
 ```ts
 import { searchTours, buildSearchUrl, SEARCH_KEYS } from "@/lib/tour-search";
 
-const { results, fullUrl } = await searchTours({
+const { results, fullUrl, totalPages, pagesFetched } = await searchTours({
   keyword: "ญี่ปุ่น",
   keywords: "โตเกียว",   // optional
   priceRange: "30000-35000", // optional
   sort: "new",
-});
-// results: TourResult[]  (สูงสุด 12 ต่อหน้า, dedupe ตาม tour_id)
-// fullUrl: URL เดียวกันบนเว็บ tour (ใช้ทำลิงก์ "ดูทั้งหมด")
+}, 6); // maxPages (optional) — default DEFAULT_MAX_PAGES = 6
+// results: TourResult[]  (รวมหลายหน้า, dedupe ตาม tour_id ข้ามหน้า)
+// fullUrl: URL เดียวกันบนเว็บ tour (ใช้ทำลิงก์ "ดูบนเว็บต้นทาง")
+// totalPages: จำนวนหน้าที่ search.php มีจริงสำหรับ query นี้
+// pagesFetched: จำนวนหน้าที่เราดึง+รวมจริง (≤ maxPages)
 ```
 - `SEARCH_KEYS` = รายชื่อ param ที่ valid (ใช้ filter searchParams)
 - `buildSearchUrl(params)` = ประกอบ URL `search.php` (ใส่ `sort=new` ถ้าไม่มี)
-- ดึงด้วย `cache: "no-store"`; คืน `{results: [], fullUrl}` ถ้าพัง
+- **multi-page:** ดึงหน้า 1 ก่อน (อ่านจำนวนหน้าจาก pagination) แล้วดึงหน้า 2..`min(maxPages, totalPages)` แบบ **parallel** (`Promise.all`) → merge + dedupe
+- ดึงด้วย `cache: "no-store"`; แต่ละหน้าพังคืน `null` (ข้ามหน้านั้น); พังทั้งหมดคืน `{results: [], …, pagesFetched: 0}`
+- เพิ่ม/ลดจำนวนผลลัพธ์ได้ที่ `DEFAULT_MAX_PAGES` หรือส่ง arg `maxPages` (ระวัง latency: ยิ่งมากยิ่งช้า)
 
 **`TourResult` shape:**
 ```ts
@@ -150,15 +156,17 @@ parse จาก `tour.php?tour_id=ID`:
 | `image` | `<meta property="og:image">` (banner เต็ม) |
 | `code` / `duration` / `airline` | กล่อง meta (`รหัสทัวร์` / `ช่วงเวลา` / `เดินทางโดย`) |
 | `highlights[]` | `<ul><li>` ถัดจาก "ไฮไลท์ทริป ห้ามพลาด" |
-| `periods[]` | ตารางถัดจาก "เลือกวันเดินทาง" → `{date, price, priceNum, seats, bookHref}` |
-| `itinerary[]` | accordion ถัดจาก "แผนการเดินทาง" → `{day, title, detail}` |
+| `periods[]` | ตารางถัดจาก "เลือกวันเดินทาง" → `{date, price, priceNum, original, seats, bookHref}` · cell ราคาเป็น `<s>ราคาเต็ม</s><br><span color:red>ราคาลด</span>` → `price`/`priceNum` = **ราคาลด**, `original` = ราคาเต็ม (ขีดฆ่า, "" ถ้าไม่มีลด) · `seats="0"` = ปิดรับ |
+| `itinerary[]` | accordion ถัดจาก "แผนการเดินทาง" → `{day, title, detail, segments}` · `detail` = prose ดิบ, `segments[]` = prose ตัดเป็นบรรทัด (ดู `formatItinerary`) |
 | `pdf` | ลิงก์ `.pdf` ตัวแรก |
 | `priceFrom` | min ของ period prices |
 
-**⚠️ ข้อจำกัด itinerary:** เนื้อหารายวันแบบ prose (มื้ออาหาร/ที่พัก/รายละเอียด) **ไม่ได้อยู่ใน
-HTML ที่ server-render** (accordion-body ว่างเปล่า, ไม่มี AJAX endpoint) — มีแต่ "ชื่อสถานที่
-ต่อวัน" ในหัวข้อ. เราจึงแสดง itinerary เป็น list สถานที่รายวัน + ลิงก์ PDF สำหรับรายละเอียดเต็ม
-(ไม่ทำ dropdown ลวงที่กดแล้วว่าง). ถ้าต้องการเนื้อหาเต็มต้องไปดึง/แปลงจาก PDF (ซับซ้อนกว่ามาก)
+**itinerary prose:** accordion-body **มีเนื้อหา prose รายวันจริง** (บางวันยาว 4000+ ตัวอักษร
+ในย่อหน้าเดียว). เราดึงเป็น `detail` แล้วแปลงเป็น `segments[]` ด้วย **`formatItinerary()`** —
+ตัดบรรทัดก่อน time marker (`นน.นน น.`) + connector (`นำท่าน` · `จากนั้น` · `อิสระ` ·
+`บริการอาหาร` ฯลฯ) แล้ว tag แต่ละบรรทัดเป็น `event` / `meal` / `hotel` เพื่อเรนเดอร์เป็นลิสต์
+อ่านง่าย + ปุ่ม "อ่านเพิ่มเติม" (แสดง 3 บรรทัดแรกก่อน). เนื้อหาเต็มสุด (มื้อ/ที่พักครบทุกบรรทัด)
+ยังชี้ไปไฟล์ PDF. **ห้ามแก้เนื้อหา — `formatItinerary` แค่ตัดบรรทัด ไม่เขียนใหม่**
 
 **การจอง (booking):** ปุ่ม "จอง" รายงวดลิงก์ไป `booking.php` ของ tour site
 (`bookHref` ผ่าน `encodeURI` เพราะ href ดิบมีไทย/ช่องว่าง)
@@ -226,7 +234,7 @@ flagImg(th): string                        // URL รูปธงจาก flagc
 4. รูป search.php ต้อง **ตัด `/storage/banner/<เลข>/` subfolder** (ข้อ 6); รูปเป็น **1:1**
 5. parsing พึ่งโครงสร้าง HTML ของ okwebtour — ถ้า tour site เปลี่ยน layout **regex จะพัง**
    ต้องไปอัปเดต regex ใน lib ที่เกี่ยวข้อง (วิธีหา: `curl` หน้านั้นมาดู class/มาร์กอัปจริง)
-6. itinerary แบบ prose ไม่มีใน HTML — อย่าพยายาม parse, ชี้ไป PDF แทน
+6. itinerary prose อยู่ใน accordion-body — parse เป็น `detail` แล้วแปลงเป็น `segments[]` ด้วย `formatItinerary()` (ตัดบรรทัดเท่านั้น ไม่เขียนเนื้อหาใหม่); รายละเอียดเต็มสุดชี้ PDF
 7. caching: รายการ/รายละเอียด ใช้ ISR 600s; หน้าค้นหา `no-store`
 8. ขั้นจอง/ชำระเงิน ลิงก์ออกไป `booking.php` ของ tour site เสมอ (เราไม่ทำ checkout เอง)
 

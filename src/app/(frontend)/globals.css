@@ -588,3 +588,126 @@ input:focus, select:focus, textarea:focus {
 :where(.rich) img { width: 100%; height: auto; border-radius: 12px; margin: 1.4em 0; }
 :where(.rich) strong { font-weight: 600; color: var(--fg); }
 :where(.rich) hr { border: none; border-top: 1px solid var(--line); margin: 2em 0; }
+
+/* ─────────────────────────────────────────────────────────
+   Route Finder — "ค้นหาด้วยเจอร์นี่ AI" world-map dots + modal
+   ───────────────────────────────────────────────────────── */
+.rf-dot { transition: transform .6s cubic-bezier(.22,1,.36,1); }
+.rf-dot .rf-core { transition: fill .5s ease, opacity .5s ease; }
+.rf-dot .rf-halo { transition: opacity .6s ease; transform-box: fill-box; transform-origin: center; }
+
+.rf-dot[data-state="dim"] .rf-core { fill: #fff; opacity: .16; }
+.rf-dot[data-state="dim"] .rf-halo { opacity: 0; }
+
+.rf-dot[data-state="active"] .rf-core { fill: var(--cream, #e6c98a); opacity: 1; }
+.rf-dot[data-state="active"] .rf-halo { fill: var(--cream, #e6c98a); opacity: .16; }
+
+.rf-dot[data-state="top"] .rf-core { fill: #fff; opacity: 1; }
+.rf-dot[data-state="top"] .rf-halo { fill: var(--red, #c8102e); opacity: .5; animation: rf-pulse 1.8s ease-in-out infinite; }
+
+@keyframes rf-pulse {
+  0%, 100% { transform: scale(1); opacity: .5; }
+  50% { transform: scale(1.7); opacity: .12; }
+}
+
+.rf-label {
+  fill: #fff;
+  font-size: 17px;
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: rgba(6,26,61,.85);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+/* Luxury glow on lit markers */
+.rf-dot[data-state="active"] .rf-core { filter: drop-shadow(0 0 2.5px rgba(230,201,138,.7)); }
+.rf-dot[data-state="top"] .rf-core { filter: drop-shadow(0 0 5px rgba(255,255,255,.9)); }
+
+/* AI scan beam sweeping the map */
+.rf-scan { animation: rf-scan 5.5s cubic-bezier(.45,0,.55,1) infinite; }
+@keyframes rf-scan {
+  0% { transform: translateX(-180px); opacity: 0; }
+  12%, 88% { opacity: 1; }
+  100% { transform: translateX(1020px); opacity: 0; }
+}
+
+/* "Route" line linking the Top-3 on the results step */
+.rf-route { stroke-dasharray: 5 8; animation: rf-dash 1.1s linear infinite; }
+@keyframes rf-dash { to { stroke-dashoffset: -26; } }
+
+/* Pulsing AI orb (header + analyzing overlay) */
+.rf-orb { animation: rf-orb 2.4s ease-in-out infinite; }
+@keyframes rf-orb {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(200,16,46,.45), 0 10px 26px -10px rgba(200,16,46,.7); }
+  50% { box-shadow: 0 0 0 9px rgba(200,16,46,0), 0 10px 26px -10px rgba(200,16,46,.7); }
+}
+
+/* Analyzing shimmer bar */
+.rf-shimmer { animation: rf-shimmer 1.15s ease-in-out infinite; }
+@keyframes rf-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(240%); }
+}
+
+.rf-backdrop { animation: rf-fade .25s ease both; }
+.rf-panel { animation: rf-rise .4s cubic-bezier(.22,1,.36,1) both; }
+.rf-analyzing { animation: rf-fade .3s ease both; }
+.rf-card { animation: rf-rise .5s cubic-bezier(.22,1,.36,1) both; }
+@keyframes rf-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes rf-rise { from { opacity: 0; transform: translateY(16px) scale(.985); } to { opacity: 1; transform: none; } }
+
+/* ── AI trigger button ── */
+.rf-cta {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgba(255,255,255,.14);
+  background:
+    linear-gradient(115deg, #b30d28 0%, #e11a3a 42%, #c8102e 70%, #b30d28 100%);
+  background-size: 200% 100%;
+  box-shadow: 0 12px 30px -10px rgba(200,16,46,.7), inset 0 1px 0 rgba(255,255,255,.22);
+  animation: rf-cta-bg 6s ease infinite;
+}
+.rf-cta:hover { box-shadow: 0 16px 38px -10px rgba(200,16,46,.85), inset 0 1px 0 rgba(255,255,255,.3); }
+@keyframes rf-cta-bg { 0%,100% { background-position: 0% 0; } 50% { background-position: 100% 0; } }
+
+/* light streak sweeping across */
+.rf-cta-sheen {
+  position: absolute; top: 0; bottom: 0; left: -60%; width: 38%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.5), transparent);
+  transform: skewX(-18deg);
+  pointer-events: none;
+  animation: rf-sheen 4.2s ease-in-out infinite;
+}
+@keyframes rf-sheen { 0% { left: -60%; } 58%, 100% { left: 130%; } }
+
+/* pulsing aura behind the button */
+.rf-cta-glow { animation: rf-cta-glow 2.8s ease-in-out infinite; }
+@keyframes rf-cta-glow {
+  0%, 100% { opacity: .3; transform: scale(.95); }
+  50% { opacity: .65; transform: scale(1.05); }
+}
+
+/* twinkling AI spark */
+.rf-twinkle { transform-box: fill-box; transform-origin: center; animation: rf-twinkle 2.2s ease-in-out infinite; }
+@keyframes rf-twinkle {
+  0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  50% { opacity: .5; transform: scale(.72) rotate(35deg); }
+}
+
+/* "Chat for a discount" badge — gentle attention pulse + halo */
+.cta-flash { animation: cta-flash 2.2s ease-in-out infinite; }
+@keyframes cta-flash {
+  0%, 100% { transform: scale(1); box-shadow: 0 8px 20px -8px rgba(0,0,0,.35); }
+  50% { transform: scale(1.05); box-shadow: 0 0 0 6px rgba(255,255,255,.18), 0 12px 26px -8px rgba(255,255,255,.55); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rf-dot, .rf-dot .rf-core, .rf-dot .rf-halo { transition: none; }
+  .rf-dot[data-state="top"] .rf-halo,
+  .rf-scan, .rf-route, .rf-orb, .rf-shimmer,
+  .rf-cta, .rf-cta-sheen, .rf-cta-glow, .rf-twinkle, .cta-flash { animation: none; }
+  .rf-cta-sheen { display: none; }
+  .rf-backdrop, .rf-panel, .rf-analyzing, .rf-card { animation: none; }
+}

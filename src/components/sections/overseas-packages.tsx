@@ -2,9 +2,11 @@
 import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useSite } from "@/lib/site-context";
 import { TourSearch } from "@/components/TourSearch";
 import { HotDealFilter } from "@/components/HotDealFilter";
+import { RouteFinderButton } from "@/components/route-finder/RouteFinder";
 import type { HotDeal } from "@/lib/hot-deals";
 import { Container } from "./_layout";
 
@@ -190,15 +192,7 @@ export function OverseasPackages({
             <p className="text-[15px] md:text-[16px] text-white/60 mt-3 leading-[1.7] font-light max-w-[52ch] mx-auto lg:mx-0">
               {p.lede}
             </p>
-            <a
-              href={p.ctaHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-red mt-9"
-            >
-              {p.cta}
-              <span className="arrow">→</span>
-            </a>
+            <RouteFinderButton className="mt-9" />
           </div>
 
           {/* Mascot — น้องเจอร์นี่ขับเครื่องบิน */}
@@ -224,16 +218,25 @@ export function OverseasPackages({
           <TourSearch />
         </div>
 
+        {/* ── Fast track — tap a country to jump straight into on-site search ── */}
+        <div className="reveal mb-6 flex items-center gap-3">
+          <span aria-hidden className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-linear-to-br from-brand-red to-[#a90c24] text-white shadow-[0_10px_24px_-10px_rgba(200,16,46,.7)]">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z" /></svg>
+          </span>
+          <div>
+            <span className="eyebrow block" style={{ color: "rgba(255,255,255,.6)" }}>{p.fastTrackEyebrow}</span>
+            <h3 className="text-white font-semibold leading-tight text-[17px] md:text-[19px]">{p.fastTrackTitle}</h3>
+          </div>
+        </div>
+
         {/* ── Country cards ── (sized to match the Pillars / "บริการของเรา" grid) */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-5">
           {p.items.map((it, i) => {
             const art = CARD_ART[it.key] ?? { flag: "🌍", grad: "from-brand-blue to-brand-blue-deep" };
             return (
-              <a
+              <Link
                 key={it.key}
-                href={it.href}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={`/outboundtrip/search?keyword=${encodeURIComponent(it.country)}&sort=new`}
                 aria-label={`${it.country} — ${p.cardCta}`}
                 className="reveal card-lift group relative flex flex-col overflow-hidden rounded-xl bg-white text-brand-ink border border-brand-line"
                 style={{ transitionDelay: `${i * 60}ms` }}
@@ -265,7 +268,7 @@ export function OverseasPackages({
                     <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
                   </span>
                 </div>
-              </a>
+              </Link>
             );
           })}
         </div>

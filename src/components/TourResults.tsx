@@ -1,21 +1,104 @@
 "use client";
+import { useRef, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { useSite } from "@/lib/site-context";
 import { Container } from "@/components/sections/_layout";
 import type { TourResult } from "@/lib/tour-search";
+
+const RESULTS_ROUTE = "/outboundtrip/search";
 
 /* ──────────────────────────────────────────────────────────
    TOUR RESULTS — search.php results rendered inside our site.
    Light section (paper); cards are white. Detail/booking still
    open the booking site, but discovery happens here.
+   The deep result set (pulled across pages) is paginated here at
+   15 cards per page — all client-side, no refetch.
    ────────────────────────────────────────────────────────── */
 
 const baht = (n: number) => n.toLocaleString("en-US");
+const PAGE_SIZE = 15;
 
-export function TourResults({ results, seeAllUrl }: { results: TourResult[]; seeAllUrl: string }) {
+/** Numbered page navigation (used above and below the result grid). */
+function Pager({
+  page,
+  totalPages,
+  onGo,
+  prevLabel,
+  nextLabel,
+  className = "",
+}: {
+  page: number;
+  totalPages: number;
+  onGo: (p: number) => void;
+  prevLabel: string;
+  nextLabel: string;
+  className?: string;
+}) {
+  if (totalPages <= 1) return null;
+  const arrow = "grid h-9 w-9 place-items-center rounded-lg border border-brand-line text-brand-ink transition-colors hover:border-brand-blue/50 hover:text-brand-blue disabled:pointer-events-none disabled:opacity-35";
+  return (
+    <nav className={`flex flex-wrap items-center justify-center gap-1.5 ${className}`} aria-label="Pagination">
+      <button type="button" onClick={() => onGo(page - 1)} disabled={page === 1} aria-label={prevLabel} className={arrow}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="m15 18-6-6 6-6" /></svg>
+      </button>
+      {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+        <button
+          key={p}
+          type="button"
+          onClick={() => onGo(p)}
+          aria-current={p === page ? "page" : undefined}
+          className={`grid h-9 min-w-9 place-items-center rounded-lg px-2 text-[13px] font-semibold transition-colors ${
+            p === page ? "bg-brand-blue text-white" : "border border-brand-line text-brand-ink hover:border-brand-blue/50 hover:text-brand-blue"
+          }`}
+        >
+          {p}
+        </button>
+      ))}
+      <button type="button" onClick={() => onGo(page + 1)} disabled={page === totalPages} aria-label={nextLabel} className={arrow}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="m9 18 6-6-6-6" /></svg>
+      </button>
+    </nav>
+  );
+}
+
+export function TourResults({
+  results,
+  seeAllUrl,
+  sort,
+  query,
+}: {
+  results: TourResult[];
+  seeAllUrl: string;
+  sort: string; // current sort param: "new" | "asc" | "desc"
+  query: Record<string, string>; // current search params, so we can re-sort in place
+}) {
   const { t } = useSite();
   const r = t.overseasPackages.searchResults;
   const d = t.contact.direct;
   const lineHref = `https://line.me/R/ti/p/${d.line}`;
+
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const topRef = useRef<HTMLDivElement>(null);
+  const [page, setPage] = useState(1);
+
+  const totalPages = Math.max(1, Math.ceil(results.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const shown = results.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+  const goTo = (p: number) => {
+    setPage(Math.min(Math.max(1, p), totalPages));
+    topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  // Sorting is done by the booking site (sort=asc/desc orders by price across ALL
+  // pages) — change the URL param and refetch. The page remounts (key=fullUrl) so
+  // pagination resets to 1.
+  const changeSort = (v: string) => {
+    if (v === sort) return;
+    const sp = new URLSearchParams(query);
+    sp.set("sort", v);
+    startTransition(() => router.push(`${RESULTS_ROUTE}?${sp.toString()}`));
+  };
 
   if (!results.length) {
     return (
@@ -31,24 +114,43 @@ export function TourResults({ results, seeAllUrl }: { results: TourResult[]; see
 
   return (
     <Container className="py-12 md:py-16">
-      {/* Count */}
-      <div className="mb-7 flex flex-wrap items-baseline justify-between gap-3">
-        <p className="text-[14px] text-brand-mute">
-          {r.found} <span className="font-semibold text-brand-ink">{results.length}</span> {r.programs}
-        </p>
-        <a
-          href={seeAllUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[12px] tracking-wide-cap uppercase font-semibold text-brand-blue hover:text-brand-red transition-colors"
-        >
-          {r.seeAll} →
-        </a>
+      <div ref={topRef} aria-hidden className="scroll-mt-28" />
+
+      {/* Count + sort + top pager (replaces the old "see all on tour site" link) */}
+      <div className="mb-7 flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2.5">
+          <p className="text-[14px] text-brand-mute">
+            {r.found} <span className="font-semibold text-brand-ink">{results.length}</span> {r.programs}
+          </p>
+          <label className="flex items-center gap-2">
+            <span className="text-[12px] font-medium text-brand-mute">{r.sortLabel}</span>
+            <select
+              value={sort}
+              onChange={(e) => changeSort(e.target.value)}
+              disabled={pending}
+              className="rounded-lg border border-brand-line bg-white px-3 py-2 text-[13px] font-medium text-brand-ink outline-none transition focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15 disabled:opacity-60"
+            >
+              <option value="new">{r.sortNew}</option>
+              <option value="asc">{r.sortPriceAsc}</option>
+              <option value="desc">{r.sortPriceDesc}</option>
+            </select>
+            {pending && (
+              <svg className="animate-spin text-brand-blue" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="3" opacity="0.25" />
+                <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+              </svg>
+            )}
+          </label>
+        </div>
+        <Pager page={safePage} totalPages={totalPages} onGo={goTo} prevLabel={r.prev} nextLabel={r.next} />
       </div>
 
       {/* Result cards */}
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {results.map((x) => (
+      <div
+        aria-busy={pending}
+        className={`grid gap-5 transition-opacity sm:grid-cols-2 lg:grid-cols-3 ${pending ? "pointer-events-none opacity-50" : ""}`}
+      >
+        {shown.map((x) => (
           <article
             key={x.id}
             className="card-lift group flex flex-col overflow-hidden rounded-2xl bg-white border border-brand-line shadow-[0_24px_60px_-32px_rgba(10,16,36,.5)]"
@@ -79,7 +181,7 @@ export function TourResults({ results, seeAllUrl }: { results: TourResult[]; see
               </div>
 
               <a
-                href={x.href}
+                href={`/outboundtrip/tour/${x.id}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-2 text-[14px] md:text-[15px] font-semibold leading-snug text-brand-ink line-clamp-2 transition-colors hover:text-brand-red"
@@ -125,6 +227,9 @@ export function TourResults({ results, seeAllUrl }: { results: TourResult[]; see
           </article>
         ))}
       </div>
+
+      {/* Pagination — 15 per page */}
+      <Pager page={safePage} totalPages={totalPages} onGo={goTo} prevLabel={r.prev} nextLabel={r.next} className="mt-10" />
     </Container>
   );
 }

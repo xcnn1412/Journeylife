@@ -39,13 +39,15 @@ function toBuddhist(iso: string): string {
   return `${d}-${m}-${Number(y) + 543}`;
 }
 
-export function TourSearch() {
+export function TourSearch({ initial }: { initial?: Record<string, string> }) {
   const { t } = useSite();
   const s = t.overseasPackages.search;
   const router = useRouter();
 
-  const [country, setCountry] = useState("");
-  const [city, setCity] = useState("");
+  // Prefill from the current query (e.g. Fast-track sets `keyword=<country>`), so
+  // the country shows up selected and the user can refine with a city next.
+  const [country, setCountry] = useState(initial?.keyword ?? "");
+  const [city, setCity] = useState(initial?.keywords ?? "");
   const cityOptions = country ? CITIES[country] ?? [] : [];
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -132,7 +134,7 @@ export function TourSearch() {
         {/* Price range */}
         <div>
           <label htmlFor="ts-price" className={label}>{s.price} {opt}</label>
-          <select id="ts-price" name="priceRange" defaultValue="" className={field}>
+          <select id="ts-price" name="priceRange" defaultValue={initial?.priceRange ?? ""} className={field}>
             <option value="">{s.pricePh}</option>
             {PRICE_RANGES.map((r) => {
               const [min, max] = r.split("-");
@@ -148,7 +150,7 @@ export function TourSearch() {
         {/* Duration */}
         <div>
           <label htmlFor="ts-day" className={label}>{s.days} {opt}</label>
-          <select id="ts-day" name="day" defaultValue="" className={field}>
+          <select id="ts-day" name="day" defaultValue={initial?.day ?? ""} className={field}>
             <option value="">{s.daysPh}</option>
             {DAYS.map((d) => (
               <option key={d} value={d}>{d} {s.daysUnit}</option>
@@ -168,7 +170,7 @@ export function TourSearch() {
         {/* Tour code */}
         <div className="sm:col-span-2 lg:col-span-1">
           <label htmlFor="ts-code" className={label}>{s.code} {opt}</label>
-          <input id="ts-code" name="tourid" type="text" placeholder={s.codePh} className={field} />
+          <input id="ts-code" name="tourid" type="text" placeholder={s.codePh} defaultValue={initial?.tourid ?? ""} className={field} />
         </div>
 
         {/* Submit */}

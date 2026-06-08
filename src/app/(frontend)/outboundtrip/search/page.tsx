@@ -38,6 +38,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   }
 
   const { results, fullUrl } = await searchTours(params);
+  const currentSort = params.sort ?? "new";
 
   return (
     <>
@@ -62,13 +63,13 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
               </h1>
               <span aria-hidden className="block w-12 h-px bg-brand-red mx-auto mt-5" />
             </div>
-            <TourSearch />
+            <TourSearch initial={params} />
           </Container>
         </section>
 
         {/* ── Results ── */}
         <section className="bg-brand-paper">
-          <TourResults results={results} seeAllUrl={fullUrl} />
+          <TourResults key={fullUrl} results={results} seeAllUrl={fullUrl} sort={currentSort} query={params} />
         </section>
       </main>
 

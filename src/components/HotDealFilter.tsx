@@ -121,7 +121,7 @@ export function HotDealFilter({ deals }: { deals: HotDeal[] }) {
               </div>
 
               <a
-                href={x.href}
+                href={`/outboundtrip/tour/${x.id}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-2 text-[14px] md:text-[15px] font-semibold leading-snug text-brand-ink line-clamp-2 transition-colors hover:text-brand-red"

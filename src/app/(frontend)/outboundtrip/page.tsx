@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
 import { Footer, OverseasPackages } from "@/components/sections";
 import { StickyCTA } from "@/components/StickyCTA";
+import { OutboundDiscountBar } from "@/components/OutboundDiscountBar";
 import { RevealObserver } from "@/lib/site-context";
 import { getHotDeals } from "@/lib/hot-deals";
 
@@ -29,6 +30,7 @@ export default async function OutboundTripPage() {
       <RevealObserver />
       <Nav />
       <StickyCTA />
+      <OutboundDiscountBar />
 
       <main>
         {/* ทัวร์ต่างประเทศ — country-filtered hot-deal board, gallery moved to the bottom */}

@@ -1,7 +1,11 @@
 "use client";
+import Link from "next/link";
 import { useSite } from "@/lib/site-context";
 import { Logo } from "../Nav";
 import { Container } from "./_layout";
+
+const LINK_CLS =
+  "text-[13px] no-underline text-white/80 hover:text-white transition-colors duration-300 font-light";
 
 export function Footer() {
   const { t } = useSite();
@@ -22,9 +26,17 @@ export function Footer() {
               <ul className="list-none p-0 m-0 grid gap-3">
                 {col.links.map((l, j) => (
                   <li key={j}>
-                    <a href="#" className="text-[13px] no-underline text-white/80 hover:text-white transition-colors duration-300 font-light">
-                      {l}
-                    </a>
+                    {l.href.startsWith("/") ? (
+                      <Link href={l.href} className={LINK_CLS}>{l.label}</Link>
+                    ) : (
+                      <a
+                        href={l.href}
+                        {...(l.href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                        className={LINK_CLS}
+                      >
+                        {l.label}
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>

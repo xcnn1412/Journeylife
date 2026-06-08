@@ -197,7 +197,8 @@ export function OverseasPackages({ hotDeals = [] }: { hotDeals?: HotDeal[] }) {
               width={340}
               height={255}
               priority={false}
-              className="mascot-fly h-auto w-full drop-shadow-[0_24px_36px_rgba(0,0,0,.45)]"
+              style={{ height: "auto" }}
+              className="mascot-fly w-full drop-shadow-[0_24px_36px_rgba(0,0,0,.45)]"
             />
           </div>
         </div>
@@ -289,6 +290,7 @@ export function OverseasPackages({ hotDeals = [] }: { hotDeals?: HotDeal[] }) {
                   alt={lang === "th" ? "น้องเจอร์นี่สวัสดี" : "Journey mascot waving hello"}
                   width={240}
                   height={240}
+                  style={{ height: "auto" }}
                   className="mascot-fly pointer-events-none absolute -top-1 right-1 z-[5] hidden w-[82px] drop-shadow-[0_12px_20px_rgba(0,0,0,.5)] sm:block lg:w-[104px]"
                 />
 

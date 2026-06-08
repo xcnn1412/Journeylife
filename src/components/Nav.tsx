@@ -63,8 +63,9 @@ export function Nav() {
     { k: "services" as const, href: "/#our-services" },
     { k: "overseas" as const, href: "/#overseas-packages" },
     { k: "portfolio" as const, href: "/portfolio" },
+    { k: "about" as const, href: "/aboutus" },
     { k: "clients" as const, href: "/#clients" },
-    { k: "contact" as const, href: "/#contact" },
+    { k: "contact" as const, href: "/contact" },
   ];
 
   return (
@@ -75,7 +76,7 @@ export function Nav() {
       )}
       <div className={`max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10 flex items-center justify-between transition-all duration-500 ${scrolled ? "py-3.5" : "py-5 md:py-6"}`}>
         <Link href="/" className={`no-underline ${onDark ? "[filter:drop-shadow(0_2px_6px_rgba(0,0,0,.45))]" : ""}`}><Logo size={32} dark={onDark}/></Link>
-        <div className="hidden lg:flex items-center gap-6 xl:gap-8">
+        <div className="hidden lg:flex items-center gap-4 xl:gap-7">
           {links.map(l => (
             <Link
               key={l.k}
@@ -103,7 +104,7 @@ export function Nav() {
             ))}
           </div>
           <Link
-            href="/#contact"
+            href="/contact"
             className={`btn hidden md:inline-flex !px-5 !py-3 !text-[11px] ${onDark ? "bg-white text-brand-blue hover:-translate-y-px [box-shadow:0_10px_30px_-10px_rgba(0,0,0,.5)]" : "btn-blue"}`}
           >
             {t.cta.quote}<span className="arrow">→</span>
@@ -122,7 +123,7 @@ export function Nav() {
           {links.map(l => (
             <Link key={l.k} href={l.href} onClick={() => setOpen(false)} className="block py-3.5 text-[13px] font-semibold tracking-[0.22em] uppercase border-b border-brand-line no-underline text-brand-ink">{t.nav[l.k]}</Link>
           ))}
-          <Link href="/#contact" onClick={() => setOpen(false)} className="btn btn-blue mt-5 w-full justify-center">{t.cta.quote}</Link>
+          <Link href="/contact" onClick={() => setOpen(false)} className="btn btn-blue mt-5 w-full justify-center">{t.cta.quote}</Link>
         </div>
       )}
     </nav>

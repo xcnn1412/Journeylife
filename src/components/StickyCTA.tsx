@@ -16,10 +16,10 @@ export function StickyCTA() {
 
   return (
     <aside className="fixed right-2 sm:right-3 md:right-5 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center">
-      {/* Mascot + speech bubble — clicks through to the contact form */}
+      {/* Mascot + speech bubble — clicks through to the contact page */}
       <a
-        href="#contact"
-        aria-label={lang === "th" ? "ปรึกษาฟรี — ไปที่ฟอร์มติดต่อ" : "Free consult — go to contact form"}
+        href="/contact"
+        aria-label={lang === "th" ? "ปรึกษาฟรี — ไปหน้าติดต่อเรา" : "Free consult — go to the contact page"}
         className="group/m mb-2 flex flex-col items-center cta-pop-in"
       >
         <span className="bubble-bob relative hidden sm:block rounded-full bg-brand-blue px-3 py-1 text-[11px] font-semibold leading-none text-white shadow-[0_8px_20px_-8px_rgba(13,43,94,.7)]">
@@ -31,6 +31,7 @@ export function StickyCTA() {
           alt={lang === "th" ? "น้องเจอร์นี่" : "Journey mascot"}
           width={80}
           height={80}
+          priority
           className="mascot-fly mt-1 h-12 w-12 sm:h-[72px] sm:w-[72px] drop-shadow-[0_12px_20px_rgba(13,43,94,.45)] transition-transform duration-300 group-hover/m:scale-110 md:h-20 md:w-20"
         />
       </a>

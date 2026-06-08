@@ -43,7 +43,8 @@ export function Registration() {
                 alt={lang === "th" ? "น้องเจอร์นี่ยกนิ้วโป้ง การันตีระบบลงทะเบียน" : "Journey mascot giving a thumbs-up"}
                 width={300}
                 height={400}
-                className="h-auto w-full drop-shadow-[0_16px_24px_rgba(6,10,30,.5)]"
+                style={{ height: "auto" }}
+                className="w-full drop-shadow-[0_16px_24px_rgba(6,10,30,.5)]"
               />
             </div>
           </div>

@@ -36,7 +36,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="th" className={kanit.variable}>
+    <html lang="th" data-scroll-behavior="smooth" className={kanit.variable}>
       <head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{
           __html: JSON.stringify({

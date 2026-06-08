@@ -59,7 +59,8 @@ export function Pillars() {
               alt={lang === "th" ? "น้องเจอร์นี่" : "Journey mascot"}
               width={210}
               height={210}
-              className="float-soft h-auto w-full drop-shadow-[0_18px_28px_rgba(13,43,94,.35)]"
+              style={{ height: "auto" }}
+              className="float-soft w-full drop-shadow-[0_18px_28px_rgba(13,43,94,.35)]"
             />
             {/* Floating heart accent */}
             <span aria-hidden className="heart-beat absolute top-3 right-2 text-brand-red drop-shadow-[0_4px_8px_rgba(200,16,46,.4)]">

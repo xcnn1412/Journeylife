@@ -15,6 +15,7 @@ import type { PortfolioCard } from "@/components/sections/portfolio";
 import { StickyCTA } from "@/components/StickyCTA";
 import { RevealObserver } from "@/lib/site-context";
 import { getPayloadClient, mediaImage } from "@/lib/payload";
+import { getHotDeals } from "@/lib/hot-deals";
 
 // Statically cached + ISR; the Posts hooks revalidate "/" on publish/edit.
 export const revalidate = 600;
@@ -43,7 +44,7 @@ async function getPortfolioCards(): Promise<PortfolioCard[]> {
 }
 
 export default async function Home() {
-  const portfolioCards = await getPortfolioCards();
+  const [portfolioCards, hotDeals] = await Promise.all([getPortfolioCards(), getHotDeals()]);
 
   return (
     <>
@@ -60,9 +61,9 @@ export default async function Home() {
 
         {/* Offer — what we do */}
         <Pillars />
-        <OverseasPackages />
         <Registration />
         <LuckyDraw />
+        <OverseasPackages hotDeals={hotDeals} />
 
         {/* Proof of work + who trusts us */}
         <Portfolio posts={portfolioCards} />

@@ -1,8 +1,10 @@
 "use client";
 import type { CSSProperties } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useSite } from "@/lib/site-context";
 import { TourSearch } from "@/components/TourSearch";
+import type { HotDeal } from "@/lib/hot-deals";
 import { Container } from "./_layout";
 
 /* Per-country visual mock — flag + themed gradient. Swap each `mock` div for a
@@ -45,9 +47,95 @@ function PhotoRow({ photos, reverse, dur }: { photos: string[]; reverse?: boolea
   );
 }
 
-export function OverseasPackages() {
-  const { t } = useSite();
+/** Hot-deal marquee row — each banner links to its booking page (new tab).
+    The list is widened so a -50% scroll loops seamlessly even with few deals. */
+function DealRow({ deals, reverse, dur }: { deals: HotDeal[]; reverse?: boolean; dur: string }) {
+  const base = deals.length >= 10 ? deals : [...deals, ...deals];
+  return (
+    <div className={`logo-row${reverse ? " rev" : ""}`} style={{ "--dur": dur } as CSSProperties}>
+      {[0, 1].map((copy) =>
+        base.map((d, i) => (
+          <a
+            key={`${copy}-${i}-${d.id}`}
+            href={d.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="deal-cell"
+            aria-hidden={copy === 1}
+            tabIndex={copy === 1 ? -1 : undefined}
+          >
+            <img
+              src={d.img}
+              alt={copy === 0 ? d.alt : ""}
+              loading="lazy"
+              decoding="async"
+              draggable={false}
+            />
+          </a>
+        )),
+      )}
+    </div>
+  );
+}
+
+const pad2 = (n: number) => String(n).padStart(2, "0");
+
+/** Live "final 3 days" countdown. Rolls on a global 3-day cycle so the urgency
+    timer never dies. Computed client-side only (avoids hydration mismatch). */
+function Countdown({ units }: { units: { d: string; h: string; m: string; s: string } }) {
+  const [ms, setMs] = useState<number | null>(null);
+
+  useEffect(() => {
+    const CYCLE = 3 * 24 * 60 * 60 * 1000; // 3 days
+    const tick = () => {
+      const now = Date.now();
+      setMs(Math.ceil((now + 1) / CYCLE) * CYCLE - now);
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const t = ms ?? 0;
+  const cells: [number, string][] = [
+    [Math.floor(t / 86400000), units.d],
+    [Math.floor(t / 3600000) % 24, units.h],
+    [Math.floor(t / 60000) % 60, units.m],
+    [Math.floor(t / 1000) % 60, units.s],
+  ];
+
+  return (
+    <div className="flex items-start justify-center gap-2 sm:gap-3" suppressHydrationWarning>
+      {cells.map(([val, label], i) => (
+        <div key={label} className="flex items-start">
+          <div className="flex flex-col items-center">
+            {/* flip-clock tile — dark maroon to sit on the red console */}
+            <span className="relative grid place-items-center w-[50px] h-[58px] sm:w-[56px] sm:h-[66px] overflow-hidden rounded-lg bg-linear-to-b from-[#54101c] to-[#240509] ring-1 ring-white/15 shadow-[0_14px_28px_-16px_rgba(0,0,0,.85),inset_0_1px_0_rgba(255,255,255,.14)]">
+              <span aria-hidden className="absolute inset-x-0 top-0 h-1/2 bg-white/[0.05]" />
+              {/* split-flap seam */}
+              <span aria-hidden className="absolute inset-x-0 top-1/2 h-px bg-black/55" />
+              <span aria-hidden className="absolute inset-x-0 top-1/2 mt-px h-px bg-white/[0.07]" />
+              <span className="relative h-display text-[25px] sm:text-[30px] leading-none text-white tabular-nums">{pad2(val)}</span>
+            </span>
+            <span className="mt-2 text-[9px] sm:text-[9.5px] tracking-wide-cap uppercase text-white/70">
+              {label}
+            </span>
+          </div>
+          {i < cells.length - 1 && (
+            <span aria-hidden className="h-display text-[26px] sm:text-[34px] leading-none text-white/40 px-0.5 sm:px-1 pt-4 sm:pt-5">:</span>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function OverseasPackages({ hotDeals = [] }: { hotDeals?: HotDeal[] }) {
+  const { t, lang } = useSite();
   const p = t.overseasPackages;
+  const d = t.contact.direct;
+  const tel = `tel:${d.phone.replace(/[^\d+]/g, "")}`;
+  const lineHref = `https://line.me/R/ti/p/${d.line}`;
 
   return (
     <section
@@ -164,21 +252,121 @@ export function OverseasPackages() {
             );
           })}
         </div>
-
-        {/* Gallery heading */}
-        <div className="reveal mt-20 md:mt-28 text-center">
-          <span aria-hidden className="block w-12 h-px bg-brand-red mx-auto mb-6" />
-          <h3 className="h-display text-[22px] sm:text-[26px] md:text-[32px] text-white">
-            {p.galleryTitle}
-          </h3>
-        </div>
       </Container>
 
-      {/* Full-bleed photo marquee — real moments from trips */}
-      <div className="reveal logo-marquee overflow-hidden select-none mt-10 md:mt-12">
-        <PhotoRow photos={GALLERY[0]} dur="72s" />
-        <PhotoRow photos={GALLERY[1]} dur="86s" reverse />
+      {/* Trip gallery — real moments */}
+      <div className="mt-20 md:mt-28">
+        <Container>
+          <div className="reveal text-center">
+            <span aria-hidden className="block w-12 h-px bg-brand-red mx-auto mb-6" />
+            <h3 className="h-display text-[22px] sm:text-[26px] md:text-[32px] text-white">
+              {p.galleryTitle}
+            </h3>
+          </div>
+        </Container>
+        <div className="reveal logo-marquee overflow-hidden select-none mt-10 md:mt-12">
+          <PhotoRow photos={GALLERY[0]} dur="72s" />
+          <PhotoRow photos={GALLERY[1]} dur="86s" reverse />
+        </div>
       </div>
+
+      {/* Hot deals — "โปรไฟไหม้": live promos pulled from tour.journeylife.co.th */}
+      {hotDeals.length > 0 && (
+        <div className="relative mt-16 md:mt-24">
+          <Container className="relative">
+            {/* Compact promo console — 30 (CTA) : 70 (slideshow) */}
+            <div className="reveal relative grid lg:grid-cols-[minmax(0,3fr)_minmax(0,7fr)] items-stretch overflow-hidden rounded-3xl border border-white/10 bg-brand-blue-deep/30 shadow-[0_40px_90px_-45px_rgba(0,0,0,.8)]">
+              {/* ── Left 30% — console ── */}
+              <div className="relative overflow-hidden bg-linear-to-br from-brand-red via-[#a90c24] to-brand-red-deep px-6 py-8 sm:px-8">
+                {/* depth — top sheen + soft glows */}
+                <span aria-hidden className="absolute inset-x-0 top-0 h-px bg-white/25" />
+                <span aria-hidden className="pointer-events-none absolute -bottom-20 -left-10 h-52 w-52 rounded-full bg-[#7e0a1d]/60 blur-3xl" />
+                <span aria-hidden className="pointer-events-none absolute -top-16 right-0 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
+
+                {/* Mascot greeter — น้องเจอร์นี่ สวัสดีฮะ (red suitcase ties into the red console) */}
+                <Image
+                  src="/mascot/journey-hello.png"
+                  alt={lang === "th" ? "น้องเจอร์นี่สวัสดี" : "Journey mascot waving hello"}
+                  width={240}
+                  height={240}
+                  className="mascot-fly pointer-events-none absolute -top-1 right-1 z-[5] hidden w-[82px] drop-shadow-[0_12px_20px_rgba(0,0,0,.5)] sm:block lg:w-[104px]"
+                />
+
+                <div className="relative flex flex-col items-center text-center lg:items-start lg:text-left">
+                  {/* Flame medallion — white on red */}
+                  <span className="relative grid h-11 w-11 place-items-center rounded-xl bg-white text-brand-red ring-1 ring-white/50 shadow-[0_12px_26px_-8px_rgba(0,0,0,.5)]">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                      <path d="M12 23a6.6 6.6 0 0 0 6.6-6.6c0-2.1-1-4-2.6-5.5-.4 1.3-1.4 2.1-2.6 2.1 1.1-2.1 0-4.7-2.1-6.3-.3 2.1-1.8 3.2-3.1 4.8-1 1.3-2.1 2.8-2.1 5A6.6 6.6 0 0 0 12 23Z" />
+                    </svg>
+                  </span>
+
+                  <span className="eyebrow block mt-4" style={{ color: "rgba(255,255,255,.75)" }}>{p.dealsEyebrow}</span>
+                  <h2 className="h-display mt-2 text-white" style={{ fontSize: "clamp(26px, 2.8vw, 40px)" }}>
+                    {p.dealsTitle}
+                  </h2>
+                  <p className="text-[13px] text-white/75 mt-2 font-light">{p.dealsSub}</p>
+
+                  {/* Urgency */}
+                  <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-white/15 ring-1 ring-white/35 px-3.5 py-1.5">
+                    <span className="relative flex h-2 w-2">
+                      <span aria-hidden className="absolute inline-flex h-full w-full rounded-full bg-white opacity-75 animate-ping" />
+                      <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+                    </span>
+                    <span className="text-[11px] font-semibold tracking-wide-cap uppercase text-white">{p.dealsUrgent}</span>
+                  </div>
+
+                  {/* Flip-clock countdown */}
+                  <div className="mt-4">
+                    <Countdown units={p.dealsUnits} />
+                  </div>
+
+                  {/* Booking CTAs — stacked, full width */}
+                  <div className="mt-6 flex w-full flex-col sm:flex-row lg:flex-col gap-2.5">
+                    <a
+                      href={lineHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn flex-1 justify-center gap-2 text-white hover:-translate-y-px"
+                      style={{ backgroundColor: "#06C755" }}
+                    >
+                      <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                        <path d="M12 3C6.48 3 2 6.62 2 11.07c0 3.99 3.55 7.33 8.35 7.96.33.07.77.22.88.5.1.26.07.66.03.92l-.14.85c-.04.26-.2 1.02.9.56 1.1-.46 5.92-3.49 8.08-5.97 1.49-1.64 2.2-3.3 2.2-4.99C22 6.62 17.52 3 12 3Z" />
+                      </svg>
+                      {p.dealsCtaLine}
+                    </a>
+                    <a href={tel} className="btn flex-1 justify-center gap-2 bg-white text-brand-red hover:-translate-y-px">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z" />
+                      </svg>
+                      {p.dealsCtaCall}
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              {/* ── Right 70% — slideshow ── */}
+              <div className="relative flex items-center border-t border-white/10 py-5 lg:border-t-0 lg:border-l">
+                <div className="logo-marquee w-full overflow-hidden select-none">
+                  <DealRow deals={hotDeals} dur="58s" />
+                </div>
+              </div>
+            </div>
+          </Container>
+
+          {/* View all */}
+          <div className="reveal mt-7 text-center">
+            <a
+              href="https://tour.journeylife.co.th/hotdeal.php"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-2 border-b border-white/25 pb-1 text-[12px] tracking-wide-cap uppercase font-semibold text-white/75 transition-colors hover:border-white hover:text-white"
+            >
+              {p.dealsViewAll}
+              <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+            </a>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

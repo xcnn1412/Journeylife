@@ -60,10 +60,9 @@ export function Nav() {
   // Absolute hrefs so the nav works from sub-pages (/services/*, /portfolio/*) too.
   // Order mirrors the homepage section flow.
   const links = [
+    { k: "about" as const, href: "/aboutus" },
     { k: "services" as const, href: "/#our-services" },
     { k: "overseas" as const, href: "/#overseas-packages" },
-    { k: "portfolio" as const, href: "/portfolio" },
-    { k: "about" as const, href: "/aboutus" },
     { k: "clients" as const, href: "/#clients" },
     { k: "contact" as const, href: "/contact" },
   ];

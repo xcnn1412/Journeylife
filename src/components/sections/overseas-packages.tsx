@@ -4,8 +4,15 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useSite } from "@/lib/site-context";
 import { TourSearch } from "@/components/TourSearch";
+import { HotDealFilter } from "@/components/HotDealFilter";
 import type { HotDeal } from "@/lib/hot-deals";
 import { Container } from "./_layout";
+
+/** Collapse repeated banners so the marquee never shows the same image twice. */
+function dedupeByImg(deals: HotDeal[]): HotDeal[] {
+  const seen = new Set<string>();
+  return deals.filter((x) => (seen.has(x.img) ? false : (seen.add(x.img), true)));
+}
 
 /* Per-country visual mock — flag + themed gradient. Swap each `mock` div for a
    real <Image> later; the card markup stays the same. (Visuals are an FE concern,
@@ -130,12 +137,21 @@ function Countdown({ units }: { units: { d: string; h: string; m: string; s: str
   );
 }
 
-export function OverseasPackages({ hotDeals = [] }: { hotDeals?: HotDeal[] }) {
+export function OverseasPackages({
+  hotDeals = [],
+  dealsVariant = "marquee",
+  galleryAtBottom = false,
+}: {
+  hotDeals?: HotDeal[];
+  dealsVariant?: "marquee" | "filter";
+  galleryAtBottom?: boolean;
+}) {
   const { t, lang } = useSite();
   const p = t.overseasPackages;
   const d = t.contact.direct;
   const tel = `tel:${d.phone.replace(/[^\d+]/g, "")}`;
   const lineHref = `https://line.me/R/ti/p/${d.line}`;
+  const marqueeDeals = dedupeByImg(hotDeals);
 
   return (
     <section
@@ -255,8 +271,10 @@ export function OverseasPackages({ hotDeals = [] }: { hotDeals?: HotDeal[] }) {
         </div>
       </Container>
 
+      {/* Gallery + deals — order swaps when galleryAtBottom is set (e.g. /outboundtrip) */}
+      <div className="flex flex-col">
       {/* Trip gallery — real moments */}
-      <div className="mt-20 md:mt-28">
+      <div className={`mt-20 md:mt-28 ${galleryAtBottom ? "order-2" : "order-1"}`}>
         <Container>
           <div className="reveal text-center">
             <span aria-hidden className="block w-12 h-px bg-brand-red mx-auto mb-6" />
@@ -271,8 +289,16 @@ export function OverseasPackages({ hotDeals = [] }: { hotDeals?: HotDeal[] }) {
         </div>
       </div>
 
-      {/* Hot deals — "โปรไฟไหม้": live promos pulled from tour.journeylife.co.th */}
-      {hotDeals.length > 0 && (
+      {/* Hot deals — "โปรไฟไหม้": live promos from tour.journeylife.co.th.
+          filter = country-grouped price board (/outboundtrip); marquee = homepage console. */}
+      <div className={galleryAtBottom ? "order-1" : "order-2"}>
+      {dealsVariant === "filter" ? (
+        hotDeals.length > 0 ? (
+          <div className="relative mt-16 md:mt-24">
+            <HotDealFilter deals={hotDeals} />
+          </div>
+        ) : null
+      ) : marqueeDeals.length > 0 ? (
         <div className="relative mt-16 md:mt-24">
           <Container className="relative">
             {/* Compact promo console — 30 (CTA) : 70 (slideshow) */}
@@ -349,7 +375,7 @@ export function OverseasPackages({ hotDeals = [] }: { hotDeals?: HotDeal[] }) {
               {/* ── Right 70% — slideshow ── */}
               <div className="relative flex items-center border-t border-white/10 py-5 lg:border-t-0 lg:border-l">
                 <div className="logo-marquee w-full overflow-hidden select-none">
-                  <DealRow deals={hotDeals} dur="58s" />
+                  <DealRow deals={marqueeDeals} dur="58s" />
                 </div>
               </div>
             </div>
@@ -368,7 +394,9 @@ export function OverseasPackages({ hotDeals = [] }: { hotDeals?: HotDeal[] }) {
             </a>
           </div>
         </div>
-      )}
+      ) : null}
+      </div>
+      </div>
     </section>
   );
 }

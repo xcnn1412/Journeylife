@@ -1,12 +1,19 @@
 "use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useSite } from "@/lib/site-context";
+import { COUNTRIES, POPULAR_TH, CITIES } from "@/lib/tour-destinations";
+import { FlagSelect } from "@/components/FlagSelect";
 
-/* Forwards a search to the booking site (tour.journeylife.co.th/search.php).
-   Field names + value formats mirror that site's real GET form exactly:
-   keyword, keywords, priceRange, cstartdate, cenddate, day, tourid, sort=new.
+/* Runs a tour search and shows results inside our site (/outboundtrip/search),
+   which fetches tour.journeylife.co.th/search.php server-side.
+   Country + city are picked from dropdowns (built from the booking site's real
+   destination list) so the user can't mistype — country submits as `keyword`,
+   city as `keywords`. Other field names/value formats mirror that site exactly:
+   priceRange, cstartdate, cenddate, day, tourid, sort=new.
    Dates submit as DD-MM-BBBB (Buddhist year = Gregorian + 543). */
 
-const SEARCH_ENDPOINT = "https://tour.journeylife.co.th/search.php";
+const RESULTS_ROUTE = "/outboundtrip/search";
 
 // priceRange option values, copied verbatim from the booking site.
 const PRICE_RANGES = [
@@ -17,6 +24,10 @@ const PRICE_RANGES = [
 ];
 
 const DAYS = Array.from({ length: 30 }, (_, i) => i + 1);
+
+const POPULAR = POPULAR_TH.map((th) => COUNTRIES.find((c) => c.th === th)).filter(
+  (c): c is (typeof COUNTRIES)[number] => Boolean(c),
+);
 
 const baht = (n: string) => Number(n).toLocaleString("en-US");
 
@@ -31,6 +42,11 @@ function toBuddhist(iso: string): string {
 export function TourSearch() {
   const { t } = useSite();
   const s = t.overseasPackages.search;
+  const router = useRouter();
+
+  const [country, setCountry] = useState("");
+  const [city, setCity] = useState("");
+  const cityOptions = country ? CITIES[country] ?? [] : [];
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -46,20 +62,22 @@ export function TourSearch() {
       if (v) params.set(key, v);
     }
 
-    window.open(`${SEARCH_ENDPOINT}?${params.toString()}`, "_blank", "noopener,noreferrer");
+    router.push(`${RESULTS_ROUTE}?${params.toString()}`);
   }
 
-  const label = "block text-[12px] font-semibold text-brand-ink mb-1.5";
+  const label = "flex items-center gap-1.5 text-[12px] font-semibold text-brand-ink mb-1.5";
   const field =
     "w-full rounded-lg border border-brand-line bg-white px-3.5 py-2.5 text-[14px] text-brand-ink placeholder:text-brand-mute/60 outline-none transition focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15";
+  const opt = (
+    <span className="text-[10px] font-normal text-brand-mute/70 tracking-wide">({s.optional})</span>
+  );
 
   return (
     <form
       onSubmit={handleSubmit}
-      // No-JS fallback: still submits (dates degrade to yyyy-mm-dd, which JS fixes when enabled).
-      action={SEARCH_ENDPOINT}
+      // No-JS fallback: GET straight to our results route (dates degrade to yyyy-mm-dd).
+      action={RESULTS_ROUTE}
       method="get"
-      target="_blank"
       className="rounded-2xl bg-white p-5 md:p-6 shadow-[0_24px_60px_-24px_rgba(10,16,36,.55)] ring-1 ring-black/5 text-left"
     >
       <input type="hidden" name="sort" value="new" />
@@ -75,18 +93,45 @@ export function TourSearch() {
 
       {/* Fields */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Country — searchable dropdown with flag images (the primary, typo-proof filter) */}
         <div>
-          <label htmlFor="ts-country" className={label}>{s.country}</label>
-          <input id="ts-country" name="keyword" type="text" placeholder={s.countryPh} className={field} />
+          <span className={label}>{s.country}</span>
+          <FlagSelect
+            value={country}
+            onChange={(v) => { setCountry(v); setCity(""); }}
+            name="keyword"
+            placeholder={s.countryPh}
+            searchPlaceholder={s.searchCountry}
+            noMatch={s.noMatch}
+            groups={[
+              { label: s.popular, items: POPULAR },
+              { label: s.allCountries, items: COUNTRIES },
+            ]}
+            fieldClass={field}
+          />
         </div>
 
+        {/* City — dependent dropdown */}
         <div>
-          <label htmlFor="ts-keyword" className={label}>{s.keyword}</label>
-          <input id="ts-keyword" name="keywords" type="text" placeholder={s.keywordPh} className={field} />
+          <label htmlFor="ts-city" className={label}>{s.city} {opt}</label>
+          <select
+            id="ts-city"
+            name="keywords"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            disabled={!cityOptions.length}
+            className={`${field} disabled:bg-brand-paper disabled:text-brand-mute/60 disabled:cursor-not-allowed`}
+          >
+            <option value="">{s.cityPh}</option>
+            {cityOptions.map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
         </div>
 
+        {/* Price range */}
         <div>
-          <label htmlFor="ts-price" className={label}>{s.price}</label>
+          <label htmlFor="ts-price" className={label}>{s.price} {opt}</label>
           <select id="ts-price" name="priceRange" defaultValue="" className={field}>
             <option value="">{s.pricePh}</option>
             {PRICE_RANGES.map((r) => {
@@ -100,8 +145,9 @@ export function TourSearch() {
           </select>
         </div>
 
+        {/* Duration */}
         <div>
-          <label htmlFor="ts-day" className={label}>{s.days}</label>
+          <label htmlFor="ts-day" className={label}>{s.days} {opt}</label>
           <select id="ts-day" name="day" defaultValue="" className={field}>
             <option value="">{s.daysPh}</option>
             {DAYS.map((d) => (
@@ -112,15 +158,16 @@ export function TourSearch() {
 
         {/* Travel date range */}
         <div className="sm:col-span-2">
-          <span className={label}>{s.range}</span>
+          <span className={label}>{s.range} {opt}</span>
           <div className="grid grid-cols-2 gap-3">
             <input name="cstartdate" type="date" aria-label={s.from} className={field} />
             <input name="cenddate" type="date" aria-label={s.to} className={field} />
           </div>
         </div>
 
+        {/* Tour code */}
         <div className="sm:col-span-2 lg:col-span-1">
-          <label htmlFor="ts-code" className={label}>{s.code}</label>
+          <label htmlFor="ts-code" className={label}>{s.code} {opt}</label>
           <input id="ts-code" name="tourid" type="text" placeholder={s.codePh} className={field} />
         </div>
 

@@ -62,7 +62,7 @@ export function Nav() {
   const links = [
     { k: "about" as const, href: "/aboutus" },
     { k: "services" as const, href: "/#our-services" },
-    { k: "overseas" as const, href: "/#overseas-packages" },
+    { k: "overseas" as const, href: "/outboundtrip" },
     { k: "clients" as const, href: "/#clients" },
     { k: "contact" as const, href: "/contact" },
   ];

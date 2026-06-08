@@ -57,10 +57,12 @@ export function Nav() {
 
   const onDark = !scrolled;
 
-  // Absolute hrefs so the nav works from sub-pages (/services/*) too.
+  // Absolute hrefs so the nav works from sub-pages (/services/*, /portfolio/*) too.
+  // Order mirrors the homepage section flow.
   const links = [
-    { k: "incentive" as const, href: "/#our-services" },
-    { k: "services" as const, href: "/services" },
+    { k: "services" as const, href: "/#our-services" },
+    { k: "overseas" as const, href: "/#overseas-packages" },
+    { k: "portfolio" as const, href: "/portfolio" },
     { k: "clients" as const, href: "/#clients" },
     { k: "contact" as const, href: "/#contact" },
   ];
@@ -73,12 +75,12 @@ export function Nav() {
       )}
       <div className={`max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10 flex items-center justify-between transition-all duration-500 ${scrolled ? "py-3.5" : "py-5 md:py-6"}`}>
         <Link href="/" className={`no-underline ${onDark ? "[filter:drop-shadow(0_2px_6px_rgba(0,0,0,.45))]" : ""}`}><Logo size={32} dark={onDark}/></Link>
-        <div className="hidden lg:flex items-center gap-10">
+        <div className="hidden lg:flex items-center gap-6 xl:gap-8">
           {links.map(l => (
             <Link
               key={l.k}
               href={l.href}
-              className={`nav-link text-[11px] tracking-wide-cap uppercase font-semibold transition-colors ${onDark ? "text-white hover:text-white [text-shadow:0_1px_4px_rgba(0,0,0,.5)]" : "text-brand-ink"}`}
+              className={`nav-link text-[11px] tracking-[0.14em] uppercase font-semibold whitespace-nowrap transition-colors ${onDark ? "text-white hover:text-white [text-shadow:0_1px_4px_rgba(0,0,0,.5)]" : "text-brand-ink"}`}
             >
               {t.nav[l.k]}
             </Link>

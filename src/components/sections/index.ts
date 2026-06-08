@@ -1,9 +1,12 @@
 export { Clients } from "./clients";
 export { Contact } from "./contact";
+export { ContactStrip } from "./contact-strip";
 export { Destinations } from "./destinations";
 export { Footer } from "./footer";
+export { HowWeWork } from "./how-we-work";
 export { LuckyDraw } from "./lucky-draw";
 export { Marquee } from "./marquee";
+export { OverseasPackages } from "./overseas-packages";
 export { Pillars } from "./pillars";
 export { Portfolio } from "./portfolio";
 export { Process } from "./process";

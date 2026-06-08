@@ -321,6 +321,81 @@ body {
 }
 
 /* ─────────────────────────────────────────────────────────
+   Client logo wall — grayscale marquee, colour on hover
+   (track content is duplicated so translateX(-50%) loops seamlessly)
+   ───────────────────────────────────────────────────────── */
+.logo-marquee {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+.logo-row {
+  display: flex;
+  width: max-content;
+  align-items: center;
+  animation: scroll-x var(--dur, 60s) linear infinite;
+}
+.logo-row.rev { animation-direction: reverse; }
+.logo-marquee:hover .logo-row { animation-play-state: paused; }
+
+.logo-cell {
+  flex: 0 0 auto;
+  width: clamp(132px, 14vw, 184px);
+  height: clamp(72px, 8vw, 96px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 clamp(16px, 2vw, 30px);
+}
+.logo-cell img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  object-fit: contain;
+  filter: grayscale(1);
+  opacity: .48;
+  transition: filter .4s ease, opacity .4s ease, transform .4s ease;
+}
+.logo-cell:hover img {
+  filter: grayscale(0);
+  opacity: 1;
+  transform: scale(1.07);
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-row {
+    animation: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+  .logo-dup { display: none; } /* drop the seamless-loop copy when static */
+}
+
+/* ─────────────────────────────────────────────────────────
+   Photo wall — image marquee (reuses .logo-marquee + .logo-row).
+   Fixed HEIGHT, auto WIDTH → every photo keeps its native aspect ratio
+   (portrait stays tall-narrow, landscape stays wide) with no cropping,
+   while the row stays a tidy uniform height.
+   ───────────────────────────────────────────────────────── */
+.photo-cell {
+  flex: 0 0 auto;
+  height: clamp(170px, 22vw, 250px);
+  padding: 0 clamp(5px, 0.7vw, 9px);
+}
+.photo-cell img {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-width: none;
+  border-radius: 14px;
+  box-shadow: 0 18px 40px -22px rgba(0, 0, 0, .65);
+  transition: transform .5s ease, box-shadow .5s ease;
+}
+.photo-cell:hover img {
+  transform: scale(1.03);
+  box-shadow: 0 24px 52px -20px rgba(0, 0, 0, .75);
+}
+
+/* ─────────────────────────────────────────────────────────
    Subtle floating motion for hero stat plate
    ───────────────────────────────────────────────────────── */
 @keyframes float-soft {

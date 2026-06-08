@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { useSite } from "@/lib/site-context";
 import { Container } from "./_layout";
 
@@ -7,7 +8,7 @@ import { Container } from "./_layout";
    QR-code online check-in, shown via a vertical demo video.
    ────────────────────────────────────────────────────────── */
 export function Registration() {
-  const { t } = useSite();
+  const { t, lang } = useSite();
   const r = t.registration;
 
   return (
@@ -18,18 +19,32 @@ export function Registration() {
 
       <Container className="relative py-14 sm:py-20 md:py-28">
         <div className="grid lg:grid-cols-[360px_1fr] items-center gap-12 lg:gap-20">
-          {/* Demo video — vertical 9:16 */}
-          <div className="reveal mx-auto w-full max-w-[300px] md:max-w-[320px] float-soft">
-            <div className="relative aspect-[9/16] overflow-hidden rounded-3xl bg-brand-ink ring-1 ring-white/15 shadow-[0_30px_70px_-20px_rgba(6,10,30,.7)]">
-              <video
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="absolute inset-0 w-full h-full object-cover"
-              >
-                <source src="/registration/registration.mp4" type="video/mp4" />
-              </video>
+          {/* Demo video — vertical 9:16, with น้องเจอร์นี่ approving the check-in */}
+          <div className="reveal relative mx-auto w-full max-w-[300px] md:max-w-[340px]">
+            <div className="float-soft">
+              <div className="relative aspect-[9/16] overflow-hidden rounded-3xl bg-brand-ink ring-1 ring-white/15 shadow-[0_30px_70px_-20px_rgba(6,10,30,.7)]">
+                <video
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="absolute inset-0 w-full h-full object-cover"
+                >
+                  <source src="/registration/registration.mp4" type="video/mp4" />
+                </video>
+              </div>
+            </div>
+
+            {/* Mascot — thumbs-up, peeking from the phone's lower-right corner */}
+            <div className="mascot-fly pointer-events-none absolute -bottom-5 -right-3 sm:-right-8 z-10 w-[108px] sm:w-[132px] md:w-[150px]">
+              <div aria-hidden className="absolute inset-0 -z-10 translate-y-3 scale-90 rounded-full bg-brand-red/25 blur-2xl" />
+              <Image
+                src="/mascot/journey-great.png"
+                alt={lang === "th" ? "น้องเจอร์นี่ยกนิ้วโป้ง การันตีระบบลงทะเบียน" : "Journey mascot giving a thumbs-up"}
+                width={300}
+                height={400}
+                className="h-auto w-full drop-shadow-[0_16px_24px_rgba(6,10,30,.5)]"
+              />
             </div>
           </div>
 

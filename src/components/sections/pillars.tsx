@@ -1,8 +1,37 @@
 "use client";
+import type { CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSite } from "@/lib/site-context";
 import { Container } from "./_layout";
+
+/* Team photos in /public/team-gallery (resized from /public/source/ทีมงาน). */
+const TEAM_PHOTOS = Array.from({ length: 22 }, (_, i) => `${String(i + 1).padStart(2, "0")}.jpg`);
+const THALF = Math.ceil(TEAM_PHOTOS.length / 2);
+const TEAM = [TEAM_PHOTOS.slice(0, THALF), TEAM_PHOTOS.slice(THALF)];
+
+/** One marquee row of team photos. Rendered twice so a -50% scroll loops
+    seamlessly; the second copy is aria-hidden and dropped under reduced-motion. */
+function PhotoRow({ photos, reverse, dur }: { photos: string[]; reverse?: boolean; dur: string }) {
+  return (
+    <div className={`logo-row${reverse ? " rev" : ""}`} style={{ "--dur": dur } as CSSProperties}>
+      {[0, 1].map((copy) =>
+        photos.map((file) => (
+          <div key={`${copy}-${file}`} className={copy === 1 ? "photo-cell logo-dup" : "photo-cell"}>
+            <img
+              src={`/team-gallery/${file}`}
+              alt={copy === 0 ? "ทีมงานมืออาชีพของ Journey Life" : ""}
+              aria-hidden={copy === 1}
+              loading="lazy"
+              decoding="async"
+              draggable={false}
+            />
+          </div>
+        )),
+      )}
+    </div>
+  );
+}
 
 /* ──────────────────────────────────────────────────────────
    PILLARS — "บริการของเรา": 8 service lines as photo cards.
@@ -103,6 +132,22 @@ export function Pillars() {
           </Link>
         </div>
       </Container>
+
+      {/* Team gallery band — full-bleed photo marquee */}
+      <div className="pb-16 md:pb-24">
+        <Container>
+          <div className="reveal text-center">
+            <span aria-hidden className="block w-12 h-px bg-brand-red mx-auto mb-6" />
+            <h3 className="h-display text-[22px] sm:text-[26px] md:text-[32px] text-brand-ink">
+              {p.galleryTitle}
+            </h3>
+          </div>
+        </Container>
+        <div className="reveal logo-marquee overflow-hidden select-none mt-10 md:mt-12">
+          <PhotoRow photos={TEAM[0]} dur="74s" />
+          <PhotoRow photos={TEAM[1]} dur="88s" reverse />
+        </div>
+      </div>
     </section>
   );
 }

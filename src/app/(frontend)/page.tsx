@@ -1,12 +1,13 @@
 import { Hero, Nav } from "@/components/Nav";
 import {
   Clients,
-  Contact,
+  ContactStrip,
   Footer,
+  HowWeWork,
   LuckyDraw,
+  OverseasPackages,
   Pillars,
   Portfolio,
-  Process,
   Registration,
   TrustBar,
 } from "@/components/sections";
@@ -59,6 +60,7 @@ export default async function Home() {
 
         {/* Offer — what we do */}
         <Pillars />
+        <OverseasPackages />
         <Registration />
         <LuckyDraw />
 
@@ -66,11 +68,11 @@ export default async function Home() {
         <Portfolio posts={portfolioCards} />
         <Clients />
 
-        {/* How we work */}
-        <Process />
+        {/* Conversion — 3-step path + lead form (owns the #contact anchor) */}
+        <HowWeWork />
 
-        {/* Conversion — brief form */}
-        <Contact />
+        {/* Contact channels — LINE / Messenger / Call / TikTok */}
+        <ContactStrip />
       </main>
 
       <Footer />

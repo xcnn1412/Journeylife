@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useSite } from "@/lib/site-context";
+import { localeHref } from "@/lib/locale";
 import { Logo } from "../Nav";
 import { Container } from "./_layout";
 
@@ -8,7 +9,7 @@ const LINK_CLS =
   "text-[13px] no-underline text-white/80 hover:text-white transition-colors duration-300 font-light";
 
 export function Footer() {
-  const { t } = useSite();
+  const { t, lang } = useSite();
   return (
     <footer className="bg-brand-ink text-white pt-16 sm:pt-20 pb-8 relative overflow-hidden">
       {/* Hairline brand-red glow at top */}
@@ -27,7 +28,7 @@ export function Footer() {
                 {col.links.map((l, j) => (
                   <li key={j}>
                     {l.href.startsWith("/") ? (
-                      <Link href={l.href} className={LINK_CLS}>{l.label}</Link>
+                      <Link href={localeHref(l.href, lang)} className={LINK_CLS}>{l.label}</Link>
                     ) : (
                       <a
                         href={l.href}

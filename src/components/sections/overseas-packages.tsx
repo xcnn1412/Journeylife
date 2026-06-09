@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSite } from "@/lib/site-context";
+import { localeHref } from "@/lib/locale";
 import { TourSearch } from "@/components/TourSearch";
 import { HotDealFilter } from "@/components/HotDealFilter";
 import { RouteFinderButton } from "@/components/route-finder/RouteFinder";
@@ -236,7 +237,7 @@ export function OverseasPackages({
             return (
               <Link
                 key={it.key}
-                href={`/outboundtrip/search?keyword=${encodeURIComponent(it.country)}&sort=new`}
+                href={localeHref(`/outboundtrip/search?keyword=${encodeURIComponent(it.country)}&sort=new`, lang)}
                 aria-label={`${it.country} — ${p.cardCta}`}
                 className="reveal card-lift group relative flex flex-col overflow-hidden rounded-xl bg-white text-brand-ink border border-brand-line"
                 style={{ transitionDelay: `${i * 60}ms` }}
@@ -316,7 +317,7 @@ export function OverseasPackages({
                 {/* Mascot greeter — น้องเจอร์นี่ สวัสดีฮะ (red suitcase ties into the red console) */}
                 <Image
                   src="/mascot/journey-hello.png"
-                  alt={lang === "th" ? "น้องเจอร์นี่สวัสดี" : "Journey mascot waving hello"}
+                  alt={lang === "th" ? "น้องเจอร์นี่สวัสดี" : lang === "zh" ? "Journey 吉祥物挥手问好" : "Journey mascot waving hello"}
                   width={240}
                   height={240}
                   style={{ height: "auto" }}

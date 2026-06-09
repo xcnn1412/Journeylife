@@ -1,5 +1,6 @@
 "use client";
 import type { Scored } from "@/lib/country-atlas";
+import { localeHref, type Locale } from "@/lib/locale";
 
 /* Final step — the 3 best-fit destinations. Each card links straight into the
    existing on-site search (/outboundtrip/search?keyword=<thai country>), so the
@@ -32,12 +33,14 @@ export function ResultCards({
   labelMap,
   copy,
   lineHref,
+  lang,
   onRestart,
 }: {
   top: Scored[];
   labelMap: Map<string, string>; // "qid:value" -> localized label, for the "why"
   copy: ResultCopy;
   lineHref: string;
+  lang: Locale;
   onRestart: () => void;
 }) {
   return (
@@ -57,7 +60,7 @@ export function ResultCards({
         {top.map((s, i) => {
           const why = [...new Set(s.matched.map((m) => labelMap.get(`${m.qid}:${m.value}`)).filter(Boolean))].slice(0, 4);
           const match = Math.round(s.normalized * 100);
-          const searchHref = `/outboundtrip/search?keyword=${encodeURIComponent(s.c.th)}`;
+          const searchHref = localeHref(`/outboundtrip/search?keyword=${encodeURIComponent(s.c.th)}`, lang);
           return (
             <article
               key={s.c.th}

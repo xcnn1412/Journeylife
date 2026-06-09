@@ -2,6 +2,7 @@
 import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useSite } from "@/lib/site-context";
+import { localeHref } from "@/lib/locale";
 import { Container } from "@/components/sections/_layout";
 import type { TourResult } from "@/lib/tour-search";
 
@@ -72,10 +73,11 @@ export function TourResults({
   sort: string; // current sort param: "new" | "asc" | "desc"
   query: Record<string, string>; // current search params, so we can re-sort in place
 }) {
-  const { t } = useSite();
+  const { t, lang } = useSite();
   const r = t.overseasPackages.searchResults;
   const d = t.contact.direct;
   const lineHref = `https://line.me/R/ti/p/${d.line}`;
+  const tourHref = (id: string | number) => localeHref(`/outboundtrip/tour/${id}`, lang);
 
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -97,7 +99,7 @@ export function TourResults({
     if (v === sort) return;
     const sp = new URLSearchParams(query);
     sp.set("sort", v);
-    startTransition(() => router.push(`${RESULTS_ROUTE}?${sp.toString()}`));
+    startTransition(() => router.push(`${localeHref(RESULTS_ROUTE, lang)}?${sp.toString()}`));
   };
 
   if (!results.length) {
@@ -156,7 +158,7 @@ export function TourResults({
             className="card-lift group flex flex-col overflow-hidden rounded-2xl bg-white border border-brand-line shadow-[0_24px_60px_-32px_rgba(10,16,36,.5)]"
           >
             {/* Banner */}
-            <a href={`/outboundtrip/tour/${x.id}`} target="_blank" rel="noopener noreferrer" className="relative block aspect-square overflow-hidden bg-brand-paper">
+            <a href={tourHref(x.id)} target="_blank" rel="noopener noreferrer" className="relative block aspect-square overflow-hidden bg-brand-paper">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={x.img}
@@ -181,7 +183,7 @@ export function TourResults({
               </div>
 
               <a
-                href={`/outboundtrip/tour/${x.id}`}
+                href={tourHref(x.id)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-2 text-[14px] md:text-[15px] font-semibold leading-snug text-brand-ink line-clamp-2 transition-colors hover:text-brand-red"
@@ -208,7 +210,7 @@ export function TourResults({
 
                 {/* CTAs */}
                 <div className="mt-4 grid grid-cols-2 gap-2">
-                  <a href={`/outboundtrip/tour/${x.id}`} target="_blank" rel="noopener noreferrer" className="btn btn-blue justify-center py-2.5! text-[12px]!">
+                  <a href={tourHref(x.id)} target="_blank" rel="noopener noreferrer" className="btn btn-blue justify-center py-2.5! text-[12px]!">
                     {r.detail}
                   </a>
                   <a

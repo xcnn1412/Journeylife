@@ -40,7 +40,7 @@ export function Registration() {
               <div aria-hidden className="absolute inset-0 -z-10 translate-y-3 scale-90 rounded-full bg-brand-red/25 blur-2xl" />
               <Image
                 src="/mascot/journey-great.png"
-                alt={lang === "th" ? "น้องเจอร์นี่ยกนิ้วโป้ง การันตีระบบลงทะเบียน" : "Journey mascot giving a thumbs-up"}
+                alt={lang === "th" ? "น้องเจอร์นี่ยกนิ้วโป้ง การันตีระบบลงทะเบียน" : lang === "zh" ? "Journey 吉祥物竖起大拇指，为登记系统背书" : "Journey mascot giving a thumbs-up"}
                 width={300}
                 height={400}
                 style={{ height: "auto" }}

@@ -6,9 +6,12 @@ import { isAdmin, isStaff } from "./access";
 async function revalidate(slug?: string) {
   try {
     const { revalidatePath } = await import("next/cache");
-    revalidatePath("/"); // homepage "ผลงานของเรา" preview cards
-    revalidatePath("/portfolio");
-    if (slug) revalidatePath(`/portfolio/${slug}`);
+    // Pages are locale-prefixed (/th, /en, /zh) — revalidate each locale.
+    for (const l of ["th", "en", "zh"] as const) {
+      revalidatePath(`/${l}`); // homepage "ผลงานของเรา" preview cards
+      revalidatePath(`/${l}/portfolio`);
+      if (slug) revalidatePath(`/${l}/portfolio/${slug}`);
+    }
   } catch {
     /* called outside Next request scope (e.g. CLI) — ignore */
   }

@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSite } from "@/lib/site-context";
+import { localeHref } from "@/lib/locale";
 import { COUNTRIES, POPULAR_TH, CITIES } from "@/lib/tour-destinations";
 import { FlagSelect } from "@/components/FlagSelect";
 
@@ -40,9 +41,10 @@ function toBuddhist(iso: string): string {
 }
 
 export function TourSearch({ initial }: { initial?: Record<string, string> }) {
-  const { t } = useSite();
+  const { t, lang } = useSite();
   const s = t.overseasPackages.search;
   const router = useRouter();
+  const resultsRoute = localeHref(RESULTS_ROUTE, lang);
 
   // Prefill from the current query (e.g. Fast-track sets `keyword=<country>`), so
   // the country shows up selected and the user can refine with a city next.
@@ -64,7 +66,7 @@ export function TourSearch({ initial }: { initial?: Record<string, string> }) {
       if (v) params.set(key, v);
     }
 
-    router.push(`${RESULTS_ROUTE}?${params.toString()}`);
+    router.push(`${resultsRoute}?${params.toString()}`);
   }
 
   const label = "flex items-center gap-1.5 text-[12px] font-semibold text-brand-ink mb-1.5";
@@ -78,7 +80,7 @@ export function TourSearch({ initial }: { initial?: Record<string, string> }) {
     <form
       onSubmit={handleSubmit}
       // No-JS fallback: GET straight to our results route (dates degrade to yyyy-mm-dd).
-      action={RESULTS_ROUTE}
+      action={resultsRoute}
       method="get"
       className="rounded-2xl bg-white p-5 md:p-6 shadow-[0_24px_60px_-24px_rgba(10,16,36,.55)] ring-1 ring-black/5 text-left"
     >

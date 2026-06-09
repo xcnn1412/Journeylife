@@ -6,9 +6,10 @@ import { StickyCTA } from "@/components/StickyCTA";
 import { Contact, Footer } from "@/components/sections";
 import { Container } from "@/components/sections/_layout";
 import { useSite, RevealObserver } from "@/lib/site-context";
+import { localeHref } from "@/lib/locale";
 
 export function ServicesIndex() {
-  const { t } = useSite();
+  const { t, lang } = useSite();
   const p = t.pillars;
 
   return (
@@ -37,7 +38,7 @@ export function ServicesIndex() {
               {p.items.map((it, i) => (
                 <Link
                   key={it.slug}
-                  href={`/services/${it.slug}`}
+                  href={localeHref(`/services/${it.slug}`, lang)}
                   className="reveal card-lift group relative flex flex-col overflow-hidden rounded-xl bg-white border border-brand-line"
                   style={{ transitionDelay: `${i * 60}ms` }}
                 >

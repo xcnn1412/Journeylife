@@ -11,6 +11,7 @@ import { PostBody } from "@/components/richtext";
 import { Contact, Footer } from "@/components/sections";
 import { Container } from "@/components/sections/_layout";
 import { RevealObserver } from "@/lib/site-context";
+import { isLocale, localeAlternates, localeHref, type Locale } from "@/lib/locale";
 import { getPayloadClient, mediaImage } from "@/lib/payload";
 
 // Statically cached + ISR. The public page is prerendered (draft mode reads as
@@ -49,21 +50,26 @@ const getPost = cache(async (slug: string, draft = false) => {
   return docs[0] ?? null;
 });
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const { slug } = await params;
+export async function generateMetadata({ params }: { params: Promise<{ lang: string; slug: string }> }): Promise<Metadata> {
+  const { lang, slug } = await params;
+  const l: Locale = isLocale(lang) ? lang : "th";
   const post = await getPost(slug);
   if (!post) return {};
   const og = mediaImage(post.cover, "og");
   return {
     title: `${post.title} · ผลงาน · JOURNEYLIFE`,
     description: post.excerpt || undefined,
-    alternates: { canonical: `/portfolio/${slug}` },
+    alternates: localeAlternates(l, `/portfolio/${slug}`),
     openGraph: { title: post.title, description: post.excerpt || undefined, images: og ? [og.src] : undefined },
   };
 }
 
-export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+export default async function PostPage({ params }: { params: Promise<{ lang: string; slug: string }> }) {
+  const { lang: rawLang, slug } = await params;
+  const lang: Locale = isLocale(rawLang) ? rawLang : "th";
+  const crumbHome = lang === "th" ? "หน้าแรก" : lang === "zh" ? "首页" : "Home";
+  const crumbWork = lang === "th" ? "ผลงาน" : lang === "zh" ? "作品案例" : "Our work";
+  const allWork = lang === "th" ? "ผลงานทั้งหมด" : lang === "zh" ? "全部作品" : "All work";
   const { isEnabled: isDraft } = await draftMode();
   const post = await getPost(slug, isDraft);
   if (!post) notFound();
@@ -85,9 +91,9 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           <div aria-hidden className="absolute inset-x-0 top-0 h-44 bg-linear-to-b from-brand-ink/75 to-transparent" />
           <Container className="relative pt-40 pb-14 md:pb-20">
             <nav className="reveal mb-6 flex items-center gap-2.5 text-[11px] tracking-wide-cap uppercase text-white/65">
-              <Link href="/" className="transition-colors hover:text-white">หน้าแรก</Link>
+              <Link href={localeHref("/", lang)} className="transition-colors hover:text-white">{crumbHome}</Link>
               <span>/</span>
-              <Link href="/portfolio" className="transition-colors hover:text-white">ผลงาน</Link>
+              <Link href={localeHref("/portfolio", lang)} className="transition-colors hover:text-white">{crumbWork}</Link>
             </nav>
             <span aria-hidden className="block w-12 h-px bg-brand-red mb-6" />
             <h1 className="reveal h-display text-white" style={{ fontSize: "clamp(36px, 6vw, 84px)" }}>{post.title}</h1>
@@ -101,8 +107,8 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
             {post.content && <PostBody content={post.content} className="rich" />}
 
             <div className="mt-14 pt-8 border-t border-brand-line flex justify-center">
-              <Link href="/portfolio" className="btn btn-ghost-dark">
-                <span>←</span> ผลงานทั้งหมด
+              <Link href={localeHref("/portfolio", lang)} className="btn btn-ghost-dark">
+                <span>←</span> {allWork}
               </Link>
             </div>
           </Container>

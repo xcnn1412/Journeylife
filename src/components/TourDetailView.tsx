@@ -2,6 +2,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useSite } from "@/lib/site-context";
+import { localeHref } from "@/lib/locale";
 import { Container } from "@/components/sections/_layout";
 import type { ItineraryDay, TourDetail, TourPeriod } from "@/lib/tour-detail";
 import { BookingModal, type BookingCopy } from "@/components/BookingModal";
@@ -341,7 +342,7 @@ function Departures({
 }
 
 export function TourDetailView({ tour }: { tour: TourDetail }) {
-  const { t } = useSite();
+  const { t, lang } = useSite();
   const td = t.overseasPackages.tourDetail;
   const d = t.contact.direct;
   const tel = `tel:${d.phone.replace(/[^\d+]/g, "")}`;
@@ -360,7 +361,7 @@ export function TourDetailView({ tour }: { tour: TourDetail }) {
         <div aria-hidden className="absolute inset-0 bg-linear-to-b from-brand-blue-deep via-brand-blue to-brand-blue-deep" />
         <Container className="relative pt-28 md:pt-36 pb-14 md:pb-20">
           <Link
-            href="/outboundtrip"
+            href={localeHref("/outboundtrip", lang)}
             className="inline-flex items-center gap-1.5 text-[12px] tracking-wide-cap uppercase font-semibold text-white/60 hover:text-white transition-colors"
           >
             <span aria-hidden>←</span> {td.back}

@@ -50,7 +50,7 @@ export function RouteFinderButton({ className = "" }: { className?: string }) {
 }
 
 function RouteFinderModal({ onClose }: { onClose: () => void }) {
-  const { t } = useSite();
+  const { t, lang } = useSite();
   const rf = t.overseasPackages.routeFinder;
   const questions = rf.questions;
   const lineHref = `https://line.me/R/ti/p/${t.contact.direct.line}`;
@@ -253,7 +253,7 @@ function RouteFinderModal({ onClose }: { onClose: () => void }) {
           {/* Quiz / Result */}
           <div className="flex min-h-0 flex-col p-5 sm:p-7 lg:overflow-y-auto">
             {isResult ? (
-              <ResultCards top={top3} labelMap={labelMap} copy={rf} lineHref={lineHref} onRestart={onRestart} />
+              <ResultCards top={top3} labelMap={labelMap} copy={rf} lineHref={lineHref} lang={lang} onRestart={onRestart} />
             ) : (
               <QuizPanel
                 title={q.title}

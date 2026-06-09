@@ -21,7 +21,8 @@ export function previewPath(doc: { slug?: unknown; title?: unknown } | null | un
     (typeof doc?.slug === "string" && doc.slug) ||
     slugify(typeof doc?.title === "string" ? doc.title : "");
   // Before the first save a post may have no slug yet — fall back to the listing page.
-  const target = slug ? `/portfolio/${slug}` : "/portfolio";
+  // Pages are locale-prefixed; preview opens the Thai (default) locale.
+  const target = slug ? `/th/portfolio/${slug}` : "/th/portfolio";
 
   const params = new URLSearchParams({ path: target });
   const secret = process.env.PREVIEW_SECRET;

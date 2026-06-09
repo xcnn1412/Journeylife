@@ -5,24 +5,26 @@ import { Footer } from "@/components/sections";
 import { StickyCTA } from "@/components/StickyCTA";
 import { TourDetailView } from "@/components/TourDetailView";
 import { RevealObserver } from "@/lib/site-context";
+import { isLocale, localeAlternates, type Locale } from "@/lib/locale";
 import { getTourDetail } from "@/lib/tour-detail";
 
 // ISR — each tour page caches for 10 minutes (matches the booking data).
 export const revalidate = 600;
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
-  const { id } = await params;
+export async function generateMetadata({ params }: { params: Promise<{ lang: string; id: string }> }): Promise<Metadata> {
+  const { lang, id } = await params;
+  const l: Locale = isLocale(lang) ? lang : "th";
   const tour = await getTourDetail(id);
   if (!tour) return { title: "ไม่พบโปรแกรมทัวร์ · JOURNEYLIFE" };
   return {
     title: `${tour.title} · JOURNEYLIFE`,
     description: tour.highlights.slice(0, 3).join(" · ") || tour.title,
-    alternates: { canonical: `/outboundtrip/tour/${id}` },
+    alternates: localeAlternates(l, `/outboundtrip/tour/${id}`),
     openGraph: { title: tour.title, images: tour.image ? [tour.image] : undefined },
   };
 }
 
-export default async function TourPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function TourPage({ params }: { params: Promise<{ lang: string; id: string }> }) {
   const { id } = await params;
   const tour = await getTourDetail(id);
   if (!tour) notFound();

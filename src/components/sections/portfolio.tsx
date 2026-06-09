@@ -2,6 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useSite } from "@/lib/site-context";
+import { localeHref } from "@/lib/locale";
 import { Container } from "./_layout";
 
 export type PortfolioCard = { slug: string; title: string; src: string; alt: string };
@@ -11,7 +12,7 @@ export type PortfolioCard = { slug: string; title: string; src: string; alt: str
    Covers are shown 1:1; each card links to /portfolio/{slug}.
    ────────────────────────────────────────────────────────── */
 export function Portfolio({ posts = [] }: { posts?: PortfolioCard[] }) {
-  const { t } = useSite();
+  const { t, lang } = useSite();
   const p = t.portfolio;
 
   return (
@@ -34,7 +35,7 @@ export function Portfolio({ posts = [] }: { posts?: PortfolioCard[] }) {
             {posts.map((post, i) => (
               <Link
                 key={post.slug}
-                href={`/portfolio/${post.slug}`}
+                href={localeHref(`/portfolio/${post.slug}`, lang)}
                 className="reveal card-lift group relative block overflow-hidden rounded-xl aspect-square bg-brand-ink"
                 style={{ transitionDelay: `${i * 60}ms` }}
               >
@@ -56,7 +57,7 @@ export function Portfolio({ posts = [] }: { posts?: PortfolioCard[] }) {
 
         {/* CTA */}
         <div className="reveal mt-12 md:mt-16 flex justify-center">
-          <Link href="/portfolio" className="btn btn-blue">
+          <Link href={localeHref("/portfolio", lang)} className="btn btn-blue">
             {p.cta}
             <span className="arrow">→</span>
           </Link>

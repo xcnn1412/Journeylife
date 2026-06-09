@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useSite } from "@/lib/site-context";
+import { localeHref } from "@/lib/locale";
 
 export function Logo({ size = 36, dark = false }: { size?: number; dark?: boolean }) {
   return (
@@ -12,7 +13,7 @@ export function Logo({ size = 36, dark = false }: { size?: number; dark?: boolea
       </svg>
       <div className="leading-none">
         <div className={`wordmark text-[18px] ${dark ? "text-white" : "text-brand-ink"}`}>JOURNEY<span className="text-brand-red">LIFE</span></div>
-        <div className={`text-[9px] tracking-wide-cap mt-1.5 font-medium uppercase ${dark ? "text-white/60" : "text-brand-mute"}`}>Inspire your trip · est. 2014</div>
+        <div className={`text-[9px] tracking-wide-cap mt-1.5 font-medium uppercase ${dark ? "text-white/60" : "text-brand-mute"}`}>Inspire your trip · est. 2013</div>
       </div>
     </div>
   );
@@ -79,7 +80,7 @@ export function Nav() {
           {links.map(l => (
             <Link
               key={l.k}
-              href={l.href}
+              href={localeHref(l.href, lang)}
               className={`nav-link text-[11px] tracking-[0.14em] uppercase font-semibold whitespace-nowrap transition-colors ${onDark ? "text-white hover:text-white [text-shadow:0_1px_4px_rgba(0,0,0,.5)]" : "text-brand-ink"}`}
             >
               {t.nav[l.k]}
@@ -88,22 +89,22 @@ export function Nav() {
         </div>
         <div className="flex items-center gap-2.5 sm:gap-4">
           <div className={`flex border transition-colors ${onDark ? "border-white/60 [box-shadow:0_2px_8px_rgba(0,0,0,.25)]" : "border-brand-line"}`}>
-            {(["th", "en"] as const).map(L => (
+            {([["th", "TH"], ["en", "EN"], ["zh", "中"]] as const).map(([L, label]) => (
               <button
                 key={L}
                 onClick={() => setLang(L)}
-                className={`px-3 py-2 md:py-1.5 text-[10px] font-semibold tracking-[0.2em] transition-all ${
+                className={`px-2.5 sm:px-3 py-2 md:py-1.5 text-[10px] font-semibold tracking-[0.2em] transition-all ${
                   lang === L
                     ? onDark ? "bg-white text-brand-ink" : "bg-brand-ink text-white"
                     : onDark ? "bg-black/25 text-white hover:bg-black/40" : "bg-transparent text-brand-mute hover:text-brand-ink"
                 }`}
               >
-                {L.toUpperCase()}
+                {label}
               </button>
             ))}
           </div>
           <Link
-            href="/contact"
+            href={localeHref("/contact", lang)}
             className={`btn hidden md:inline-flex !px-5 !py-3 !text-[11px] ${onDark ? "bg-white text-brand-blue hover:-translate-y-px [box-shadow:0_10px_30px_-10px_rgba(0,0,0,.5)]" : "btn-blue"}`}
           >
             {t.cta.quote}<span className="arrow">→</span>
@@ -120,9 +121,9 @@ export function Nav() {
       {open && (
         <div className="lg:hidden bg-white border-t border-brand-line px-6 pb-6">
           {links.map(l => (
-            <Link key={l.k} href={l.href} onClick={() => setOpen(false)} className="block py-3.5 text-[13px] font-semibold tracking-[0.22em] uppercase border-b border-brand-line no-underline text-brand-ink">{t.nav[l.k]}</Link>
+            <Link key={l.k} href={localeHref(l.href, lang)} onClick={() => setOpen(false)} className="block py-3.5 text-[13px] font-semibold tracking-[0.22em] uppercase border-b border-brand-line no-underline text-brand-ink">{t.nav[l.k]}</Link>
           ))}
-          <Link href="/contact" onClick={() => setOpen(false)} className="btn btn-blue mt-5 w-full justify-center">{t.cta.quote}</Link>
+          <Link href={localeHref("/contact", lang)} onClick={() => setOpen(false)} className="btn btn-blue mt-5 w-full justify-center">{t.cta.quote}</Link>
         </div>
       )}
     </nav>

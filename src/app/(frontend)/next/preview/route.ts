@@ -20,7 +20,8 @@ export async function GET(request: Request): Promise<Response> {
   }
 
   // Only allow previewing portfolio pages — guards against open redirects.
-  if (!path || !path.startsWith("/portfolio")) {
+  // Accept both bare and locale-prefixed paths (/portfolio, /th/portfolio, …).
+  if (!path || !/^\/(?:(?:th|en|zh)\/)?portfolio(?:\/|$)/.test(path)) {
     return new Response("Invalid preview path.", { status: 400 });
   }
 

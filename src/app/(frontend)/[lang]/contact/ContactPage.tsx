@@ -1,7 +1,7 @@
 "use client";
 import { useState, type ReactNode } from "react";
 import Image from "next/image";
-import avatar from "../../../../public/employee/avatar.jpg";
+import avatar from "../../../../../public/employee/avatar.jpg";
 import { Nav } from "@/components/Nav";
 import { StickyCTA } from "@/components/StickyCTA";
 import { Footer } from "@/components/sections";

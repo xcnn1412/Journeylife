@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useSite } from "@/lib/site-context";
+import { localeHref } from "@/lib/locale";
 import type { ReactNode } from "react";
 
 /* ──────────────────────────────────────────────────────────
@@ -12,14 +13,15 @@ export function StickyCTA() {
   const { t, lang } = useSite();
   const d = t.contact.direct;
   const tel = `tel:${d.phone.replace(/[^\d+]/g, "")}`;
-  const bubble = lang === "th" ? "ไปเที่ยวกันน!" : "Let's travel!";
+  const tr = (th: string, en: string, zh: string) => (lang === "th" ? th : lang === "zh" ? zh : en);
+  const bubble = tr("ไปเที่ยวกันน!", "Let's travel!", "一起去旅行吧！");
 
   return (
     <aside className="fixed right-2 sm:right-3 md:right-5 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center">
       {/* Mascot + speech bubble — clicks through to the contact page */}
       <a
-        href="/contact"
-        aria-label={lang === "th" ? "ปรึกษาฟรี — ไปหน้าติดต่อเรา" : "Free consult — go to the contact page"}
+        href={localeHref("/contact", lang)}
+        aria-label={tr("ปรึกษาฟรี — ไปหน้าติดต่อเรา", "Free consult — go to the contact page", "免费咨询 — 前往联系我们页面")}
         className="group/m mb-2 flex flex-col items-center cta-pop-in"
       >
         <span className="bubble-bob relative hidden sm:block rounded-full bg-brand-blue px-3 py-1 text-[11px] font-semibold leading-none text-white shadow-[0_8px_20px_-8px_rgba(13,43,94,.7)]">
@@ -28,7 +30,7 @@ export function StickyCTA() {
         </span>
         <Image
           src="/mascot/journey-fly.png"
-          alt={lang === "th" ? "น้องเจอร์นี่" : "Journey mascot"}
+          alt={tr("น้องเจอร์นี่", "Journey mascot", "Journey 吉祥物")}
           width={80}
           height={80}
           priority

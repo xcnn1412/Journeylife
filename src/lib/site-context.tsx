@@ -1,34 +1,33 @@
 "use client";
-import { createContext, useCallback, useContext, useEffect, useSyncExternalStore, ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, ReactNode } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { I18N, type Lang, type Dict } from "./i18n";
+import { localeHref } from "./locale";
 
 interface Ctx { lang: Lang; setLang: (l: Lang) => void; t: Dict; }
 const SiteCtx = createContext<Ctx | null>(null);
 
 const LANG_KEY = "jl-lang";
-const subscribeLang = (cb: () => void) => {
-  window.addEventListener("storage", cb);          // other tabs
-  window.addEventListener("jl-lang-change", cb);   // this tab
-  return () => {
-    window.removeEventListener("storage", cb);
-    window.removeEventListener("jl-lang-change", cb);
-  };
-};
-const readLang = (): Lang => (localStorage.getItem(LANG_KEY) === "en" ? "en" : "th");
-const serverLang = (): Lang => "th";
 
-export function SiteProvider({ children }: { children: ReactNode }) {
-  // SSR-safe localStorage read without a setState-in-effect: server + first
-  // hydration render use "th", then the client snapshot resolves the stored lang.
-  const lang = useSyncExternalStore(subscribeLang, readLang, serverLang);
+/**
+ * The active locale comes from the URL (the [lang] segment), passed in here by
+ * the server layout — so SSR/HTML is already in the right language for crawlers.
+ * Switching language navigates to the same page under the new locale prefix and
+ * remembers the choice in a cookie (read by middleware for the root redirect).
+ */
+export function SiteProvider({ lang, children }: { lang: Lang; children: ReactNode }) {
+  const router = useRouter();
+  const pathname = usePathname();
 
   const setLang = useCallback((l: Lang) => {
-    localStorage.setItem(LANG_KEY, l);
-    window.dispatchEvent(new Event("jl-lang-change")); // re-read in this tab
-  }, []);
+    document.cookie = `${LANG_KEY}=${l}; path=/; max-age=31536000; samesite=lax`;
+    const { search, hash } = window.location;
+    router.push(`${localeHref(pathname || "/", l)}${search}${hash}`);
+  }, [pathname, router]);
 
   useEffect(() => {
     document.documentElement.setAttribute("lang", lang);
+    document.cookie = `${LANG_KEY}=${lang}; path=/; max-age=31536000; samesite=lax`;
   }, [lang]);
 
   return <SiteCtx.Provider value={{ lang, setLang, t: I18N[lang] }}>{children}</SiteCtx.Provider>;

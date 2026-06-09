@@ -6,6 +6,7 @@ import { StickyCTA } from "@/components/StickyCTA";
 import { Process, Contact, Footer } from "@/components/sections";
 import { Container } from "@/components/sections/_layout";
 import { useSite, RevealObserver } from "@/lib/site-context";
+import { localeHref } from "@/lib/locale";
 
 export function ServiceDetail({ slug }: { slug: string }) {
   const { t, lang } = useSite();
@@ -13,6 +14,7 @@ export function ServiceDetail({ slug }: { slug: string }) {
   const it = items.find((i) => i.slug === slug);
   if (!it) return null;
   const others = items.filter((i) => i.slug !== slug);
+  const tr = (th: string, en: string, zh: string) => (lang === "th" ? th : lang === "zh" ? zh : en);
 
   return (
     <>
@@ -31,9 +33,9 @@ export function ServiceDetail({ slug }: { slug: string }) {
           <Container className="relative pt-40 pb-14 md:pb-20">
             {/* Breadcrumb */}
             <nav className="reveal mb-6 flex items-center gap-2.5 text-[11px] tracking-wide-cap uppercase text-white/65">
-              <Link href="/" className="transition-colors hover:text-white">{lang === "th" ? "หน้าแรก" : "Home"}</Link>
+              <Link href={localeHref("/", lang)} className="transition-colors hover:text-white">{tr("หน้าแรก", "Home", "首页")}</Link>
               <span>/</span>
-              <Link href="/services" className="transition-colors hover:text-white">{lang === "th" ? "บริการ" : "Services"}</Link>
+              <Link href={localeHref("/services", lang)} className="transition-colors hover:text-white">{tr("บริการ", "Services", "服务")}</Link>
               <span>/</span>
               <span className="text-white">{it.title}</span>
             </nav>
@@ -48,7 +50,7 @@ export function ServiceDetail({ slug }: { slug: string }) {
 
             <div className="reveal mt-8 flex flex-wrap gap-3">
               <a href="#contact" className="btn btn-red">
-                {lang === "th" ? "ขอใบเสนอราคาฟรี" : "Request a free quote"}
+                {tr("ขอใบเสนอราคาฟรี", "Request a free quote", "免费索取报价")}
                 <span className="arrow">→</span>
               </a>
               <a
@@ -70,9 +72,9 @@ export function ServiceDetail({ slug }: { slug: string }) {
         <section className="bg-brand-paper border-y border-brand-line py-20 md:py-28">
           <Container>
             <div className="reveal mb-12 md:mb-16">
-              <span className="eyebrow">{lang === "th" ? "บริการอื่น ๆ" : "More services"}</span>
+              <span className="eyebrow">{tr("บริการอื่น ๆ", "More services", "其他服务")}</span>
               <h2 className="h-display mt-5 text-brand-ink" style={{ fontSize: "clamp(30px, 4vw, 52px)" }}>
-                {lang === "th" ? "สำรวจบริการทั้งหมด" : "Explore all services"}
+                {tr("สำรวจบริการทั้งหมด", "Explore all services", "查看全部服务")}
               </h2>
             </div>
 
@@ -80,7 +82,7 @@ export function ServiceDetail({ slug }: { slug: string }) {
               {others.map((o, i) => (
                 <Link
                   key={o.slug}
-                  href={`/services/${o.slug}`}
+                  href={localeHref(`/services/${o.slug}`, lang)}
                   className="reveal card-lift group relative flex flex-col overflow-hidden rounded-xl bg-white border border-brand-line"
                   style={{ transitionDelay: `${i * 50}ms` }}
                 >

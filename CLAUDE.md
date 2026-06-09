@@ -3,7 +3,7 @@
 # JOURNEYLIFE — สรุปข้อมูลเว็บไซต์
 
 เว็บ Landing Page บริษัท **Journey Life Co., Ltd.** — รับจัดทัวร์ **Incentive ระดับองค์กร** (Corporate Incentive Travel) แบบ Bespoke
-จากกรุงเทพ ส่งทั่วโลก · ดำเนินงานตั้งแต่ปี 2014 · ใบอนุญาตนำเที่ยว **TAT 11/11057**
+จากกรุงเทพ ส่งทั่วโลก · ดำเนินงานตั้งแต่ปี 2013 · ใบอนุญาตนำเที่ยว **TAT 11/11057**
 
 - **โดเมน:** https://journeylife.co.th
 - **โทร:** 02-051-4240 · **LINE OA:** @journeylife · **อีเมล:** incentive@journeylife.co.th
@@ -72,7 +72,7 @@ src/
 ## เนื้อหาหลัก (อยู่ใน i18n.ts)
 
 - **Hero:** "Reward ทีมเก่ง ด้วยทริปที่เขาจะเล่าต่อ" · sub "new journey experience"
-- **Stats:** 120+ ทริป · 12 ปี · 32 ประเทศ · 98% retention
+- **Stats:** 120+ ทริป · 13 ปี · 32 ประเทศ · 98% retention
 - **Services (Incentive ในไทย, 4 รูปแบบ):** Coastal (ภูเก็ต/กระบี่/สมุย/หัวหิน) · Highland (เชียงใหม่/ปาย/น่าน/เขาใหญ่) · Heritage (สุโขทัย/อยุธยา/เชียงราย) · Capital MICE (กรุงเทพ/พัทยา)
 - **Destinations (ต่างประเทศ):** ญี่ปุ่น-ฮอกไกโด · สวิตเซอร์แลนด์ · มัลดีฟส์ · เกาหลีใต้ · UAE-ดูไบ · ไทย-ภูเก็ต
 - **Why (5 รูปแบบ):** Incentive · Outing · Team Building · Kick-off · Retreat

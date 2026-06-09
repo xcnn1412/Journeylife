@@ -3,6 +3,7 @@ import type { CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSite } from "@/lib/site-context";
+import { localeHref } from "@/lib/locale";
 import { Container } from "./_layout";
 
 /* Team photos in /public/team-gallery (resized from /public/source/ทีมงาน). */
@@ -56,7 +57,7 @@ export function Pillars() {
             <div aria-hidden className="absolute inset-0 -z-10 scale-95 rounded-full bg-brand-blue/10 blur-2xl" />
             <Image
               src="/mascot/journey-love.png"
-              alt={lang === "th" ? "น้องเจอร์นี่" : "Journey mascot"}
+              alt={lang === "th" ? "น้องเจอร์นี่" : lang === "zh" ? "Journey 吉祥物" : "Journey mascot"}
               width={210}
               height={210}
               style={{ height: "auto" }}
@@ -88,7 +89,7 @@ export function Pillars() {
           {p.items.map((it, i) => (
             <Link
               key={i}
-              href={`/services/${it.slug}`}
+              href={localeHref(`/services/${it.slug}`, lang)}
               aria-label={`${it.title} — ${p.cta}`}
               className="reveal card-lift group relative flex flex-col overflow-hidden rounded-xl bg-white border border-brand-line"
               style={{ transitionDelay: `${i * 60}ms` }}
@@ -127,7 +128,7 @@ export function Pillars() {
 
         {/* View-all CTA */}
         <div className="reveal mt-12 md:mt-16 flex justify-center">
-          <Link href="/services" className="btn btn-blue">
+          <Link href={localeHref("/services", lang)} className="btn btn-blue">
             {p.viewAll}
             <span className="arrow">→</span>
           </Link>

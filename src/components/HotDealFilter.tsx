@@ -1,6 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import { useSite } from "@/lib/site-context";
+import { localeHref } from "@/lib/locale";
 import { Container } from "@/components/sections/_layout";
 import type { HotDeal } from "@/lib/hot-deals";
 
@@ -13,9 +14,10 @@ import type { HotDeal } from "@/lib/hot-deals";
 const baht = (n: number) => n.toLocaleString("en-US");
 
 export function HotDealFilter({ deals }: { deals: HotDeal[] }) {
-  const { t } = useSite();
+  const { t, lang } = useSite();
   const p = t.overseasPackages;
   const f = p.dealsFilter;
+  const tourHref = (id: string | number) => localeHref(`/outboundtrip/tour/${id}`, lang);
   const d = t.contact.direct;
   const lineHref = `https://line.me/R/ti/p/${d.line}`;
 
@@ -96,7 +98,7 @@ export function HotDealFilter({ deals }: { deals: HotDeal[] }) {
             className="card-lift group flex flex-col overflow-hidden rounded-2xl bg-white text-brand-ink shadow-[0_24px_60px_-30px_rgba(0,0,0,.6)]"
           >
             {/* Banner + discount ribbon */}
-            <a href={`/outboundtrip/tour/${x.id}`} target="_blank" rel="noopener noreferrer" className="relative block aspect-square overflow-hidden bg-brand-paper">
+            <a href={tourHref(x.id)} target="_blank" rel="noopener noreferrer" className="relative block aspect-square overflow-hidden bg-brand-paper">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={x.img}
@@ -121,7 +123,7 @@ export function HotDealFilter({ deals }: { deals: HotDeal[] }) {
               </div>
 
               <a
-                href={`/outboundtrip/tour/${x.id}`}
+                href={tourHref(x.id)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-2 text-[14px] md:text-[15px] font-semibold leading-snug text-brand-ink line-clamp-2 transition-colors hover:text-brand-red"
@@ -153,7 +155,7 @@ export function HotDealFilter({ deals }: { deals: HotDeal[] }) {
 
                 {/* CTAs */}
                 <div className="mt-4 grid grid-cols-2 gap-2">
-                  <a href={`/outboundtrip/tour/${x.id}`} target="_blank" rel="noopener noreferrer" className="btn btn-blue justify-center !py-2.5 !text-[12px]">
+                  <a href={tourHref(x.id)} target="_blank" rel="noopener noreferrer" className="btn btn-blue justify-center !py-2.5 !text-[12px]">
                     {f.detail}
                   </a>
                   <a

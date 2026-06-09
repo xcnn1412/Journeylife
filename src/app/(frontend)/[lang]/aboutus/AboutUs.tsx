@@ -7,10 +7,11 @@ import { StickyCTA } from "@/components/StickyCTA";
 import { Footer, Clients } from "@/components/sections";
 import { Container } from "@/components/sections/_layout";
 import { useSite, RevealObserver } from "@/lib/site-context";
-import teamStory from "../../../../public/about/team-story.jpg";
-import njeImg from "../../../../public/about/nje.jpg";
-import licenceImg from "../../../../public/about/licence.webp";
-import groupImg from "../../../../public/about/group.jpg";
+import { localeHref } from "@/lib/locale";
+import teamStory from "../../../../../public/about/team-story.jpg";
+import njeImg from "../../../../../public/about/nje.jpg";
+import licenceImg from "../../../../../public/about/licence.webp";
+import groupImg from "../../../../../public/about/group.jpg";
 
 /* Team photos in /public/team-gallery (resized from /public/source/ทีมงาน). */
 const TEAM = Array.from({ length: 14 }, (_, i) => `${String(i + 1).padStart(2, "0")}.jpg`);
@@ -38,7 +39,7 @@ function TeamRow({ photos, reverse, dur }: { photos: string[]; reverse?: boolean
 }
 
 export function AboutUs() {
-  const { t } = useSite();
+  const { t, lang } = useSite();
   const a = t.about;
 
   return (
@@ -293,7 +294,7 @@ export function AboutUs() {
             <h2 className="reveal h-display text-white" style={{ fontSize: "clamp(26px, 3.6vw, 50px)" }}>{a.ctaTitle}</h2>
             <span aria-hidden className="block w-12 h-px bg-brand-red mx-auto mt-6" />
             <div className="reveal mt-9">
-              <Link href="/contact" className="btn btn-red">
+              <Link href={localeHref("/contact", lang)} className="btn btn-red">
                 {a.ctaBtn}
                 <span className="arrow">→</span>
               </Link>

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useSite } from "@/lib/site-context";
 import { localeHref } from "@/lib/locale";
 import { Container } from "@/components/sections/_layout";
-import { type TourResult, DEFAULT_MAX_PAGES, MAX_DEPTH_PAGES } from "@/lib/tour-search";
+import { type TourResult, DEFAULT_MAX_PAGES, MAX_DEPTH_PAGES } from "@/lib/tour-search-shared";
 
 /** Square banner sizes hint for next/image (3 cols ≥lg, 2 ≥sm, 1 on mobile). */
 const CARD_SIZES = "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw";

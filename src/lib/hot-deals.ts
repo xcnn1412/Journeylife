@@ -1,18 +1,14 @@
 /**
- * Hot deals ("โปรไฟไหม้") pulled live from the booking site.
+ * Hot deals ("โปรไฟไหม้") for the homepage + /outboundtrip board.
  *
- * hotdeal.php server-renders each promotion inside a `.deal-row` block carrying:
- *   tour_id · banner image · tour code · title (starts "ทัวร์<country>…") ·
- *   travel date · original-price-tag → blink-pricepro (fire price) · discount %.
- *
- * We fetch + parse it on the server and cache with ISR (revalidate 600s) so the
- * site always shows current promos without storing anything ourselves.
+ * Reads from the Payload `tours` cache when USE_TOUR_DB is on (rows kept fresh by
+ * scripts/sync-tours.ts), and falls back to live-scraping hotdeal.php when the DB
+ * is off / empty / errored. The HotDeal shape is unchanged so consumers don't care
+ * which path served it. Parsing lives in hot-deals-scrape.ts.
  */
 
-import { flagFor } from "./tour-destinations";
-
-const HOTDEAL_URL = "https://tour.journeylife.co.th/hotdeal.php";
-const TOUR_BASE = "https://tour.journeylife.co.th";
+import { getHotDealsScrape } from "./hot-deals-scrape";
+import { getHotDealsDb, toursDbEnabled } from "./tours-db";
 
 export interface HotDeal {
   id: string;
@@ -29,80 +25,18 @@ export interface HotDeal {
   discountPercent: number; // 19
 }
 
-function decode(s: string): string {
-  return s
-    .replace(/&amp;/g, "&")
-    .replace(/&quot;/g, '"')
-    .replace(/&#0?39;/g, "'")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-const num = (s: string | undefined) => (s ? Number(s.replace(/[^\d]/g, "")) : 0);
-
-/** Pull the destination out of a title that starts with "ทัวร์<country> …". */
-function countryFromTitle(title: string): string {
-  const m = title.match(/^\s*ทัวร์\s*([^\s,.\-/(]+)/);
-  return m ? m[1] : "อื่น ๆ";
-}
-
 /**
- * Latest promotions with full pricing. Distinct departures are kept (deduped by
- * tour + date), so the same tour can appear with different dates/prices.
- * Returns [] if the source is unreachable.
+ * Latest promotions with full pricing. Returns [] only if both the DB and the
+ * live source are unreachable.
  */
 export async function getHotDeals(limit = 40): Promise<HotDeal[]> {
-  try {
-    const res = await fetch(HOTDEAL_URL, {
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; JourneyLifeBot/1.0)" },
-      next: { revalidate: 600 },
-    });
-    if (!res.ok) return [];
-    const html = await res.text();
-
-    const blocks = html.split(/class="[^"]*deal-row/i).slice(1);
-    const seen = new Set<string>();
-    const deals: HotDeal[] = [];
-
-    for (const b of blocks) {
-      const id = b.match(/tour_id=(\d+)/)?.[1];
-      const img = b.match(/<img[^>]+src="(https:\/\/files\.okwebtour\.com\/storage\/banner\/[^"]+)"/i)?.[1];
-      if (!id || !img) continue;
-
-      const alt = decode(b.match(/storage\/banner\/[^"]+"\s+alt="([^"]*)"/i)?.[1] ?? "");
-      const title = decode(b.match(/fs14"[^>]*target="_blank">([^<]+)<\/a>/i)?.[1] ?? alt);
-      const code = decode(b.match(/fs11"[^>]*>\s*([\w-]+)\s*<\/span>/i)?.[1] ?? "");
-      const originalPrice = num(b.match(/original-price-tag">\s*([\d,]+)/i)?.[1]);
-      const firePrice = num(b.match(/blink-pricepro">\s*([\d,]+)/i)?.[1]);
-      const discountPercent = num(b.match(/badge-discount-percent">\s*-?\s*(\d+)\s*%/i)?.[1]);
-      const dateText = decode(b.match(/bi-calendar3[^>]*><\/i>\s*([^<]+?)\s*<\/div>/i)?.[1] ?? "");
-
-      const dedupe = `${id}|${dateText}`;
-      if (seen.has(dedupe)) continue;
-      seen.add(dedupe);
-
-      const country = countryFromTitle(title);
-      deals.push({
-        id,
-        href: `${TOUR_BASE}/tour.php?tour_id=${id}`,
-        img,
-        alt,
-        title,
-        code,
-        country,
-        flag: flagFor(country),
-        dateText,
-        originalPrice,
-        firePrice,
-        discountPercent,
-      });
-      if (deals.length >= limit) break;
+  if (toursDbEnabled()) {
+    try {
+      const deals = await getHotDealsDb(limit);
+      if (deals.length) return deals;
+    } catch {
+      /* fall through to live scrape */
     }
-    return deals;
-  } catch {
-    return [];
   }
+  return getHotDealsScrape(limit);
 }

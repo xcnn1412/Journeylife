@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     posts: Post;
     categories: Category;
+    tours: Tour;
     media: Media;
     users: User;
     'payload-kv': PayloadKv;
@@ -80,6 +81,7 @@ export interface Config {
   collectionsSelect: {
     posts: PostsSelect<false> | PostsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    tours: ToursSelect<false> | ToursSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -199,6 +201,7 @@ export interface Media {
    * Briefly describe what's in the image — helps accessibility & Google.
    */
   alt?: string | null;
+  sourceUrl?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -253,6 +256,84 @@ export interface Category {
    * Leave blank to auto-generate from the name.
    */
   slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Auto-synced from the booking site — do not edit by hand. Managed by scripts/sync-tours.ts.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tours".
+ */
+export interface Tour {
+  id: number;
+  /**
+   * okwebtour tour_id — the upsert key.
+   */
+  tourId: string;
+  code?: string | null;
+  title: string;
+  img?: string | null;
+  bannerMedia?: (number | null) | Media;
+  country?: string | null;
+  city?: string | null;
+  days?: number | null;
+  daysText?: string | null;
+  airline?: string | null;
+  priceFrom?: number | null;
+  isHotDeal?: boolean | null;
+  discountPercent?: number | null;
+  firePrice?: number | null;
+  originalPrice?: number | null;
+  dealDateText?: string | null;
+  dealImg?: string | null;
+  dealBannerMedia?: (number | null) | Media;
+  dealAlt?: string | null;
+  image?: string | null;
+  heroMedia?: (number | null) | Media;
+  pdf?: string | null;
+  highlights?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  periods?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  itinerary?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  departures?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  departuresMin?: string | null;
+  departuresMax?: string | null;
+  active?: boolean | null;
+  listSyncedAt?: string | null;
+  detailSyncedAt?: string | null;
+  detailError?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -322,6 +403,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'categories';
         value: number | Category;
+      } | null)
+    | ({
+        relationTo: 'tours';
+        value: number | Tour;
       } | null)
     | ({
         relationTo: 'media';
@@ -409,10 +494,51 @@ export interface CategoriesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tours_select".
+ */
+export interface ToursSelect<T extends boolean = true> {
+  tourId?: T;
+  code?: T;
+  title?: T;
+  img?: T;
+  bannerMedia?: T;
+  country?: T;
+  city?: T;
+  days?: T;
+  daysText?: T;
+  airline?: T;
+  priceFrom?: T;
+  isHotDeal?: T;
+  discountPercent?: T;
+  firePrice?: T;
+  originalPrice?: T;
+  dealDateText?: T;
+  dealImg?: T;
+  dealBannerMedia?: T;
+  dealAlt?: T;
+  image?: T;
+  heroMedia?: T;
+  pdf?: T;
+  highlights?: T;
+  periods?: T;
+  itinerary?: T;
+  departures?: T;
+  departuresMin?: T;
+  departuresMax?: T;
+  active?: T;
+  listSyncedAt?: T;
+  detailSyncedAt?: T;
+  detailError?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  sourceUrl?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;

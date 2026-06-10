@@ -59,5 +59,15 @@ export const Media: CollectionConfig = {
         placeholder: { en: "e.g. Team group photo at Hokkaido", th: "เช่น ภาพหมู่ทีมงานที่ฮอกไกโด" },
       },
     },
+    {
+      // Origin URL when this file was mirrored from an external source (tour
+      // banners synced from okwebtour). Lets the sync dedupe — re-mirroring the
+      // same URL just reuses the existing media doc. Blank for human uploads.
+      name: "sourceUrl",
+      type: "text",
+      index: true,
+      label: { en: "Source URL (mirrored from)", th: "ลิงก์ต้นทาง (สำเนามาจาก)" },
+      admin: { readOnly: true, position: "sidebar" },
+    },
   ],
 };

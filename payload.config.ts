@@ -33,6 +33,7 @@ import { Users } from "./src/collections/Users";
 import { Media } from "./src/collections/Media";
 import { Categories } from "./src/collections/Categories";
 import { Posts } from "./src/collections/Posts";
+import { Tours } from "./src/collections/Tours";
 import { blogBlocks } from "./src/blocks/blogBlocks";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -87,7 +88,7 @@ export default buildConfig({
     fallbackLanguage: "th",
     supportedLanguages: { th, en },
   },
-  collections: [Posts, Categories, Media, Users],
+  collections: [Posts, Categories, Tours, Media, Users],
   // Curated, Word-like editor: a fixed toolbar (always visible) with only the
   // controls a non-technical editor needs — no hidden "/" commands required.
   editor: lexicalEditor({

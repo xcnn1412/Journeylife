@@ -14,6 +14,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "**.r2.dev" },
       { protocol: "https", hostname: "**.r2.cloudflarestorage.com" },
+      // Tour banners served by the booking site's CDN (hot deals + search results).
+      { protocol: "https", hostname: "files.okwebtour.com" },
       // custom media domain (set NEXT_PUBLIC_MEDIA_HOST e.g. media.journeylife.co.th)
       ...(process.env.NEXT_PUBLIC_MEDIA_HOST
         ? [{ protocol: "https" as const, hostname: process.env.NEXT_PUBLIC_MEDIA_HOST }]

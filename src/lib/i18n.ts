@@ -198,6 +198,7 @@ export const I18N = {
         sortNew: "Latest",
         sortPriceAsc: "Price: low to high",
         sortPriceDesc: "Price: high to low",
+        loadMore: "Load more tours",
       },
       tourDetail: {
         code: "Tour code",
@@ -725,6 +726,7 @@ export const I18N = {
         sortNew: "ล่าสุด",
         sortPriceAsc: "ราคา: น้อย → มาก",
         sortPriceDesc: "ราคา: มาก → น้อย",
+        loadMore: "ดูทัวร์เพิ่ม",
       },
       tourDetail: {
         code: "รหัสทัวร์",
@@ -1252,6 +1254,7 @@ export const I18N = {
         sortNew: "最新",
         sortPriceAsc: "价格：从低到高",
         sortPriceDesc: "价格：从高到低",
+        loadMore: "加载更多行程",
       },
       tourDetail: {
         code: "行程编号",

@@ -58,8 +58,12 @@ export interface SearchResponse {
   pagesFetched: number; // how many we actually pulled + merged
 }
 
-/** Default number of result pages to pull + merge (12 cards each). */
-export const DEFAULT_MAX_PAGES = 6;
+/** Result pages to pull on first load (12 cards each). Kept small so the first
+ *  paint is fast; "load more" deepens this on demand via the `depth` param. */
+export const DEFAULT_MAX_PAGES = 3;
+
+/** Hard ceiling on how deep "load more" can fetch (12 cards × this). */
+export const MAX_DEPTH_PAGES = 9;
 
 /** Build the booking-site URL from a clean param map. */
 export function buildSearchUrl(params: Record<string, string>): string {
@@ -124,7 +128,10 @@ async function fetchPage(url: string): Promise<string | null> {
   try {
     const res = await fetch(url, {
       headers: { "User-Agent": "Mozilla/5.0 (compatible; JourneyLifeBot/1.0)" },
-      cache: "no-store",
+      // Cache each upstream results page per-URL (ISR). Distinct queries are
+      // distinct URLs, so they cache independently; identical searches reuse the
+      // snapshot instead of re-scraping the slow PHP origin every time.
+      next: { revalidate: 300 },
     });
     return res.ok ? await res.text() : null;
   } catch {

@@ -1,10 +1,14 @@
 "use client";
 import { useRef, useState, useTransition } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useSite } from "@/lib/site-context";
 import { localeHref } from "@/lib/locale";
 import { Container } from "@/components/sections/_layout";
-import type { TourResult } from "@/lib/tour-search";
+import { type TourResult, DEFAULT_MAX_PAGES, MAX_DEPTH_PAGES } from "@/lib/tour-search";
+
+/** Square banner sizes hint for next/image (3 cols ≥lg, 2 ≥sm, 1 on mobile). */
+const CARD_SIZES = "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw";
 
 const RESULTS_ROUTE = "/outboundtrip/search";
 
@@ -67,11 +71,15 @@ export function TourResults({
   seeAllUrl,
   sort,
   query,
+  depth = DEFAULT_MAX_PAGES,
+  hasMore = false,
 }: {
   results: TourResult[];
   seeAllUrl: string;
   sort: string; // current sort param: "new" | "asc" | "desc"
   query: Record<string, string>; // current search params, so we can re-sort in place
+  depth?: number; // how many upstream pages were fetched
+  hasMore?: boolean; // upstream advertises more pages than we pulled
 }) {
   const { t, lang } = useSite();
   const r = t.overseasPackages.searchResults;
@@ -100,6 +108,15 @@ export function TourResults({
     const sp = new URLSearchParams(query);
     sp.set("sort", v);
     startTransition(() => router.push(`${localeHref(RESULTS_ROUTE, lang)}?${sp.toString()}`));
+  };
+
+  // "Load more" deepens the upstream fetch (cached pages, so only the new pages
+  // hit the origin). Same query → component keeps its client page/scroll.
+  const canLoadMore = hasMore && depth < MAX_DEPTH_PAGES;
+  const loadMore = () => {
+    const sp = new URLSearchParams(query);
+    sp.set("depth", String(Math.min(depth + DEFAULT_MAX_PAGES, MAX_DEPTH_PAGES)));
+    startTransition(() => router.push(`${localeHref(RESULTS_ROUTE, lang)}?${sp.toString()}`, { scroll: false }));
   };
 
   if (!results.length) {
@@ -159,13 +176,12 @@ export function TourResults({
           >
             {/* Banner */}
             <a href={tourHref(x.id)} target="_blank" rel="noopener noreferrer" className="relative block aspect-square overflow-hidden bg-brand-paper">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src={x.img}
                 alt={x.title}
-                loading="lazy"
-                decoding="async"
-                className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                fill
+                sizes={CARD_SIZES}
+                className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
               />
               {x.code && (
                 <span className="absolute top-3 left-3 rounded bg-brand-ink/80 px-2 py-1 text-[11px] font-medium text-white backdrop-blur-sm">
@@ -232,6 +248,22 @@ export function TourResults({
 
       {/* Pagination — 15 per page */}
       <Pager page={safePage} totalPages={totalPages} onGo={goTo} prevLabel={r.prev} nextLabel={r.next} className="mt-10" />
+
+      {/* Load more — deepen the upstream fetch on demand */}
+      {canLoadMore && (
+        <div className="mt-8 flex justify-center">
+          <button type="button" onClick={loadMore} disabled={pending} className="btn btn-ghost-dark disabled:opacity-60">
+            {pending ? (
+              <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="3" opacity="0.25" />
+                <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+              </svg>
+            ) : (
+              r.loadMore
+            )}
+          </button>
+        </div>
+      )}
     </Container>
   );
 }

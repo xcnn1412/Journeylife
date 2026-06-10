@@ -1,9 +1,13 @@
 "use client";
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import { useSite } from "@/lib/site-context";
 import { localeHref } from "@/lib/locale";
 import { Container } from "@/components/sections/_layout";
 import type { HotDeal } from "@/lib/hot-deals";
+
+/** Square banner sizes hint for next/image (3 cols ≥lg, 2 ≥sm, 1 on mobile). */
+const CARD_SIZES = "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw";
 
 /* ──────────────────────────────────────────────────────────
    HOT-DEAL FILTER — "โปรไฟไหม้" as a country-filtered price board.
@@ -99,13 +103,12 @@ export function HotDealFilter({ deals }: { deals: HotDeal[] }) {
           >
             {/* Banner + discount ribbon */}
             <a href={tourHref(x.id)} target="_blank" rel="noopener noreferrer" className="relative block aspect-square overflow-hidden bg-brand-paper">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src={x.img}
                 alt={x.alt}
-                loading="lazy"
-                decoding="async"
-                className="h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-105"
+                fill
+                sizes={CARD_SIZES}
+                className="object-cover transition-transform duration-[900ms] ease-out group-hover:scale-105"
               />
               {x.discountPercent > 0 && (
                 <span className="absolute top-3 left-3 inline-flex items-center gap-1 rounded-full bg-brand-red px-2.5 py-1 text-[12px] font-bold text-white shadow-[0_8px_20px_-8px_rgba(0,0,0,.6)]">

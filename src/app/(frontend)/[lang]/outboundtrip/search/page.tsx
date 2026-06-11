@@ -110,7 +110,11 @@ export default async function SearchPage({ params, searchParams }: { params: Pro
               </h1>
               <span aria-hidden className="block w-12 h-px bg-brand-red mx-auto mt-5" />
             </div>
-            <TourSearch initial={filters} />
+            {/* Re-seed every field from the URL on each committed search — App Router
+                preserves client state across searchParam navigations, so without a
+                key the form (esp. country/city useState + price/day defaultValue)
+                would keep showing the previous query. */}
+            <TourSearch key={buildSearchUrl(filters)} initial={filters} />
           </Container>
         </section>
 

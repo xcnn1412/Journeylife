@@ -199,6 +199,8 @@ export const I18N = {
         sortPriceAsc: "Price: low to high",
         sortPriceDesc: "Price: high to low",
         loadMore: "Load more tours",
+        loadingTitle: "Journey is flying off to find your perfect tour",
+        loadingSub: "Hang tight — just a moment",
       },
       tourDetail: {
         code: "Tour code",
@@ -727,6 +729,8 @@ export const I18N = {
         sortPriceAsc: "ราคา: น้อย → มาก",
         sortPriceDesc: "ราคา: มาก → น้อย",
         loadMore: "ดูทัวร์เพิ่ม",
+        loadingTitle: "น้องเจอร์นี่กำลังเหินฟ้าหาทัวร์ที่ใช่ให้คุณ",
+        loadingSub: "ใจเย็น ๆ นะฮะ ขอเวลาแป๊บเดียว",
       },
       tourDetail: {
         code: "รหัสทัวร์",
@@ -1255,6 +1259,8 @@ export const I18N = {
         sortPriceAsc: "价格：从低到高",
         sortPriceDesc: "价格：从高到低",
         loadMore: "加载更多行程",
+        loadingTitle: "Journey 正飞去为您寻找理想的行程",
+        loadingSub: "请稍候，马上就好",
       },
       tourDetail: {
         code: "行程编号",

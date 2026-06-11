@@ -479,6 +479,20 @@ body {
   .cta-pop-in, .mascot-fly, .bubble-bob { animation: none; }
 }
 
+/* น้องเจอร์นี่ขับเครื่องบิน — หน้าโหลดผลค้นหาทัวร์ (trail วิ่ง + จุดกระพริบ) */
+@keyframes jl-trail { to { stroke-dashoffset: -36; } }
+.jl-trail { animation: jl-trail 1.1s linear infinite; }
+
+@keyframes jl-load-dot {
+  0%, 80%, 100% { opacity: .25; transform: translateY(0); }
+  40%           { opacity: 1;   transform: translateY(-3px); }
+}
+.jl-load-dot { animation: jl-load-dot 1.4s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .jl-trail, .jl-load-dot { animation: none; }
+}
+
 /* Trust credential pill — "คลิกตรวจสอบได้" cue */
 @keyframes pill-glow {
   0%, 100% { box-shadow: 0 0 0 0 rgba(200,16,46,0); border-color: rgba(255,255,255,.2); }

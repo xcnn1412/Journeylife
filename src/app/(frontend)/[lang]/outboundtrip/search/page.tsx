@@ -116,7 +116,7 @@ export default async function SearchPage({ params, searchParams }: { params: Pro
 
         {/* ── Results (streamed) ── */}
         <section className="bg-brand-paper">
-          <Suspense key={suspenseKey} fallback={<TourResultsSkeleton />}>
+          <Suspense key={suspenseKey} fallback={<TourResultsSkeleton lang={lang} />}>
             <SearchResults filters={filters} depth={depth} />
           </Suspense>
         </section>

@@ -1,13 +1,24 @@
 "use client";
-import { createContext, useCallback, useContext, useEffect, ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useSyncExternalStore, ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { I18N, type Lang, type Dict } from "./i18n";
 import { localeHref } from "./locale";
+import { MOURNING_DEFAULT, MOURNING_CLASS, THEME_KEY } from "./theme";
 
-interface Ctx { lang: Lang; setLang: (l: Lang) => void; t: Dict; }
+interface Ctx {
+  lang: Lang; setLang: (l: Lang) => void; t: Dict;
+  mourning: boolean; setMourning: (on: boolean) => void;
+}
 const SiteCtx = createContext<Ctx | null>(null);
 
 const LANG_KEY = "jl-lang";
+
+/* Mourning theme lives on <html> (set pre-paint by the head script); React
+   reads it as an external store so SSR/hydration stay consistent. */
+const themeListeners = new Set<() => void>();
+const subscribeMourning = (cb: () => void) => { themeListeners.add(cb); return () => { themeListeners.delete(cb); }; };
+const getMourning = () => document.documentElement.classList.contains(MOURNING_CLASS);
+const getServerMourning = () => MOURNING_DEFAULT;
 
 /**
  * The active locale comes from the URL (the [lang] segment), passed in here by
@@ -30,7 +41,19 @@ export function SiteProvider({ lang, children }: { lang: Lang; children: ReactNo
     document.cookie = `${LANG_KEY}=${lang}; path=/; max-age=31536000; samesite=lax`;
   }, [lang]);
 
-  return <SiteCtx.Provider value={{ lang, setLang, t: I18N[lang] }}>{children}</SiteCtx.Provider>;
+  const mourning = useSyncExternalStore(subscribeMourning, getMourning, getServerMourning);
+
+  const setMourning = useCallback((on: boolean) => {
+    document.documentElement.classList.toggle(MOURNING_CLASS, on);
+    try { localStorage.setItem(THEME_KEY, on ? "mourning" : "normal"); } catch {}
+    themeListeners.forEach((l) => l());
+  }, []);
+
+  return (
+    <SiteCtx.Provider value={{ lang, setLang, t: I18N[lang], mourning, setMourning }}>
+      {children}
+    </SiteCtx.Provider>
+  );
 }
 
 export function useSite() {

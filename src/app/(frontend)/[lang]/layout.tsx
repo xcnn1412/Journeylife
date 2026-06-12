@@ -3,6 +3,7 @@ import { Kanit } from "next/font/google";
 import { notFound } from "next/navigation";
 import { SiteProvider } from "@/lib/site-context";
 import { LOCALES, isLocale, localeAlternates, OG_LOCALE, type Locale } from "@/lib/locale";
+import { MOURNING_INIT_SCRIPT } from "@/lib/theme";
 import "../globals.css";
 
 // Kanit — Thai + Latin in one family; the whole site renders in this typeface.
@@ -83,6 +84,8 @@ export default async function LangLayout({
   return (
     <html lang={lang} data-scroll-behavior="smooth" className={kanit.variable}>
       <head>
+        {/* Mourning theme — must run before first paint to avoid a color flash */}
+        <script dangerouslySetInnerHTML={{ __html: MOURNING_INIT_SCRIPT }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org", "@type": "TravelAgency",

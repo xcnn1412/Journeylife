@@ -10,19 +10,19 @@ import type { ReactNode } from "react";
    แต่ละปุ่มมีไอคอน; label สไลด์ออกตอน hover.
    ────────────────────────────────────────────────────────── */
 export function StickyCTA() {
-  const { t, lang } = useSite();
+  const { t, lang, mourning, setMourning } = useSite();
   const d = t.contact.direct;
   const tel = `tel:${d.phone.replace(/[^\d+]/g, "")}`;
   const tr = (th: string, en: string, zh: string) => (lang === "th" ? th : lang === "zh" ? zh : en);
   const bubble = tr("ไปเที่ยวกันน!", "Let's travel!", "一起去旅行吧！");
 
   return (
-    <aside className="fixed right-2 sm:right-3 md:right-5 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center">
+    <aside className="sticky-cta fixed right-2 sm:right-3 md:right-5 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center">
       {/* Mascot + speech bubble — clicks through to the contact page */}
       <a
         href={localeHref("/contact", lang)}
         aria-label={tr("ปรึกษาฟรี — ไปหน้าติดต่อเรา", "Free consult — go to the contact page", "免费咨询 — 前往联系我们页面")}
-        className="group/m mb-2 flex flex-col items-center cta-pop-in"
+        className="group/m mb-2 flex flex-col items-center cta-pop-in mourn-mute"
       >
         <span className="bubble-bob relative hidden sm:block rounded-full bg-brand-blue px-3 py-1 text-[11px] font-semibold leading-none text-white shadow-[0_8px_20px_-8px_rgba(13,43,94,.7)]">
           {bubble}
@@ -88,8 +88,58 @@ export function StickyCTA() {
             </svg>
           }
         />
+        <ThemeToggle
+          mourning={mourning}
+          onToggle={() => setMourning(!mourning)}
+          label={
+            mourning
+              ? tr("แสดงสีปกติ", "Show full color", "恢复彩色")
+              : tr("โหมดไว้อาลัย", "Mourning mode", "哀悼模式")
+          }
+        />
       </div>
     </aside>
+  );
+}
+
+/* Mourning-theme toggle — same look as Item, but a button instead of a link.
+   No .mourn-mute here: while mourning is active this is the one vivid
+   element on the page, so users can find their way back to full color. */
+function ThemeToggle({ mourning, onToggle, label }: { mourning: boolean; onToggle: () => void; label: string }) {
+  const color = mourning ? "#c8102e" : "#1a1a1a";
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-label={label}
+      aria-pressed={mourning}
+      className="cta-pop-in group relative flex cursor-pointer items-center"
+      style={{ animationDelay: "0.4s" }}
+    >
+      <span className="pointer-events-none absolute right-full mr-2.5 translate-x-2 whitespace-nowrap opacity-0 transition-all duration-300 ease-out group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100">
+        <span
+          className="inline-block rounded-full px-4 py-2 text-[12px] font-semibold tracking-[0.03em] text-white shadow-[0_8px_24px_-10px_rgba(10,16,36,.6)]"
+          style={{ backgroundColor: color }}
+        >
+          {label}
+        </span>
+      </span>
+
+      <span className="relative grid h-11 w-11 place-items-center rounded-full text-white shadow-[0_6px_18px_-6px_rgba(10,16,36,.5)] ring-1 ring-white/25 transition-transform duration-300 group-hover:scale-110 md:h-12 md:w-12" style={{ backgroundColor: color }}>
+        {mourning ? (
+          /* paint drop — switch back to full color */
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M12 2.7 6.7 9.4a7 7 0 1 0 10.6 0L12 2.7Z" />
+            <path d="M9 14a3 3 0 0 0 3 3" />
+          </svg>
+        ) : (
+          /* awareness ribbon — mourning mode */
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M12 2c-2.2 0-3.5 1.6-3.5 3.6 0 3.4 2.3 5.6 1.1 9.4L6 21h4l2-3.4L14 21h4l-3.6-6c-1.2-3.8 1.1-6 1.1-9.4C15.5 3.6 14.2 2 12 2Z" />
+          </svg>
+        )}
+      </span>
+    </button>
   );
 }
 
@@ -115,7 +165,7 @@ function Item({
       href={href}
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       aria-label={label}
-      className="cta-pop-in group relative flex items-center"
+      className="cta-pop-in group relative flex items-center mourn-mute"
       style={{ animationDelay: `${delay}s` }}
     >
       {/* Label — slides out to the left on hover */}

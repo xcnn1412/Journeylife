@@ -54,7 +54,29 @@
   --mute:  #5b6072;
   --red:   #c8102e;
   --blue:  #0d2b5e;
+
+  /* Mourning theme — desaturate + darken (not full grayscale). Tune here. */
+  --mourning-filter: saturate(0.35) brightness(0.86);
 }
+
+/* Mourning mode — toggled on <html> by the head script / StickyCTA.
+   A fixed backdrop-filter overlay mutes everything painted beneath it
+   (z < 500) regardless of DOM structure — highest app layer is the
+   lightbox at z-[200]. The StickyCTA dock is lifted above the overlay
+   and re-muted per element (.mourn-mute) so only the theme-toggle
+   button keeps its vivid color. */
+html.mourning::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  pointer-events: none;
+  -webkit-backdrop-filter: var(--mourning-filter);
+  backdrop-filter: var(--mourning-filter);
+}
+
+html.mourning .sticky-cta { z-index: 501; }
+html.mourning .mourn-mute { filter: var(--mourning-filter); }
 
 * { box-sizing: border-box; }
 

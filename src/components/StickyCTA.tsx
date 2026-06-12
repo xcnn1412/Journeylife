@@ -116,7 +116,7 @@ function ThemeToggle({ mourning, onToggle, label }: { mourning: boolean; onToggl
       className="cta-pop-in group relative flex cursor-pointer items-center"
       style={{ animationDelay: "0.4s" }}
     >
-      <span className="pointer-events-none absolute right-full mr-2.5 translate-x-2 whitespace-nowrap opacity-0 transition-all duration-300 ease-out group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100">
+      <span className="mourn-peek pointer-events-none absolute right-full mr-2.5 translate-x-2 whitespace-nowrap opacity-0 transition-all duration-300 ease-out group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100">
         <span
           className="inline-block rounded-full px-4 py-2 text-[12px] font-semibold tracking-[0.03em] text-white shadow-[0_8px_24px_-10px_rgba(10,16,36,.6)]"
           style={{ backgroundColor: color }}
@@ -126,18 +126,22 @@ function ThemeToggle({ mourning, onToggle, label }: { mourning: boolean; onToggl
       </span>
 
       <span className="relative grid h-11 w-11 place-items-center rounded-full text-white shadow-[0_6px_18px_-6px_rgba(10,16,36,.5)] ring-1 ring-white/25 transition-transform duration-300 group-hover:scale-110 md:h-12 md:w-12" style={{ backgroundColor: color }}>
-        {mourning ? (
-          /* paint drop — switch back to full color */
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-            <path d="M12 2.7 6.7 9.4a7 7 0 1 0 10.6 0L12 2.7Z" />
-            <path d="M9 14a3 3 0 0 0 3 3" />
-          </svg>
-        ) : (
-          /* awareness ribbon — mourning mode */
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-            <path d="M12 2c-2.2 0-3.5 1.6-3.5 3.6 0 3.4 2.3 5.6 1.1 9.4L6 21h4l2-3.4L14 21h4l-3.6-6c-1.2-3.8 1.1-6 1.1-9.4C15.5 3.6 14.2 2 12 2Z" />
-          </svg>
-        )}
+        {/* attention ring — tells users the disc is tappable */}
+        <span aria-hidden className="absolute inset-0 animate-ping rounded-full opacity-60" style={{ backgroundColor: color }} />
+        <span className="relative">
+          {mourning ? (
+            /* paint drop — switch back to full color */
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M12 2.7 6.7 9.4a7 7 0 1 0 10.6 0L12 2.7Z" />
+              <path d="M9 14a3 3 0 0 0 3 3" />
+            </svg>
+          ) : (
+            /* awareness ribbon — mourning mode */
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M12 2c-2.2 0-3.5 1.6-3.5 3.6 0 3.4 2.3 5.6 1.1 9.4L6 21h4l2-3.4L14 21h4l-3.6-6c-1.2-3.8 1.1-6 1.1-9.4C15.5 3.6 14.2 2 12 2Z" />
+            </svg>
+          )}
+        </span>
       </span>
     </button>
   );

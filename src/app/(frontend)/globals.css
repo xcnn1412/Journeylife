@@ -78,6 +78,18 @@ html.mourning::after {
 html.mourning .sticky-cta { z-index: 501; }
 html.mourning .mourn-mute { filter: var(--mourning-filter); }
 
+/* Theme-toggle affordance — the label slides out by itself shortly after
+   load, lingers, then retracts (base hover behavior takes over after). */
+@keyframes mourn-peek {
+  0%, 100% { opacity: 0; transform: translateX(.5rem); }
+  12%, 82% { opacity: 1; transform: translateX(0); }
+}
+.mourn-peek { animation: mourn-peek 5.5s ease-out 1.4s 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mourn-peek { animation: none; }
+}
+
 * { box-sizing: border-box; }
 
 html {
